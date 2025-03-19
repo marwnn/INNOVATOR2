@@ -1,0 +1,260 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background:rgba(207, 209, 214, 0.728);
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-wrap: nowrap;
+}
+
+
+.auth-container {
+    display: flex;
+    width: 800px;
+    background: rgb(255, 255, 255);
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+i{
+    color:black;
+}
+/* Left section (hidden on mobile) */
+.left-section {
+    width: 100%;
+    background: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    color: rgba(4, 71, 188, 0.872);
+    border-radius: 15px 0 0 15px;
+}
+.db{
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+/* Logo inside left section */
+.logo {
+    width: 120px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.portal{
+    color:rgb(255, 219, 16);
+}
+.title{
+    color:rgba(4, 71, 188, 0.872);
+    cursor: pointer;
+}
+.sign{
+    color:rgba(4, 63, 164, 0.872);
+    cursor: pointer;
+}
+/* Right section - Form */
+.right-section {
+    width: 60%;
+    background: rgba(255, 255, 255, 0.872);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    border-radius: 0 15px 15px 0;
+   
+  
+}
+
+/* Input container for icons */
+.input-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Style for input and select fields */
+.input-container input {
+    width: 100%;
+    padding: 13px 10px 13px 40px; /* Space for icon */
+    border: 1px solid rgb(196, 196, 198);
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+}
+
+/* Position the icons inside input/select */
+.input-container i {
+    position: absolute;
+    left: 12px; /* Position icon inside */
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    font-size: 16px;
+}
+
+
+/* Input container for icons */
+.input-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Style for input and select fields */
+.input-container input{
+    width: 100%;
+    padding: 13px 10px 13px 40px;
+    /* Space for icon */
+    border: 1px solid rgb(196, 196, 198);
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: white;
+    color: black;
+}
+
+/* Position the icons inside input/select */
+.input-container i {
+    position: absolute;
+    left: 12px;
+    /* Position icon inside */
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    font-size: 12px;
+}
+
+
+/* Submit Button Styling */
+.submit {
+    background: rgba(4, 71, 188, 0.872);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    padding: 13px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+ 
+}
+
+.submit:hover {
+    background: rgba(17, 81, 191, 0.872);
+}
+
+/* Adjust icon inside button */
+.submit i {
+    color: white;
+    font-size: 15px;
+}
+
+form {
+   
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 350px;
+}
+.create{
+    font-size: 12px;
+    color:rgba(2, 57, 152, 0.872);
+}
+.ready{
+    font-size: 12px;
+        color: rgba(4, 58, 152, 0.872);
+}
+input{
+    width: 90%;
+    background-color: transparent;
+    padding: 13px;
+    margin: 10px 0;
+    border: 1px solid rgb(196, 196, 198);
+    border-radius: 5px;
+}
+
+
+button {
+    background: rgba(4, 71, 188, 0.872);
+    color:white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+        padding: 13px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 20px;
+}
+
+button:hover {
+    background:rgba(17, 81, 191, 0.872);
+    
+}
+.beforelog{
+padding: 10px;
+    box-sizing: border-box;
+    background-color: white;
+    border: 3px solid rgba(17, 81, 191, 0.872);
+    color: rgba(17, 81, 191, 0.872);
+    border-radius: 30px;
+}
+.beforelog:hover{
+    background-color: white;
+        color: rgba(9, 58, 142, 0.872);
+}
+.beforereg {
+    padding:10px;
+box-sizing: border-box;
+    background-color: white;
+    border: 3px solid rgba(17, 81, 191, 0.872);
+    color: rgba(17, 81, 191, 0.872);
+    border-radius: 30px;
+}
+.beforereg:hover {
+    background-color: white;
+    color:rgba(9, 58, 142, 0.872);
+}
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .auth-container {
+        width: 100%;
+        
+    }
+
+    .right-section {
+        min-width: 35%;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+       width: 100%;
+    }
+
+    .left-section {
+        width:190px;
+        
+        
+    }
+
+    .right-section {
+        width: 20%;
+        
+    }
+}

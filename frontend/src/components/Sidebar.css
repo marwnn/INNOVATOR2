@@ -1,0 +1,61 @@
+.sidebar {
+    width: 225px;
+    background: white;
+    color: black;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: none;
+}
+
+/* Logo & School Name */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+    margin-right: 5px;
+    /* Space between logo and text */
+}
+
+.school-name {
+    font-size: 18px;
+    font-weight: bold;
+    white-space: nowrap;
+    margin:0 0 20px 0;
+    color: rgba(6, 65, 167, 0.872);
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    color: black;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar-item .icon {
+    margin-right: 10px;
+}
+
+.sidebar-item:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.sidebar-other {
+    margin-top: auto;
+}

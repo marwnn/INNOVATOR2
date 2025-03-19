@@ -1,0 +1,129 @@
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
+import "./AuthPage.css"; 
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
+import Logo from "../assets/logo.png";
+
+const AuthPage = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" }); // Removed role
+  const navigate = useNavigate(); 
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Sending Data:", formData); 
+
+    try {
+      const url = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
+      const updatedFormData = isLogin ? formData : { ...formData, role: "parent" };
+
+      const response = await axios.post(url, updatedFormData);
+      
+
+      if (isLogin) {
+        const { token, name, role, profilePic } = response.data;
+         
+
+console.log("Received Data from Backend:", response.data); // ✅ Debugging
+
+if (!name || !role) {
+  alert("Error: User data missing in response! Check your backend.");
+  return;
+}
+
+// ✅ Store user info in localStorage
+localStorage.setItem("token", token);
+localStorage.setItem("user", JSON.stringify({ name, role, profilePic: profilePic || "/default-profile.png" }));
+
+console.log("✅ Stored User in LocalStorage:", localStorage.getItem("user"));
+
+        if (!role) {
+          alert("Role not found! Please check your backend response.");
+          return;
+        }
+
+        // ✅ Store user info in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify({ name, role, profilePic }));
+
+        console.log("Stored User:", localStorage.getItem("user"));
+
+        // ✅ Redirect based on role
+        if (role === "admin") {
+          navigate("/dashboard/admin");
+        } else {
+          navigate("/dashboard/parent");
+        }
+      }
+    } catch (error) {
+      alert(error.response?.data?.error || "Something went wrong! Please try again.");
+    }
+  };
+
+  return (
+    <div className="auth-container">
+      <div className="left-section">
+        <h2 className="title">Welcome to DBC Parents<span className="portal"> Portal</span></h2>
+        <img style={ { width: "120px"}} src={Logo} alt="School Logo" className="logo" />
+        <div className="db">
+          <h1>Don Bosco College</h1>
+          <p>Copyright © 2025 All rights reserved.</p>
+        </div>
+      </div>
+
+      <div className="right-section">
+        <h2 className="sign">{isLogin ? "Login" : "Register"}</h2>
+        <form onSubmit={handleSubmit}>
+          {/* Full Name (Only in Register Form) */}
+          {!isLogin && (
+            <div className="input-container">
+              <i className="fas fa-user"></i>
+              <input type="text" name="name" placeholder="Full Name" onChange={handleChange} required />
+            </div>
+          )}
+
+          {/* Email Field */}
+          <div className="input-container">
+            <i className="fas fa-envelope"></i>
+            <input type="email" name="email" placeholder="Email Address" onChange={handleChange} required />
+          </div>
+
+          {/* Password Field */}
+          <div className="input-container">
+            <i className="fas fa-lock"></i>
+            <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+          </div>
+
+          {/* Submit Button */}
+          <button className="submit" type="submit">
+            <i className={isLogin ? "fas fa-sign-in-alt" : "fas fa-user-plus"}></i> {isLogin ? "Login" : "Register"}
+          </button>
+        </form>
+
+        {isLogin ? (
+          <p className="create">
+            Don't have an account yet? <br />
+            <button className="beforereg" onClick={() => setIsLogin(false)}>Register Here</button>
+          </p>
+        ) : (
+          <p className="ready">
+            Already have an account? <br />
+            <button className="beforelog" onClick={() => setIsLogin(true)}>Login</button>
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AuthPage;

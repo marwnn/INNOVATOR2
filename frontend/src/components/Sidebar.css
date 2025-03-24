@@ -1,19 +1,28 @@
 .sidebar {
-    width: 225px;
+    width: 32vh;
     background: white;
-    color: black;
+    color: rgb(0, 0, 0);
     height: 100vh;
+    font-size: 13px;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 10px;
     border: none;
+    position: fixed;
+    left: 0;
+        top: 0;
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+}
+.menu-title{
+color: rgb(34, 34, 34);
 }
 
 /* Logo & School Name */
 .sidebar-logo {
     display: flex;
     align-items: center;
-    padding: 10px;
+    
 }
 
 .logo {
@@ -24,7 +33,7 @@
 }
 
 .school-name {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     white-space: nowrap;
     margin:0 0 20px 0;
@@ -42,9 +51,11 @@
     display: flex;
     align-items: center;
     padding: 12px;
-    color: black;
+    color: rgb(47, 47, 47);
     text-decoration: none;
     transition: 0.3s;
+    background-color: transparent;
+    
 }
 
 .sidebar-item .icon {
@@ -54,8 +65,67 @@
 .sidebar-item:hover {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+    
 }
-
+.sidebar-item:active {
+    color: black;
+    font-weight: bold;
+    .icon{
+        color: black;
+    }
+}
 .sidebar-other {
     margin-top: auto;
+}
+@media screen and (min-width: 768px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}
+
+/* ✅ Hide Sidebar by default on small screens (600px and below) */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
+
+/* ✅ Sidebar Toggle Button */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 36px;
+    left: 15px;
+    background: rgb(136, 136, 136);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 15px;
+    border-radius: 100px;
+    
+}
+.sidebar-toggle:hover {
+background-color: rgb(157, 156, 156)
+}
+
+
+.icon{
+    color:  rgb(88, 87, 87);
+    
+}
+/* ✅ Show Toggle Button Only on Small Screens (≤600px) */
+@media screen and (max-width: 768px) {
+    .sidebar-toggle {
+        display: block;
+    }
+
 }

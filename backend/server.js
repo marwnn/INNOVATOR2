@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// ✅ Database Connection
+// Database Connection
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -21,13 +21,13 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error("❌ Database connection failed:", err);
+        console.error(" Database connection failed:", err);
     } else {
-        console.log("✅ Database Connected!");
+        console.log("Database Connected!");
     }
 });
 
-// ✅ Configure Multer for Profile Picture Uploads
+// Configure Multer for Profile Picture Uploads
 const storage = multer.diskStorage({
     destination: "./uploads/",
     filename: (req, file, cb) => {
@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ✅ Upload Profile Picture API
+//  Upload Profile Picture API
 app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -51,7 +51,7 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
         const userId = decoded.id;
         const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
 
-        // ✅ Save image URL to database
+        //  Save image URL to database
         db.query("UPDATE users SET profile_pic = ? WHERE id = ?", [imageUrl, userId], (err) => {
             if (err) return res.status(500).json({ error: "Database error" });
             res.json({ message: "Profile picture updated!", profilePic: imageUrl });
@@ -62,7 +62,7 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
 });
 
 
-// ✅ Serve Uploaded Images
+//  Serve Uploaded Images
 app.use("/uploads", express.static("uploads"));
 
 app.delete("/delete-account", (req, res) => {
@@ -84,11 +84,11 @@ app.delete("/delete-account", (req, res) => {
 
 
 
-// ✅ User Registration (Only "Parent" Can Register)
+//  User Registration (Only "Parent" Can Register)
 app.post("/register", (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, contactNumber } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !contactNumber) {
         return res.status(400).json({ error: "All fields are required!" });
     }
 
@@ -97,7 +97,7 @@ app.post("/register", (req, res) => {
 
         if (results.length > 0) {
             return res.status(400).json({ error: "Email is already registered!" });
-        }
+       }
 
         // Auto-assign role as "parent"
         bcrypt.hash(password, 10, (err, hashedPassword) => {
@@ -107,19 +107,21 @@ app.post("/register", (req, res) => {
             }
 
             const role = "parent";
-            const sql = "INSERT INTO users (name, email, password, role, profile_pic) VALUES (?, ?, ?, ?, ?)";
-            db.query(sql, [name, email, hashedPassword, role, null], (err) => {
+           const sql = "INSERT INTO users (name, email, password, contact_number, role, profile_pic) VALUES (?, ?, ?, ?, ?, ?)";
+db.query(sql, [name, email, hashedPassword, contactNumber, role, null], (err) => {
+
                 if (err) {
                     console.error(" Database Error:", err);
                     return res.status(500).json({ error: "Internal Server Error" });
                 }
-                res.json({ message: "User registered successfully!", role });
+                               res.json({ message: "User registered successfully!",role });
+                               
             });
         });
     });
 });
 
-// ✅ User Login (Admin & Parent)
+//  User Login (Admin & Parent)
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
@@ -136,7 +138,7 @@ app.post("/login", (req, res) => {
 
         const user = results[0];
 
-        // ✅ Ensure passwords match (compare hashed password)
+        //  Ensure passwords match (compare hashed password)
         bcrypt.compare(password, user.password, (err, isMatch) => {
             if (err) {
                 console.error(" Error comparing passwords:", err);
@@ -147,20 +149,20 @@ app.post("/login", (req, res) => {
                 return res.status(401).json({ error: "Invalid credentials!" });
             }
 
-            // ✅ Generate JWT token
+            //  Generate JWT token
               const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
+             
             res.json({
                 message: "Login successful!",
                 token,
-                name: user.name,  // ✅ Add Name
+                name: user.name,  //  Add Name
                 role: user.role,
                 profilePic: user.profile_pic || "/default-profile.png",
             });
         });
     });
 });
-// ✅ Start Server
+//  Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(` Server running on port ${PORT}`);

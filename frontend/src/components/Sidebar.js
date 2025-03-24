@@ -1,12 +1,31 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  FaHome, FaBook, FaUserGraduate, FaClipboardList, FaBullhorn, FaEnvelope, FaUser, FaSignOutAlt
-} from "react-icons/fa";
+import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Logo from "../assets/logo.png"; // Ensure your logo is in `src/assets/`
 import "./Sidebar.css";
+import { 
+   FaXmark, FaBars} from "react-icons/fa6";
 
 const Sidebar = () => {
+   const [isOpen, setIsOpen] = useState(false); // ✅ Open by default on large screens
+ 
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen)
+  }
+
+
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || {};
    // ✅ Logout Function
@@ -19,7 +38,12 @@ const Sidebar = () => {
 
    const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/parent";
   return (
-    <div className="sidebar">
+<>
+    {/* ✅ Toggle Button (Only Shows on Small Screens) */}
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        {isOpen ? <FaXmark /> : <FaBars />}
+      </button>
+      <div className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* Logo & School Name Section */}
       <div className="sidebar-logo">
         <img style={{ width: "40px"}} src={Logo} alt="School Logo" className="logo" />
@@ -30,28 +54,28 @@ const Sidebar = () => {
       <div className="sidebar-menu">
          <h3 className="menu-title">Menu</h3> 
          <Link to={homePath} className="sidebar-item">
-          <FaHome className="icon" /> Home
+          <MapsHomeWorkOutlinedIcon className="icon" /> Home
         </Link>
         <Link to="/subjects" className="sidebar-item">
-          <FaBook className="icon" /> Subjects 
+          <LibraryBooksOutlinedIcon className="icon" /> Subjects 
         </Link>
          <Link to="/schedule" className="sidebar-item">
-          <FaBook className="icon" />Schedule
+          <EventNoteOutlinedIcon className="icon" />Schedule
         </Link>
         <Link to="/grades" className="sidebar-item">
-          <FaUserGraduate className="icon" /> Grades
+          <SchoolOutlinedIcon className="icon" /> Grades
         </Link>
         <Link to="/attendance" className="sidebar-item">
-          <FaClipboardList className="icon" /> Attendance Record
+          <ChecklistOutlinedIcon className="icon" /> Attendance Record
         </Link>
         <Link to="/announcements" className="sidebar-item">
-          <FaBullhorn className="icon" /> Announcements 
+          <CampaignOutlinedIcon className="icon" /> Announcements 
         </Link>
          <Link to="/events" className="sidebar-item">
-          <FaBullhorn className="icon" />Events
+          <CalendarTodayOutlinedIcon className="icon" />Events
         </Link>
         <Link to="/messages" className="sidebar-item">
-          <FaEnvelope className="icon" /> Messages
+          <ChatBubbleOutlineOutlinedIcon  className="icon" /> Messages
         </Link>
       </div>
 
@@ -59,18 +83,21 @@ const Sidebar = () => {
       <div className="sidebar-other">
         <h3 className="menu-title">Other</h3>
        <Link to="/profile" className="sidebar-item">
-  <FaUser className="icon" /> Profile
+  <AccountCircleOutlinedIcon className="icon" /> Profile
 </Link>
 
         <Link to="/help" className="sidebar-item">
-          <FaClipboardList className="icon" /> Help
-        </Link>
-        <button className="sidebar-item logout-btn" onClick={handleLogout}>
-          <FaSignOutAlt className="icon" /> Logout
+          <HelpOutlineOutlinedIcon className="icon" /> Help
+          </Link>
+          <Link to="/settings" className="sidebar-item">
+          <SettingsOutlinedIcon className="icon" /> Settings
+          </Link>
+          <button style={{ margin: "0 0 20px 1px" }} className="sidebar-item logout-btn" onClick={handleLogout}>
+        <LogoutIcon/> Log out 
         </button>
       </div>
     </div>
-  );
+  </>);
 };
 
 export default Sidebar;

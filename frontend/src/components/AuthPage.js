@@ -8,7 +8,7 @@ import Logo from "../assets/logo.png";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" }); // Removed role
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", contactNumber:"" }); // Removed role
   const navigate = useNavigate(); 
 
   const handleChange = (e) => {
@@ -20,55 +20,47 @@ const AuthPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Sending Data:", formData); 
+  e.preventDefault();
+  console.log("Sending Data:", formData);
 
-    try {
-      const url = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
-      const updatedFormData = isLogin ? formData : { ...formData, role: "parent" };
+  try {
+    const url = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
+    const updatedFormData = isLogin ? formData : { ...formData, role: "parent"};
 
-      const response = await axios.post(url, updatedFormData);
-      
+    const response = await axios.post(url, updatedFormData);
+    console.log("Received Data from Backend:", response.data); // ✅ Debugging
 
-      if (isLogin) {
-        const { token, name, role, profilePic } = response.data;
-         
-
-console.log("Received Data from Backend:", response.data); // ✅ Debugging
-
-if (!name || !role) {
-  alert("Error: User data missing in response! Check your backend.");
-  return;
-}
-
-// ✅ Store user info in localStorage
-localStorage.setItem("token", token);
-localStorage.setItem("user", JSON.stringify({ name, role, profilePic: profilePic || "/default-profile.png" }));
-
-console.log("✅ Stored User in LocalStorage:", localStorage.getItem("user"));
-
-        if (!role) {
-          alert("Role not found! Please check your backend response.");
-          return;
-        }
-
-        // ✅ Store user info in localStorage
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify({ name, role, profilePic }));
-
-        console.log("Stored User:", localStorage.getItem("user"));
-
-        // ✅ Redirect based on role
-        if (role === "admin") {
-          navigate("/dashboard/admin");
-        } else {
-          navigate("/dashboard/parent");
-        }
-      }
-    } catch (error) {
-      alert(error.response?.data?.error || "Something went wrong! Please try again.");
+    if (!isLogin) {
+      //  Show success message on registration
+      alert(response.data.message);
+      setIsLogin(true); // Switch to login form after registration
+      return;
     }
-  };
+
+    //  Process login response
+    const { token, name, role, profilePic } = response.data;
+    if (!name || !role) {
+      alert("Error: User data missing in response! Check your backend.");
+      return;
+    }
+
+    //  Store user info in localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify({ name, role, profilePic: profilePic || "/default-profile.png" }));
+
+    console.log(" Stored User in LocalStorage:", localStorage.getItem("user"));
+
+    //  Redirect based on role
+    if (role === "admin") {
+      navigate("/dashboard/admin");
+    } else {
+      navigate("/dashboard/parent");
+    }
+  } catch (error) {
+    alert(error.response?.data?.error || "Something went wrong! Please try again.");
+  }
+};
+
 
   return (
     <div className="auth-container">
@@ -86,12 +78,17 @@ console.log("✅ Stored User in LocalStorage:", localStorage.getItem("user"));
         <form onSubmit={handleSubmit}>
           {/* Full Name (Only in Register Form) */}
           {!isLogin && (
+            <>
             <div className="input-container">
               <i className="fas fa-user"></i>
-              <input type="text" name="name" placeholder="Full Name" onChange={handleChange} required />
+              <input type="text" name="name" placeholder="Full Name (e.g., Juan A. Dela Cruz)" onChange={handleChange} required />
             </div>
-          )}
-
+             <div className="input-container">
+             <i className="fas fa-phone"></i>
+            <input type="text" name="contactNumber" placeholder="Contact Number" onChange={handleChange} required />
+              </div>
+          </>)}
+          
           {/* Email Field */}
           <div className="input-container">
             <i className="fas fa-envelope"></i>

@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import { FaSearch, FaBell, FaSignOutAlt, FaTrashAlt, FaUser } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { useNavigate } from "react-router-dom";
 import "./DashboardHeader.css";
 
 const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
+  const [openNotif, setOpenNotif]= useState(false)
   const navigate = useNavigate();
 
   // Get user data from local storage
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const { name, role, profilePic } = user;
 
-  // ✅ Logout Function
+  // Logout Function
 const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       localStorage.clear();
@@ -19,33 +24,7 @@ const handleLogout = () => {
     }
   };
 
-  // ✅ Delete Account Function
-  const handleDeleteAccount = async () => {
-    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone!")) {
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:5000/delete-account", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert("Account deleted successfully!");
-        localStorage.clear();
-        navigate("/");
-      } else {
-        alert(data.error || "Something went wrong!");
-      }
-    } catch (error) {
-      alert("Failed to delete account. Please try again.");
-    }
-  };
+  
 
   return (
     <div className="dashboard-header">
@@ -58,9 +37,11 @@ const handleLogout = () => {
       {/* Notifications & Profile */}
       <div className="header-right">
         {/* Notification Button */}
-        <button className="notification-btn">
-          <FaBell />
+         <div className="notif-section" onClick={() => setOpenNotif(!openNotif)}>
+          <button className="notification-btn">
+          <NotificationsNoneIcon />
         </button>
+        </div>
 
         {/* Profile Section */}
         <div className="profile-section" onClick={() => setOpen(!open)}>
@@ -76,15 +57,32 @@ const handleLogout = () => {
       {open && (
         <div className="dropdown">
           <ul>
-            <li onClick={() => navigate("/profile")}>
-              <FaUser className="icon" /> Profile
+            <li className="pfp"onClick={() => navigate("/profile")}>
+              <AccountCircleIcon style={{fontSize:"20px"}} className="headerIcon" /> Profile
             </li>
            
-            <li onClick={handleDeleteAccount} className="delete">
-              <FaTrashAlt className="icon" /> Delete Account
+            <li className="settings"onClick={() => navigate("/settings")}>
+              <SettingsOutlinedIcon style={{fontSize:"20px"}} className="headerIcon" /> Settings
             </li>
              <li onClick={handleLogout}>
-              <FaSignOutAlt className="icon" /> Logout
+              <LogoutIcon style={{fontSize:"20px"}} className="headerIcon" /> Logout
+            </li>
+          </ul>
+        </div>
+      )}
+
+       {openNotif && (
+        <div className="notif-dropdown">
+          <ul>
+            <li >
+              Changes
+            </li>
+           
+            <li>
+              Messages
+            </li>
+             <li>
+               Announcements
             </li>
           </ul>
         </div>

@@ -242,7 +242,7 @@ box-sizing: border-box;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .auth-container {
        width: 100%;
     }

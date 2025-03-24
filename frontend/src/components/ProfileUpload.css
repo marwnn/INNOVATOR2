@@ -13,15 +13,16 @@
     margin-bottom: 10px;
 }
 
-button {
-    background: navy;
+.uploadPfp {
+    background: rgba(4, 71, 188, 0.872);
     color: white;
-    padding: 8px 15px;
+    padding: 10px;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 100px;
+   width: 70%;
 }
 
-button:hover {
-    background: darkblue;
+.uploadPfp:hover {
+    background: rgba(3, 64, 168, 0.872);
 }

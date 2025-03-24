@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProfileUpload from "../components/ProfileUpload";
 import "./Profile.css";
-
+import ClearIcon from '@mui/icons-material/Clear';
 const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      <button onClick={goBackToDashboard} className="back-btn">⬅ Back to Dashboard</button>
+      <button onClick={goBackToDashboard} className="back-btn"><ClearIcon className="clearIcon"/></button>
       <h2>Profile</h2>
       <img
         key={user?.profilePic} // ✅ Force re-render when profilePic changes

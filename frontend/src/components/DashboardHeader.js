@@ -1,20 +1,44 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { useNavigate } from "react-router-dom";
 import "./DashboardHeader.css";
 
 const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
   const [openNotif, setOpenNotif]= useState(false)
   const navigate = useNavigate();
-
-  // Get user data from local storage
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+     // Get user data from local storage
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const { name, role, profilePic } = user;
+
+const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/parent";
+  const menuItems = [
+    { name: "Home", path: {homePath}},
+    { name: "Subjects", path: "/subjects"},
+    { name: "Schedule", path: "/schedule"},
+    { name: "Grades", path: "/grades" },
+    { name: "Attendance Record", path: "/attendance" },
+    { name: "Announcements", path: "/announcements"},
+    { name: "Events", path: "/events"},
+    { name: "Messages", path: "/messages" },
+    { name: "Profile", path: "/profile"},
+    { name: "Help", path: "/help"},
+    { name: "Settings", path: "/settings" },
+  ];
+
+  const filteredItems = menuItems.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
+
+  
 
   // Logout Function
 const handleLogout = () => {
@@ -29,10 +53,40 @@ const handleLogout = () => {
   return (
     <div className="dashboard-header">
       {/* Search Bar */}
-      <div className="search-bar">
+       <div className="search-bar">
         <FaSearch className="search-icon" />
-        <input type="text" placeholder="Search..." />
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setIsDropdownVisible(e.target.value.length > 0);
+          }}
+        />
+        {isDropdownVisible && (
+          <div className="search-dropdown">
+            {filteredItems.length > 0 ? (
+              filteredItems.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className="search-item"
+                  onClick={() => { setSearchTerm("")
+                    setIsDropdownVisible(false);
+                  }
+                  }
+                >
+                  {item.name}
+                </Link>
+              ))
+            ) : (
+              <p className="no-results">No matches found</p>
+            )}
+          </div>
+        )}
       </div>
+      
 
       {/* Notifications & Profile */}
       <div className="header-right">

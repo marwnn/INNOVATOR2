@@ -38,7 +38,7 @@ const AuthPage = () => {
     }
 
     //  Process login response
-    const { token, name, role, profilePic } = response.data;
+    const { token, name, role, email, contactNumber, profilePic } = response.data;
     if (!name || !role) {
       alert("Error: User data missing in response! Check your backend.");
       return;
@@ -46,7 +46,7 @@ const AuthPage = () => {
 
     //  Store user info in localStorage
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify({ name, role, profilePic: profilePic || "/default-profile.png" }));
+    localStorage.setItem("user", JSON.stringify({ name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
 
     console.log(" Stored User in LocalStorage:", localStorage.getItem("user"));
 

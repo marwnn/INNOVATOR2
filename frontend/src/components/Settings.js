@@ -55,18 +55,20 @@ const Settings = () => {
     }
   };
     return (
-        
+        <>
            
-        <div className='settingsContainer'>
-          <h2>Settings</h2>
-             <button onClick={goBackToDashboard} className="back-btn"><ClearIcon className="clearIcon"/></button>
-            <br></br>
-            <div className='delContainer'>
+        <div className='settingsHeader'>
+         
+        <button onClick={goBackToDashboard} className="back-btn"><ClearIcon className="clearIcon" /></button>
+         <p style={{ fontSize:"23px", color: "rgb(49, 49, 49)", margin:"5px 0 10px 0", padding:"0 0 0 10px"}}>Settings</p>
+       
+        </div>
+            <div className='settingsContainer'>
       <p className="delete"onClick={handleDeleteAccount}>
-              <DeleteForeverIcon style={{fontSize:"20px"}} className="headerIcon" /> Delete your account?
+              <DeleteForeverIcon style={{fontSize:"20px", color:"rgb(88, 87, 87)"}} className="headerIcon" /> Delete your account?
               </p>
               </div>
-            </div>
+            </>
            
   )
 }

@@ -14,15 +14,15 @@
 }
 
 .uploadPfp {
-    background: rgba(4, 71, 188, 0.872);
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 100px;
-   width: 70%;
+padding: 10px;
+    width: 70%;
+    background-color: transparent;
+    border: 3px solid rgba(17, 81, 191, 0.872);
+    color: rgba(17, 81, 191, 0.872);
+    border-radius: 30px;
 }
 
 .uploadPfp:hover {
-    background: rgba(3, 64, 168, 0.872);
+color: rgba(9, 58, 142, 0.872);
+background-color: transparent;
 }

@@ -6,6 +6,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import ParentDashboard from "./components/ParentDashboard";
 import Profile from "./components/Profile"; // Profile Page
 import Settings from "./components/Settings"; 
+import Help from "./components/Help"; 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -34,7 +35,8 @@ function App() {
           <Route path="parent" element={<ProtectedRoute element={<ParentDashboard />} allowedRoles={["parent"]} />} />
          </Route>
           <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={["admin", "parent"]} />} />
-         <Route path="/settings" element={<ProtectedRoute element={<Settings />} allowedRoles={["admin", "parent"]} />} />
+        <Route path="/settings" element={<ProtectedRoute element={<Settings />} allowedRoles={["admin", "parent"]} />} />
+         <Route path="/help" element={<ProtectedRoute element={<Help />} allowedRoles={["admin", "parent"]} />} />
       </Routes>
     </Router>
   );

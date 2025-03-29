@@ -45,10 +45,14 @@ const Sidebar = () => {
       </button>
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* Logo & School Name Section */}
-      <div className="sidebar-logo">
-        <img style={{ width: "40px"}} src={Logo} alt="School Logo" className="logo" />
+       
+        <div className="sidebar-logo">
+          <Link to={homePath} >
+            <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
+            </Link>
         <span className="school-name">Don Bosco College</span>
-      </div>
+        </div>
+        
       
       {/* Sidebar Menu */}
       <div className="sidebar-menu">

@@ -48,6 +48,7 @@ const ProfileUpload = ({ onUploadSuccess }) => {
 
   return (
     <div className="profile-upload">
+      
       <input type="file" onChange={handleFileChange} />
       <button className="uploadPfp"onClick={handleUpload} disabled={uploading}>
         {uploading ? "Uploading..." : "Upload Profile Picture"}

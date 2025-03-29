@@ -82,6 +82,34 @@ app.delete("/delete-account", (req, res) => {
     }
 });
 
+// ✅ Create Help Requests Table if Not Exists
+const createHelpTable = `
+CREATE TABLE IF NOT EXISTS help_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(255) NOT NULL,
+    issue TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)`;
+db.query(createHelpTable, (err) => {
+    if (err) console.error("Error creating help_requests table:", err);
+});
+
+// Help Request Submission Route
+app.post("/help", (req, res) => {
+    const { userName, issue } = req.body;
+
+    if (!userName || !issue) {
+        return res.status(400).json({ error: "Missing required fields!" });
+    }
+
+    db.query("INSERT INTO help_requests (user_name, issue) VALUES (?, ?)", [userName, issue], (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Failed to save complaint." });
+        }
+        res.json({ success: true, message: "Issue submitted successfully." });
+    });
+});
 
 
 //  User Registration (Only "Parent" Can Register)
@@ -157,11 +185,15 @@ app.post("/login", (req, res) => {
                 token,
                 name: user.name,  //  Add Name
                 role: user.role,
+                email: user.email,
+                contactNumber:user.contact_number,
                 profilePic: user.profile_pic || "/default-profile.png",
             });
         });
     });
 });
+
+
 //  Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

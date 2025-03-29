@@ -14,7 +14,7 @@ const Profile = () => {
     if (storedUser) {
       setUser(storedUser);
     } else {
-      setUser({ name: "Unknown", role: "Unknown", profilePic: "/default-profile.png" });
+      setUser({ name: "Unknown", role: "Unknown", email:"N/A", contactNumber:"N/A", profilePic: "/default-profile.png" });
     }
   }, []);
 
@@ -57,8 +57,12 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
+    <div className="profile-header">
+
       <button onClick={goBackToDashboard} className="back-btn"><ClearIcon className="clearIcon"/></button>
-      <h2>Profile</h2>
+        <p style={{ fontSize:"23px", color: "rgb(49, 49, 49)", margin:"5px 0 10px 0", padding:"0 0 0 10px", display:"flex"}}>Profile</p>
+      </div>
+      <br></br>
       <img
         key={user?.profilePic} // ✅ Force re-render when profilePic changes
         src={user?.profilePic || "/default-profile.png"}
@@ -66,7 +70,13 @@ const Profile = () => {
         className="profile-pic-large"
       />
       <h3>{user?.name || "Unknown"}</h3>
-      <p>Role: {user?.role || "Unknown Role"}</p>
+      <div className="info">
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-user infoIcon"></i> <p>Role: {user?.role || "Unknown Role"}</p>
+      
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-envelope infoIcon "></i><p>Email Address: {user?.email || "N/A"}</p>
+        
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-phone infoIcon"></i><p>Contact number: {user?.contactNumber || "N/A"}</p>
+          </div>
       <ProfileUpload onUploadSuccess={handleUploadSuccess} />
     </div>
   );

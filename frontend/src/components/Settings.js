@@ -7,9 +7,9 @@ const Settings = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     
-// ✅ Load user from localStorage when component mounts
+//  Load user from sessionStorage when component mounts
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     } else {
@@ -38,14 +38,14 @@ const Settings = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
 
       const data = await response.json();
       if (response.ok) {
         alert("Account deleted successfully!");
-        localStorage.clear();
+        sessionStorage.clear();
         navigate("/");
       } else {
         alert(data.error || "Something went wrong!");
@@ -65,7 +65,7 @@ const Settings = () => {
         </div>
             <div className='settingsContainer'>
       <p className="delete"onClick={handleDeleteAccount}>
-              <DeleteForeverIcon style={{fontSize:"20px", color:"rgb(88, 87, 87)"}} className="headerIcon" /> Delete your account?
+            <DeleteForeverIcon style={{ fontSize: "17px", margin: "1px 1px 1px 1px" }} className="headerIcon" /> Delete your account
               </p>
               </div>
             </>

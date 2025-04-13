@@ -7,6 +7,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 const Help = () => {
   const [issue, setIssue] = useState("");
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
    const navigate = useNavigate();
     
      const goBackToDashboard = () => {
@@ -17,8 +18,8 @@ const Help = () => {
       navigate("/dashboard/parent");
     }
   };
-  // ✅ Get user from localStorage
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+  // Get user from sessionStorage
+  const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const userName = user.name || "Unknown";
 
   const handleSubmit = async (e) => {
@@ -34,12 +35,15 @@ const Help = () => {
 
       if (response.data.success) {
         setMessage("Your issue has been submitted successfully.");
+        setMessageType("success");
         setIssue(""); // Clear textarea
       } else {
         setMessage("Failed to submit your issue. Please try again.");
+        setMessageType("error");
       }
     } catch (error) {
       setMessage("Error submitting issue.");
+       setMessageType("error");
     }
   };
 
@@ -52,7 +56,7 @@ const Help = () => {
        
         </div>
     <div className="help-container">
-      <p style={{fontSize:"25px", margin:"0 0 30px  0"}}>How can we help?</p>
+      <p style={{fontSize:"27px", margin:"0 0 30px  0"}}>How can we help?</p>
       <p>If you're experiencing any issues, please describe them below.</p>
 
       <form className="submit-form" onSubmit={handleSubmit}>
@@ -65,7 +69,7 @@ const Help = () => {
         <button type="submit">Submit</button>
       </form>
 
-      {message && <p className="message">{message}</p>}
+        {message && <p style={ { color:messageType==="success"?"#39e75f": "#e23636"}} className="message">{message}</p>}
           </div>
           </>
   );

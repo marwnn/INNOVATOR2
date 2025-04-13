@@ -16,7 +16,7 @@
    width: 400px;
    height: 100px;
    font-size: 14px;
-   padding: 5px;
+   padding: 7px;
    border-radius: 5px;
    border: 1px solid #ddd;
 }
@@ -24,14 +24,16 @@
     padding:10px;
     width: 50%;
     background-color: transparent;
-    border: 3px solid rgba(17, 81, 191, 0.872);
+    border: 3px solid rgba(30, 99, 219, 0.872);
     color: rgba(17, 81, 191, 0.872);
     border-radius: 30px;
+    transition: 0.8s;
 }
 .submit-form button:hover {
 
    
    
-    color: rgba(9, 58, 142, 0.872);
+    color: white;
+        background-color: rgba(17, 81, 191, 0.872);
     
 }

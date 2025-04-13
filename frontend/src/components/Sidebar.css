@@ -10,9 +10,10 @@
     border: none;
     position: fixed;
     left: 0;
-        top: 0;
+    top: 0;
     transition: transform 0.3s ease-in-out;
     overflow-y: auto;
+    z-index: 101;
 }
 .menu-title{
 color: rgb(34, 34, 34);
@@ -68,10 +69,10 @@ color: rgb(34, 34, 34);
     
 }
 .sidebar-item:active {
-    color: black;
+color: rgba(6, 65, 167, 0.872);
     font-weight: bold;
     .icon{
-        color: black;
+    color: rgba(6, 65, 167, 0.872);
     }
 }
 .sidebar-other {
@@ -121,6 +122,9 @@ background-color: rgb(157, 156, 156)
 .icon{
     color:  rgb(88, 87, 87);
     
+}
+.logout-btn:active{
+    color:#e23636;;
 }
 /* ✅ Show Toggle Button Only on Small Screens (≤600px) */
 @media screen and (max-width: 768px) {

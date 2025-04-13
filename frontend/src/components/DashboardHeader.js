@@ -6,30 +6,30 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import "./DashboardHeader.css";
-
+import Logo from "../assets/logo.png"; 
 const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
   const [openNotif, setOpenNotif]= useState(false)
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-     // Get user data from local storage
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+     // Get user data from session storage
+  const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const { name, role, profilePic } = user;
 
 const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/parent";
   const menuItems = [
     { name: "Home", path: {homePath}},
-    { name: "Subjects", path: "/subjects"},
-    { name: "Schedule", path: "/schedule"},
-    { name: "Grades", path: "/grades" },
-    { name: "Attendance Record", path: "/attendance" },
-    { name: "Announcements", path: "/announcements"},
-    { name: "Events", path: "/events"},
-    { name: "Messages", path: "/messages" },
-    { name: "Profile", path: "/profile"},
-    { name: "Help", path: "/help"},
-    { name: "Settings", path: "/settings" },
+    { name: "Subjects", path: "/dashboard/subjects"},
+    { name: "Schedule", path: "/dashboard/schedule"},
+    { name: "Grades", path: "/dashboard/grades" },
+    { name: "Attendance Record", path: "/dashboard/attendance" },
+    { name: "Announcements", path: "/dashboard/announcements"},
+    { name: "Events", path: "/dashboard/events"},
+    { name: "Messages", path: "/dashboard/messages" },
+    { name: "Profile", path: "/dashboard/profile"},
+    { name: "Help", path: "/dashboard/help"},
+    { name: "Settings", path: "/dashboard/settings" },
   ];
 
   const filteredItems = menuItems.filter((item) =>
@@ -43,7 +43,9 @@ const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/paren
   // Logout Function
 const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      localStorage.clear();
+      sessionStorage.clear();
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("token");
       navigate("/");
     }
   };
@@ -52,7 +54,14 @@ const handleLogout = () => {
 
   return (
     <div className="dashboard-header">
+       <div className="sidebar-logo" style={{margin:"0 0 20px 0"}}>
+                <Link to={homePath} >
+                  <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
+                  </Link>
+              <span className="school-name">Don Bosco College</span>
+              </div>
       {/* Search Bar */}
+      <div className="search-container">
        <div className="search-bar">
         <FaSearch className="search-icon" />
         <input
@@ -83,8 +92,10 @@ const handleLogout = () => {
             ) : (
               <p className="no-results">No matches found</p>
             )}
+            </div>
+            
+          )}
           </div>
-        )}
       </div>
       
 
@@ -118,7 +129,7 @@ const handleLogout = () => {
             <li className="settings"onClick={() => navigate("/settings")}>
               <SettingsOutlinedIcon style={{fontSize:"20px"}} className="headerIcon" /> Settings
             </li>
-             <li onClick={handleLogout}>
+             <li className="logoutBtn" onClick={handleLogout}>
               <LogoutIcon style={{fontSize:"20px"}} className="headerIcon" /> Logout
             </li>
           </ul>

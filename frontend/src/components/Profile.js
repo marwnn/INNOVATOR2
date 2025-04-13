@@ -8,9 +8,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Load user from localStorage when component mounts
+  // ✅ Load user from sessionStorage when component mounts
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
     if (storedUser) {
       setUser(storedUser);
     } else {
@@ -23,7 +23,7 @@ const Profile = () => {
     if (!user) return;
 
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       const formData = new FormData();
       formData.append("profilePic", newProfilePic);
 
@@ -36,10 +36,10 @@ const Profile = () => {
       if (response.data.profilePic) {
         const updatedUser = { ...user, profilePic: response.data.profilePic };
         
-        // ✅ Update localStorage
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        // Update sessionStorage
+        sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
-        // ✅ Force re-render to display new profile picture
+        //  Force re-render to display new profile picture
         setUser(updatedUser);
       }
     } catch (error) {
@@ -71,11 +71,11 @@ const Profile = () => {
       />
       <h3>{user?.name || "Unknown"}</h3>
       <div className="info">
-        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-user infoIcon"></i> <p>Role: {user?.role || "Unknown Role"}</p>
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-user infoIcon"></i> <p style={{ fontFamily:"Arial",fontSize:"14px"}}>Role: {user?.role || "Unknown Role"}</p>
       
-        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-envelope infoIcon "></i><p>Email Address: {user?.email || "N/A"}</p>
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-envelope infoIcon "></i><p style={{ fontFamily:"Arial",fontSize:"14px"}} >Email Address: {user?.email || "N/A"}</p>
         
-        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-phone infoIcon"></i><p>Contact number: {user?.contactNumber || "N/A"}</p>
+        <i style={{ color: "rgb(116, 116, 116)" }} className="fas fa-phone infoIcon"></i><p style={{ fontFamily:"Arial",fontSize:"14px"}} >Contact number: {user?.contactNumber || "N/A"}</p>
           </div>
       <ProfileUpload onUploadSuccess={handleUploadSuccess} />
     </div>

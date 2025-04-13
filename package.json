@@ -5,8 +5,17 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
     "@mui/icons-material": "^6.4.8",
     "@mui/material": "^6.4.8",
-    "react-icons": "^5.5.0"
+    "express": "^5.1.0",
+    "react-calendar": "^5.1.0",
+    "react-icons": "^5.5.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "socket.io-frontend": "^0.0.2"
   }
 }

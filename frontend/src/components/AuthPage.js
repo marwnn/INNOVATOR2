@@ -43,12 +43,11 @@ const AuthPage = () => {
       alert("Error: User data missing in response! Check your backend.");
       return;
     }
+    // Store token and user info in sessionStorage for the current session (per tab)
+    sessionStorage.setItem("token", token);
+    sessionStorage.setItem("user", JSON.stringify({ name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
 
-    //  Store user info in localStorage
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify({ name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
-
-    console.log(" Stored User in LocalStorage:", localStorage.getItem("user"));
+    console.log(" Stored User in sessionStorage:", sessionStorage.getItem("user"));
 
     //  Redirect based on role
     if (role === "admin") {

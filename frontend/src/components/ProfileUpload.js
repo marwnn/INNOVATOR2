@@ -18,7 +18,7 @@ const ProfileUpload = ({ onUploadSuccess }) => {
     formData.append("profilePic", file);
 
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       const response = await axios.post("http://localhost:5000/upload-profile-pic", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -29,10 +29,10 @@ const ProfileUpload = ({ onUploadSuccess }) => {
       if (response.data.profilePic) {
         const updatedProfilePic = response.data.profilePic;
 
-        // ✅ Save new profile picture to localStorage
-        const user = JSON.parse(localStorage.getItem("user")) || {};
+        // ✅ Save new profile picture to sessionStorage
+        const user = JSON.parse(sessionStorage.getItem("user")) || {};
         const updatedUser = { ...user, profilePic: updatedProfilePic };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
         // ✅ Update parent component immediately
         onUploadSuccess(updatedProfilePic);

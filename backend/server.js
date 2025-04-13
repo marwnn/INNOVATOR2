@@ -6,8 +6,10 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
-
+const messageRoutes = require('./routes/messages')
+const contactsRoute= require('./routes/contacts')
 const app = express();
+dotenv.config();
 app.use(express.json());
 app.use(cors());
 
@@ -26,6 +28,12 @@ db.connect((err) => {
         console.log("Database Connected!");
     }
 });
+
+//connect message route
+app.use('/api/messages', messageRoutes)
+
+// Contacts route
+app.use('/api/contacts', contactsRoute);
 
 // Configure Multer for Profile Picture Uploads
 const storage = multer.diskStorage({
@@ -82,7 +90,7 @@ app.delete("/delete-account", (req, res) => {
     }
 });
 
-// ✅ Create Help Requests Table if Not Exists
+//  Create Help Requests Table if Not Exists
 const createHelpTable = `
 CREATE TABLE IF NOT EXISTS help_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,

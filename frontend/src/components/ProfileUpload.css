@@ -17,12 +17,13 @@
 padding: 10px;
     width: 70%;
     background-color: transparent;
-    border: 3px solid rgba(17, 81, 191, 0.872);
+    border: 3px solid rgba(30, 99, 219, 0.872);
     color: rgba(17, 81, 191, 0.872);
-    border-radius: 30px;
+    border-radius: zpx;
+    transition: 0.8s;
 }
 
 .uploadPfp:hover {
-color: rgba(9, 58, 142, 0.872);
-background-color: transparent;
+color: white;
+background-color: rgba(17, 81, 191, 0.872);
 }

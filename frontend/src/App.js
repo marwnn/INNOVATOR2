@@ -1,16 +1,38 @@
-import React from "react";
+import React, { useEffect }  from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import ParentDashboard from "./components/ParentDashboard";
 import Profile from "./components/Profile"; // Profile Page
+import Subjects from "./components/Subjects"; 
+import Schedule from "./components/Schedule"; 
+import Grades from "./components/Grades"; 
+import Attendance from "./components/Attendance"; 
+import Announcements from "./components/Announcements"; 
+import Events from "./components/Events"; 
+import Messages from "./components/Messages/Messages"; 
 import Settings from "./components/Settings"; 
 import Help from "./components/Help"; 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ element, allowedRoles }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      // If the logged-out user or session expired, navigate to the login page
+      if (event.key === "user" && event.newValue === null) {
+        window.location.href = "/"; // Redirect to login
+      }
+    };
 
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+  
   if (!user) {
     return <Navigate to="/" />; // Redirect to login if not logged in
   }
@@ -33,7 +55,16 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} allowedRoles={["admin", "parent"]} />}>
           <Route path="admin" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />} />
           <Route path="parent" element={<ProtectedRoute element={<ParentDashboard />} allowedRoles={["parent"]} />} />
-         </Route>
+         
+          <Route path="subjects" element={<ProtectedRoute element={<Subjects />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="schedule" element={<ProtectedRoute element={<Schedule />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="grades" element={<ProtectedRoute element={<Grades />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="attendance" element={<ProtectedRoute element={<Attendance />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="announcements" element={<ProtectedRoute element={<Announcements />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="events" element={<ProtectedRoute element={<Events />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="messages" element={<ProtectedRoute element={<Messages />} allowedRoles={["admin", "parent"]} />} />
+          </Route>
+         
           <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={["admin", "parent"]} />} />
         <Route path="/settings" element={<ProtectedRoute element={<Settings />} allowedRoles={["admin", "parent"]} />} />
          <Route path="/help" element={<ProtectedRoute element={<Help />} allowedRoles={["admin", "parent"]} />} />

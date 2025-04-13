@@ -9,9 +9,9 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    overflow: auto;
 }
-
 
 .auth-container {
     display: flex;
@@ -19,7 +19,6 @@ body {
     background: rgb(255, 255, 255);
     border-radius: 15px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
 }
 i{
     color:black;
@@ -210,25 +209,27 @@ button:hover {
 padding: 10px;
     box-sizing: border-box;
     background-color: white;
-    border: 3px solid rgba(17, 81, 191, 0.872);
+    border: 3px solid rgba(30, 99, 219, 0.872);
     color: rgba(17, 81, 191, 0.872);
     border-radius: 30px;
+    transition: 0.8s;
 }
 .beforelog:hover{
-    background-color: white;
-        color: rgba(9, 58, 142, 0.872);
+    color: white;
+    background-color: rgba(17, 81, 191, 0.872);
 }
 .beforereg {
     padding:10px;
 box-sizing: border-box;
     background-color: white;
-    border: 3px solid rgba(17, 81, 191, 0.872);
+    border: 3px solid rgba(30, 99, 219, 0.872);
     color: rgba(17, 81, 191, 0.872);
     border-radius: 30px;
+    transition: 0.8s;
 }
 .beforereg:hover {
-    background-color: white;
-    color:rgba(9, 58, 142, 0.872);
+    color: white;
+    background-color: rgba(17, 81, 191, 0.872);
 }
 /* Responsive Design */
 @media (max-width: 1024px) {

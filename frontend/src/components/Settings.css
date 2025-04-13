@@ -17,6 +17,21 @@
        
 }
 .settingsContainer:active {
-    color: red;
+    
     font-weight: bold;
+}
+.delete{
+    color: #e23636;
+    background-color:transparent;
+    padding: 8px;
+    border: 3px solid #e23636;
+    border-radius: 30px;
+    transition: 0.8s;
+    font-size: 15px;
+    
+}
+.delete:hover {
+    background-color: #e23636;
+    color:white;
+  
 }

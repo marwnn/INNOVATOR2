@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
@@ -27,11 +27,13 @@ const Sidebar = () => {
 
 
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const user = JSON.parse(sessionStorage.getItem("user")) || {};
    // ✅ Logout Function
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      localStorage.clear();
+      sessionStorage.clear();
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("token");
       navigate("/");
     }
   };
@@ -60,25 +62,25 @@ const Sidebar = () => {
          <Link to={homePath} className="sidebar-item">
           <MapsHomeWorkOutlinedIcon className="icon" /> Home
         </Link>
-        <Link to="/subjects" className="sidebar-item">
+        <Link to="/dashboard/subjects" className="sidebar-item">
           <LibraryBooksOutlinedIcon className="icon" /> Subjects 
         </Link>
-         <Link to="/schedule" className="sidebar-item">
+         <Link to="/dashboard/schedule" className="sidebar-item">
           <EventNoteOutlinedIcon className="icon" />Schedule
         </Link>
-        <Link to="/grades" className="sidebar-item">
+        <Link to="/dashboard/grades" className="sidebar-item">
           <SchoolOutlinedIcon className="icon" /> Grades
         </Link>
-        <Link to="/attendance" className="sidebar-item">
+        <Link to="/dashboard/attendance" className="sidebar-item">
           <ChecklistOutlinedIcon className="icon" /> Attendance Record
         </Link>
-        <Link to="/announcements" className="sidebar-item">
+        <Link to="/dashboard/announcements" className="sidebar-item">
           <CampaignOutlinedIcon className="icon" /> Announcements 
         </Link>
-         <Link to="/events" className="sidebar-item">
+         <Link to="/dashboard/events" className="sidebar-item">
           <CalendarTodayOutlinedIcon className="icon" />Events
         </Link>
-        <Link to="/messages" className="sidebar-item">
+        <Link to="/dashboard/messages" className="sidebar-item">
           <ChatBubbleOutlineOutlinedIcon  className="icon" /> Messages
         </Link>
       </div>

@@ -1,0 +1,139 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+const Grades = () => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [grades, setGrades] = useState([]);
+  const [newGrade, setNewGrade] = useState({
+    student_id: '',
+    school_year: '',
+    term: '',
+    subject_code: '',
+    subject_title: '',
+    grade: '',
+    units: ''
+  });
+
+  const fetchGrades = () => {
+    axios
+      .get('http://localhost:5000/api/grades', {
+        params: user.role !== 'admin' ? { student_id: user.id } : {},
+      })
+      .then(res => setGrades(res.data))
+      .catch(err => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchGrades();
+  }, []);
+
+  const handleAdd = () => {
+    axios
+      .post('http://localhost:5000/api/grades', newGrade)
+      .then(() => {
+        fetchGrades();
+        setNewGrade({
+          student_id: '',
+          school_year: '',
+          term: '',
+          subject_code: '',
+          subject_title: '',
+          grade: '',
+          units: ''
+        });
+      })
+      .catch(err => console.error(err));
+  };
+
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:5000/api/grades/${id}`)
+      .then(() => fetchGrades())
+      .catch(err => console.error(err));
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Student Grades", 14, 10);
+    const tableColumn = ["Student ID", "School Year", "Term", "Subject Code", "Subject Title", "Grade", "Units"];
+    const tableRows = grades.map(grade => ([
+      grade.student_id,
+      grade.school_year,
+      grade.term,
+      grade.subject_code,
+      grade.subject_title,
+      grade.grade,
+      grade.units
+    ]));
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    doc.save("grades.pdf");
+  };
+
+  return (
+    <div className="grades-container">
+      <h2>Grades</h2>
+
+      <button onClick={exportToPDF} style={{ marginBottom: '15px' }}>
+        Export to PDF
+      </button>
+
+      {user.role === 'admin' && (
+        <div className="grade-form" style={{ marginBottom: '20px' }}>
+          {["student_id", "school_year", "term", "subject_code", "subject_title", "grade", "units"].map(field => (
+            <div key={field}>
+              <input
+                placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                value={newGrade[field]}
+                onChange={(e) => setNewGrade({ ...newGrade, [field]: e.target.value })}
+              />
+            </div>
+          ))}
+          <button onClick={handleAdd}>Add Grade</button>
+        </div>
+      )}
+
+      <table border="1" cellPadding="5" cellSpacing="0">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>School Year</th>
+            <th>Term</th>
+            <th>Subject Code</th>
+            <th>Subject Title</th>
+            <th>Grade</th>
+            <th>Units</th>
+            {user.role === 'admin' && <th>Action</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {grades.map((g) => (
+            <tr key={g.id}>
+              <td>{g.student_id}</td>
+              <td>{g.school_year}</td>
+              <td>{g.term}</td>
+              <td>{g.subject_code}</td>
+              <td>{g.subject_title}</td>
+              <td>{g.grade}</td>
+              <td>{g.units}</td>
+              {user.role === 'admin' && (
+                <td>
+                  <button onClick={() => handleDelete(g.id)}>Delete</button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default Grades;

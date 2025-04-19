@@ -1,0 +1,37 @@
+.settingsHeader {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+   display: flex;
+   flex-direction: column;
+   background-color: white;
+   width: 100%;
+    border-bottom: 2px solid#ddd;
+   
+}
+.settingsContainer{
+    position: absolute;
+        top: 200px;
+        left: 10px;
+        cursor: pointer;
+       
+}
+.settingsContainer:active {
+    
+    font-weight: bold;
+}
+.delete{
+    color: #e23636;
+    background-color:transparent;
+    padding: 9px;
+    border: 3px solid #e23636;
+    border-radius: 30px;
+    transition: 0.8s;
+    font-size: 15px;
+    
+}
+.delete:hover {
+    background-color: #e23636;
+    color:white;
+  
+}

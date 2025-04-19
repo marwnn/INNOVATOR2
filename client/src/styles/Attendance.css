@@ -1,0 +1,33 @@
+.attendance-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.add-form {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.add-form input,
+.add-form select {
+  padding: 8px;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.attendance-table th {
+  background-color: #f0f0f0;
+}

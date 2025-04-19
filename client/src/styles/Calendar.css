@@ -1,0 +1,23 @@
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.calendar-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.calendar-wrapper {
+    flex: 1;
+    height: 100%;
+    min-height: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

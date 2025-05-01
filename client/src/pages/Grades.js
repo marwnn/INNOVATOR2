@@ -15,6 +15,7 @@ const Grades = () => {
     grade: '',
     units: ''
   });
+  const [editGrade, setEditGrade] = useState(null); // To store grade for editing
 
   const fetchGrades = () => {
     axios
@@ -47,6 +48,40 @@ const Grades = () => {
       .catch(err => console.error(err));
   };
 
+  const handleEdit = (grade) => {
+    setEditGrade(grade);
+    setNewGrade({
+      student_id: grade.student_id,
+      school_year: grade.school_year,
+      term: grade.term,
+      subject_code: grade.subject_code,
+      subject_title: grade.subject_title,
+      grade: grade.grade,
+      units: grade.units
+    });
+  };
+
+  const handleUpdate = () => {
+    if (editGrade) {
+      axios
+        .put(`http://localhost:5000/api/grades/${editGrade.id}`, newGrade)
+        .then(() => {
+          fetchGrades();
+          setEditGrade(null);
+          setNewGrade({
+            student_id: '',
+            school_year: '',
+            term: '',
+            subject_code: '',
+            subject_title: '',
+            grade: '',
+            units: ''
+          });
+        })
+        .catch(err => console.error(err));
+    }
+  };
+
   const handleDelete = (id) => {
     axios
       .delete(`http://localhost:5000/api/grades/${id}`)
@@ -57,9 +92,10 @@ const Grades = () => {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Student Grades", 14, 10);
-    const tableColumn = ["Student ID", "School Year", "Term", "Subject Code", "Subject Title", "Grade", "Units"];
+    const tableColumn = ["Student ID", "Student Name", "School Year", "Term", "Subject Code", "Subject Title", "Grade", "Units"];
     const tableRows = grades.map(grade => ([
       grade.student_id,
+      grade.student_name,
       grade.school_year,
       grade.term,
       grade.subject_code,
@@ -96,7 +132,11 @@ const Grades = () => {
               />
             </div>
           ))}
-          <button onClick={handleAdd}>Add Grade</button>
+          {editGrade ? (
+            <button onClick={handleUpdate}>Update Grade</button>
+          ) : (
+            <button onClick={handleAdd}>Add Grade</button>
+          )}
         </div>
       )}
 
@@ -104,6 +144,7 @@ const Grades = () => {
         <thead>
           <tr>
             <th>Student ID</th>
+            <th>Student name</th>
             <th>School Year</th>
             <th>Term</th>
             <th>Subject Code</th>
@@ -117,6 +158,7 @@ const Grades = () => {
           {grades.map((g) => (
             <tr key={g.id}>
               <td>{g.student_id}</td>
+              <td>{g.student_name}</td>
               <td>{g.school_year}</td>
               <td>{g.term}</td>
               <td>{g.subject_code}</td>
@@ -125,7 +167,10 @@ const Grades = () => {
               <td>{g.units}</td>
               {user.role === 'admin' && (
                 <td>
+                  <div style={{display:"flex"}}>
+                  <button onClick={() => handleEdit(g)}>Edit</button>
                   <button onClick={() => handleDelete(g.id)}>Delete</button>
+               </div>
                 </td>
               )}
             </tr>

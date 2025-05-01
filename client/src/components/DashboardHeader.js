@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -7,21 +7,24 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import "../styles/DashboardHeader.css";
 import Logo from "../assets/logo.png"; 
-import "../App.css"
-import Darkmode from "./Darkmode";
+//import "../App.css"
+//import Darkmode from "./Darkmode";
 const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
   const [openNotif, setOpenNotif]= useState(false)
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  
      // Get user data from session storage
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const { name, role, profilePic } = user;
 
 const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/parent";
   const menuItems = [
-    { name: "Home", path: {homePath}},
+    { name: "Home", path: homePath},
     { name: "Subjects", path: "/dashboard/subjects"},
     { name: "Schedule", path: "/dashboard/schedule"},
     { name: "Grades", path: "/dashboard/grades" },
@@ -37,6 +40,46 @@ const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/paren
   const filteredItems = menuItems.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+ // Notifications Logic
+  const getNotifications = () => {
+    return JSON.parse(sessionStorage.getItem("notifications")) || [];
+  };
+
+  const markAllAsRead = () => {
+    const readNotifs = notifications.map((n) => ({ ...n, read: true }));
+    sessionStorage.setItem("notifications", JSON.stringify(readNotifs));
+    setNotifications(readNotifs);
+    setUnreadCount(0);
+  };
+
+  const loadNotifications = () => {
+    const notifs = getNotifications();
+    setNotifications(notifs);
+    setUnreadCount(notifs.filter((n) => !n.read).length);
+  };
+
+  const toggleNotifDropdown = () => {
+    setOpenNotif(!openNotif);
+    if (!openNotif) {
+      markAllAsRead();
+    }
+  };
+
+useEffect(() => {
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/notifications");
+      const data = await res.json();
+      setNotifications(data);
+      setUnreadCount(data.filter((n) => !n.read_status).length);
+    } catch (err) {
+      console.error("Failed to load notifications", err);
+    }
+  };
+
+  fetchNotifications();
+}, []);
 
 
 
@@ -100,14 +143,29 @@ const handleLogout = () => {
           </div>
       </div>
       
-  <Darkmode/>
+ 
       {/* Notifications & Profile */}
       <div className="header-right">
         {/* Notification Button */}
-         <div className="notif-section" onClick={() => setOpenNotif(!openNotif)}>
+        <div className="notif-section" onClick={toggleNotifDropdown} style={{ position: "relative" }}>
           <button className="notification-btn">
-          <NotificationsNoneIcon />
-        </button>
+            <NotificationsNoneIcon />
+            </button>
+            {unreadCount > 0 && (
+              <span
+                style={{
+          position: "absolute",
+          top: "27px",
+          right: "35px",
+          backgroundColor: "red",
+          borderRadius: "50%",
+          width: "10px",
+          height: "10px",
+          
+                }}
+              />
+            )}
+          
         </div>
 
         {/* Profile Section */}
@@ -138,19 +196,23 @@ const handleLogout = () => {
         </div>
       )}
 
-       {openNotif && (
+        {/* Notification Dropdown */}
+      {openNotif && (
         <div className="notif-dropdown">
           <ul>
-            <li >
-              Changes
-            </li>
-           
-            <li>
-              Messages
-            </li>
-             <li>
-               Announcements
-            </li>
+            {notifications.length === 0 ? (
+              <li>No notifications yet</li>
+            ) : (
+              notifications
+                .slice()
+                .reverse()
+                .slice(0, 10)
+                .map((notif, index) => (
+                  <li key={index} style={{ padding: "5px 10px", borderBottom: "1px solid #eee" }}>
+                    {notif.message}
+                  </li>
+                ))
+            )}
           </ul>
         </div>
       )}

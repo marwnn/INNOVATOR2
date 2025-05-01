@@ -15,7 +15,7 @@ const CalendarPage = () => {
       const res = await axios.get("http://localhost:5000/api/calendar", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Fetched Events:", res.data); // 👈 Check this
+      console.log("Fetched Events:", res.data); 
       setEvents(
         res.data.map((event) => ({
           id: event.id,

@@ -2,21 +2,21 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Middleware for admin role check
-const checkAdmin = (req, res, next) => {
-  // Assuming `req.user` is set with the user's role from a session or other method.
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ error: "Access Denied" });
-  }
-  next();
-};
-
-// Get all attendance records (admin can view all, others can view specific student's attendance)
+// Get all attendance records
 router.get('/', (req, res) => {
-  const studentId = req.query.student_id; // Assume student_id is passed as query param
+  const studentId = req.query.student_id; // Optional query parameter
   const query = studentId
-    ? "SELECT * FROM attendance WHERE student_id = ?"
-    : "SELECT * FROM attendance"; // Admin can view all attendance records
+    ? `
+      SELECT attendance.*, students.name AS student_name 
+      FROM attendance 
+      JOIN students ON attendance.student_id = students.id 
+      WHERE attendance.student_id = ?
+    `
+    : `
+      SELECT attendance.*, students.name AS student_name 
+      FROM attendance 
+      JOIN students ON attendance.student_id = students.id
+    `;
 
   db.query(query, studentId ? [studentId] : [], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
@@ -24,11 +24,10 @@ router.get('/', (req, res) => {
   });
 });
 
-// Add a new attendance record (Admin only)
-router.post('/', checkAdmin, (req, res) => {
+// Add a new attendance record
+router.post('/', (req, res) => {
   const { student_id, date, day_of_week, status } = req.body;
 
-  // Validate input
   if (!student_id || !date || !day_of_week || !status) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -39,37 +38,61 @@ router.post('/', checkAdmin, (req, res) => {
 
   db.query(sql, [student_id, date, day_of_week, status], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
+
+    
+    const formattedDate = new Date(date).toDateString();
+
+    const message = `Admin added an attendance on ${formattedDate}`;
+    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+
     res.json({ message: "Attendance record added successfully", id: result.insertId });
   });
 });
 
-// Update an existing attendance record (Admin only)
-router.put('/:id', checkAdmin, (req, res) => {
+
+// Update an existing attendance record
+router.put('/:id', (req, res) => {
   const { status } = req.body;
   const attendanceId = req.params.id;
 
-  // Validate input
   if (!status) {
     return res.status(400).json({ error: "Status is required" });
   }
 
-  const sql = `
-    UPDATE attendance 
-    SET status = ?
-    WHERE id = ?`;
-
-  db.query(sql, [status, attendanceId], (err) => {
+  const fetchDateSql = "SELECT date FROM attendance WHERE id = ?";
+  db.query(fetchDateSql, [attendanceId], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
-    res.json({ message: "Attendance record updated successfully" });
+    if (results.length === 0) return res.status(404).json({ error: "Attendance record not found" });
+
+    const rawDate = results[0].date;
+
+  
+    const formattedDate = new Date(rawDate).toDateString();
+
+    const updateSql = `
+      UPDATE attendance 
+      SET status = ?
+      WHERE id = ?`;
+
+    db.query(updateSql, [status, attendanceId], (err) => {
+      if (err) return res.status(500).json({ error: "Database error" });
+
+      const message = `Admin updated an attendance on ${formattedDate}`;
+      db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+
+      res.json({ message: "Attendance record updated successfully" });
+    });
   });
 });
 
-// Delete an attendance record (Admin only)
-router.delete('/:id', checkAdmin, (req, res) => {
+
+// Delete an attendance record
+router.delete('/:id', (req, res) => {
   const attendanceId = req.params.id;
 
   db.query("DELETE FROM attendance WHERE id = ?", [attendanceId], (err) => {
     if (err) return res.status(500).json({ error: "Database error" });
+
     res.json({ message: "Attendance record deleted successfully" });
   });
 });

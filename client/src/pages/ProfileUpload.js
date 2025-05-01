@@ -38,6 +38,7 @@ const ProfileUpload = ({ onUploadSuccess }) => {
         onUploadSuccess(updatedProfilePic);
 
         alert("Profile picture updated!");
+        window.location.reload();
       }
     } catch (error) {
       alert("Upload failed!");

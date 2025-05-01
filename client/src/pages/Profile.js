@@ -67,25 +67,25 @@ const Profile = () => {
       </div>
       <br></br>
       <img
-        key={user?.profilePic} // ✅ Force re-render when profilePic changes
+        key={user?.profilePic} // Force re-render when profilePic changes
         src={user?.profilePic || "/default-profile.png"}
         alt="Profile"
         className="profile-pic-large"
       />
       <h3>{user?.name || "Unknown"}</h3>
-      <div className="info">
+      <div className="info" style={{textAlign:"left"}}>
         <br></br>
         
-        <p style={{ fontSize: "15px", fontWeight: "bold" }}>Account information: </p>
+        <p style={{fontSize: "16px" }}>Account information </p>
         <br></br>
-         <PersonOutlineOutlinedIcon style={{color: "rgb(49, 49, 49)"}}/> 
-        <p style={{ fontFamily: "Arial", fontSize: "14px", fontWeight: "bold" }}>Role: <span style={{ fontWeight: 'normal' }}>{user?.role || "Unknown Role"}</span></p>
+      <PersonOutlineOutlinedIcon style={{fontSize:"15px"}}/>
+        <p style={{ paddingBottom:"5px",fontFamily: "Arial", fontSize: "14px", borderBottom:"1px solid rgb(208, 208, 208)" }}>Role: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.role || "Unknown Role"}</span></p>
         <br></br>
-       <EmailOutlinedIcon style={{color: "rgb(49, 49, 49)"}}/> 
-        <p style={{ fontFamily: "Arial", fontSize: "14px", fontWeight: "bold" }} >Email address: <span style={{ fontWeight: 'normal' }}>{user?.email || "N/A"}</span></p>
+        < EmailOutlinedIcon style={{fontSize:"15px"}}/>
+        <p style={{ paddingBottom:"5px", fontFamily: "Arial", fontSize: "14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Email address: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.email || "N/A"}</span></p>
         <br></br>
-        <CallEndRoundedIcon style={{color: "rgb(49, 49, 49)"}}/>
-        <p style={{ fontFamily:"Arial",fontSize:"14px", fontWeight: "bold" }} >Contact number: <span style={{fontWeight:'normal'}}>{user?.contactNumber || "N/A"}</span></p>
+       <CallEndRoundedIcon  style={{fontSize:"15px"}}/>
+        <p style={{ paddingBottom:"5px", fontFamily:"Arial",fontSize:"14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Contact number: <span style={{opacity:"80%", fontWeight:'normal'}}>{user?.contactNumber || "N/A"}</span></p>
           </div>
       <ProfileUpload onUploadSuccess={handleUploadSuccess} />
     </div>

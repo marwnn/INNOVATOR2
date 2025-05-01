@@ -18,6 +18,9 @@ router.post('/', (req, res) => {
     [title, content],
     (err, result) => {
       if (err) return res.status(500).json({ error: 'Error creating announcement' });
+       const message = ` Admin posted an announcement`;
+    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+
       res.json({ message: 'Announcement created successfully' });
     }
   );

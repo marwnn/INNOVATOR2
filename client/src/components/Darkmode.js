@@ -11,7 +11,7 @@ const Darkmode = () => {
       sessionStorage.setItem("selectedTheme", "light")
      }
     
-    const selectedTheme = localStorage.getItem("selectedTheme")
+    const selectedTheme = sessionStorage.getItem("selectedTheme")
     if (selectedTheme ==="dark") {
         setDarkMode();
     }

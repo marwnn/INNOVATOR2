@@ -47,6 +47,9 @@ router.post("/", authenticate, (req, res) => {
     if (err) return res.status(500).json({ error: "Failed to create event" });
 
     res.json({ id: result.insertId, title, date });
+     const message = ` Admin posted an event`;
+    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+
   });
 });
 

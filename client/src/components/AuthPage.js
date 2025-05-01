@@ -38,14 +38,14 @@ const AuthPage = () => {
     }
 
     //  Process login response
-    const { token, name, role, email, contactNumber, profilePic } = response.data;
+    const {id, token, name, role, email, contactNumber, profilePic } = response.data;
     if (!name || !role) {
       alert("Error: User data missing in response! Check your backend.");
       return;
     }
     // Store token and user info in sessionStorage for the current session (per tab)
     sessionStorage.setItem("token", token);
-    sessionStorage.setItem("user", JSON.stringify({ name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
+    sessionStorage.setItem("user", JSON.stringify({id, name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
 
     console.log(" Stored User in sessionStorage:", sessionStorage.getItem("user"));
 

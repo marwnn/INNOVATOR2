@@ -3,6 +3,8 @@ import axios from 'axios';
 
 const Messages = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
+
+
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [conversation, setConversation] = useState([]);
@@ -21,6 +23,7 @@ const Messages = () => {
 
   const loadConversation = (contact) => {
     setSelectedContact(contact);
+
     axios.get('http://localhost:5000/api/messages/conversation', {
       params: {
         sender_id: user.id,
@@ -30,6 +33,23 @@ const Messages = () => {
     .then(res => setConversation(res.data))
     .catch(err => console.error(err));
   };
+useEffect(() => {
+  if (!selectedContact) return;
+
+  const interval = setInterval(() => {
+    axios.get('http://localhost:5000/api/messages/conversation', {
+      params: {
+        sender_id: user.id,
+        receiver_id: selectedContact.id
+      }
+    })
+    .then(res => setConversation(res.data))
+    .catch(err => console.error(err));
+  }, 1000); 
+
+  return () => clearInterval(interval); // cleanup on unmount or contact change
+}, [selectedContact, user.id]);
+
 
   const sendMessage = () => {
     if (!newMessage.trim()) return;
@@ -53,6 +73,8 @@ const Messages = () => {
   return (
     <div className="message-page" style={{ display: 'flex', height: '90vh' }}>
       <div className="contacts-list" style={{ width: '30%', borderRight: '1px solid #ccc', padding: '10px' }}>
+      
+
         <h3>Contacts</h3>
         {contacts.map(contact => (
           <div
@@ -68,7 +90,7 @@ const Messages = () => {
           </div>
         ))}
       </div>
-
+     
       <div className="chat-box" style={{ width: '70%', padding: '10px', display: 'flex', flexDirection: 'column' }}>
         {selectedContact ? (
           <>
@@ -102,13 +124,14 @@ const Messages = () => {
                 value={newMessage}
                 onChange={e => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                style={{ flex: 1 }}
+                style={{ flex: 1, width:'100px' }}
               />
               <button onClick={sendMessage}>Send</button>
             </div>
           </>
         ) : (
-          <p>Select a contact to start chatting</p>
+            <p>Select a contact to start chatting</p>
+            
         )}
       </div>
     </div>

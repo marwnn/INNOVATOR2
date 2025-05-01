@@ -26,12 +26,10 @@
     padding: 9px;
     border: 3px solid #e23636;
     border-radius: 30px;
-    transition: 0.8s;
     font-size: 15px;
-    
+    transition: 0.3s ease-in-out;
 }
 .delete:hover {
     background-color: #e23636;
     color:white;
-  
 }

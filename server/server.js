@@ -13,6 +13,9 @@ const scheduleRoutes = require('./routes/schedule');
 const gradesRoute = require('./routes/grades')
 const calendarRoutes = require('./routes/calendar');
 const attendanceRoutes = require('./routes/attendance');
+const notificationRoutes = require('./routes/notifications');
+
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -53,8 +56,10 @@ app.use('/api/messages', messageRoutes)
 //subjects route
 app.use('/api/subjects', subjectRoutes);
 
-//schedule root
+//schedule route
 app.use('/api/schedule', scheduleRoutes);
+//notif route
+app.use('/api/notifications', notificationRoutes);
 
 // Configure Multer for Profile Picture Uploads
 const storage = multer.diskStorage({
@@ -213,7 +218,8 @@ app.post("/login", (req, res) => {
             res.json({
                 message: "Login successful!",
                 token,
-                name: user.name,  //  Add Name
+                id: user.id,
+                name: user.name, 
                 role: user.role,
                 email: user.email,
                 contactNumber:user.contact_number,

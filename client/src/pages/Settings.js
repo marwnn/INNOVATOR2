@@ -65,7 +65,7 @@ const Settings = () => {
         </div>
             <div className='settingsContainer'>
       <p className="delete"onClick={handleDeleteAccount}>
-            <DeleteForeverIcon style={{ fontSize: "17px", margin: "1px 1px 1px 1px" }} className="headerIcon" /> Delete your account
+            <DeleteForeverIcon style={{ fontSize: "15px", margin: "1px 1px 1px 1px" }} className="headerIcon" /> Delete your account
               </p>
               </div>
             </>

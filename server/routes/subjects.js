@@ -17,11 +17,18 @@ router.post('/', (req, res) => {
   db.query(sql, [subject_code, subject_title], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
     res.json({ message: "Subject added successfully", id: result.insertId });
+
+  // Add notification
+    const message = ` Admin added a new subject: ${subject_title} (${subject_code})`;
+    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+
   });
+  
 });
 
 // Delete a subject
 router.delete('/:id', (req, res) => {
+  
   const id = req.params.id;
   db.query("DELETE FROM subjects WHERE id = ?", [id], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });

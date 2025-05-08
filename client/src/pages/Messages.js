@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import "../styles/Messages.css"
+import SendIcon from '@mui/icons-material/Send'
 const Messages = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -71,66 +72,56 @@ useEffect(() => {
   };
 
   return (
-    <div className="message-page" style={{ display: 'flex', height: '90vh' }}>
-      <div className="contacts-list" style={{ width: '30%', borderRight: '1px solid #ccc', padding: '10px' }}>
+    <div className="message-page">
+      <div className="contacts-list">
       
 
         <h3>Contacts</h3>
         {contacts.map(contact => (
           <div
             key={contact.id}
-            style={{
-              padding: '10px',
-              cursor: 'pointer',
-              backgroundColor: selectedContact?.id === contact.id ? '#f0f0f0' : 'transparent'
-            }}
+            className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
             onClick={() => loadConversation(contact)}
           >
-            {contact.full_name} <br /><small>{contact.email}</small>
+              <div className="contact-info">
+            <strong>{contact.full_name} </strong><small>{contact.email}</small>
           </div>
+            </div>
         ))}
       </div>
      
-      <div className="chat-box" style={{ width: '70%', padding: '10px', display: 'flex', flexDirection: 'column' }}>
+      <div className="chat-box">
         {selectedContact ? (
           <>
             <h3>Chat with {selectedContact.name}</h3>
-            <div className="chat-messages" style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
+            <div className="chat-messages">
               {conversation.map((msg, idx) => (
                 <div
                   key={idx}
-                  style={{
-                    textAlign: msg.sender_id === user.id ? 'right' : 'left',
-                    marginBottom: '5px'
-                  }}
+                   className={`chat-message ${msg.sender_id === user.id ? 'sent' : 'received'}`}
                 >
-                  <div
-                    style={{
-                      display: 'inline-block',
-                      backgroundColor: msg.sender_id === user.id ? '#d1e7dd' : '#f8d7da',
-                      padding: '8px',
-                      borderRadius: '10px'
-                    }}
+                  <div className="message-content"
+                 
                   >
                     {msg.message}
                   </div>
-                  <br />
-                  <small>{new Date(msg.timestamp).toLocaleString()}</small>
+                
+                 <div className="message-time">{new Date(msg.timestamp).toLocaleString()}</div>
                 </div>
               ))}
             </div>
-            <div className="chat-input" style={{ display: 'flex', gap: '10px' }}>
+            <div className="chat-input">
               <input
                 value={newMessage}
                 onChange={e => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                style={{ flex: 1, width:'100px' }}
+            
               />
-              <button onClick={sendMessage}>Send</button>
+              <button onClick={sendMessage}><SendIcon/></button>
             </div>
           </>
         ) : (
-            <p>Select a contact to start chatting</p>
+            <p className="no-contact">Select a contact to start chatting</p>
             
         )}
       </div>

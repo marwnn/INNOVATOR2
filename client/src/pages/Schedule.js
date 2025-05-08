@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import "../styles/Schedule.css"
 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 const Schedule = () => {
@@ -73,79 +73,79 @@ const Schedule = () => {
   };
 
   return (
-    <div className="p-4 overflow-x-auto">
-      <h2 className="text-xl font-bold mb-4">Class Schedule</h2>
+    <div className="schedule-container">
+      <h2 className="schedule-title">Class Schedule</h2>
 
       {user.role === 'admin' && (
-        <form onSubmit={handleAdd} className="mb-6 space-y-2">
-          <div>
+        <form onSubmit={handleAdd} className="schedule-form">
+          <div className='form-group'>
             <input
               type="text"
-              placeholder="Time Slot (e.g. 8:00 AM - 9:00 AM)"
+              placeholder="Time Slot (e.g. 8:00 AM - 12:00 PM)"
               value={newRow.time_slot}
               onChange={(e) => setNewRow({ ...newRow, time_slot: e.target.value })}
-              className="border p-1 w-full"
+              className="form-input time-input"
             />
           </div>
 
-          <div className="grid grid-cols-6 gap-2">
+          <div className="day-grid">
             {days.map(day => (
-              <div key={day}>
-                <label className="capitalize text-sm">{day}</label>
+              <div className="day-column" key={day}>
+                <label className="day-label">{day}</label>
                 <input
                   type="text"
-                  placeholder="Code"
-                  className="border p-1 w-full mb-1"
+                  placeholder="Subject Code"
+                  className="form-input"
                   onChange={(e) => handleCellChange(day, 'subject_code', e.target.value)}
                 />
                 <input
                   type="text"
-                  placeholder="Title"
-                  className="border p-1 w-full mb-1"
+                  placeholder="Subject Title"
+                  className="form-input"
                   onChange={(e) => handleCellChange(day, 'subject_title', e.target.value)}
                 />
                 <input
                   type="text"
                   placeholder="Professor"
-                  className="border p-1 w-full"
+                  className="form-input"
                   onChange={(e) => handleCellChange(day, 'professor', e.target.value)}
                 />
               </div>
             ))}
           </div>
 
-          <button type="submit" className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">
+          <button type="submit" className="add-button">
             Add Row
           </button>
         </form>
       )}
-
-      <table className="w-full table-auto border-collapse border">
-        <thead className="bg-gray-100">
+       <div className="schedule-table-wrapper">
+      <table className="schedule-table">
+        <thead>
           <tr>
-            <th className="border p-2">Time</th>
+            <th>Time</th>
             {days.map(day => (
-              <th key={day} className="border p-2 capitalize">{day}</th>
+              <th key={day} className="capitalize">{day}</th>
             ))}
-            {user.role === 'admin' && <th className="border p-2">Action</th>}
+            {user.role === 'admin' && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
           {schedule.map((row) => (
             <tr key={row.id}>
-              <td className="border p-2">{row.time_slot}</td>
+              <td>{row.time_slot}</td>
               {days.map(day => (
-                <td key={day} className="border p-2 text-sm align-top w-48 max-w-[12rem] break-words">
-                  <div className="font-semibold">{row[day]?.subject_code || ''}</div>
+                <td key={day}>
+                  <div className="cell-code">{row[day]?.subject_code || ''}</div>
                   <div>{row[day]?.subject_title || ''}</div>
-                  <div className="text-xs italic">{row[day]?.professor || ''}</div>
+                  <div className="cell-professor">{row[day]?.professor || ''}</div>
                 </td>
               ))}
               {user.role === 'admin' && (
-                <td className="border p-2 text-center">
+                <td>
                   <button
                     onClick={() => handleDelete(row.id)}
-                    className="text-red-500 hover:underline"
+                    className="delete-button"
                   >
                     Delete
                   </button>
@@ -155,6 +155,7 @@ const Schedule = () => {
           ))}
         </tbody>
       </table>
+       </div>
     </div>
   );
 };

@@ -3,7 +3,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
-
+import Events from "../pages/Events"
+import '../styles/Calendar.css'
 const CalendarPage = () => {
   const [events, setEvents] = useState([]);
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
@@ -78,8 +79,12 @@ const CalendarPage = () => {
 };
 
   return (
-    <div className="calendar-wrapper" style={{ padding: "20px" }}>
-      <h2>{user?.role === "admin" ? "Admin Calendar" : "School Calendar"}</h2>
+    <div>
+       <div className="calendar-container">
+       <div className="calendar-header">
+        <h2>School Calendar</h2>
+       
+          <div className ="calendar-card">
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -87,7 +92,12 @@ const CalendarPage = () => {
         dateClick={handleDateClick}
         eventClick={handleEventClick}
         height="auto"
-      />
+            />
+          </div>
+          </div>
+          <Events/>
+        
+         </div>
     </div>
   );
 };

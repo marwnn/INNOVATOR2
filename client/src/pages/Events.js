@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import "../styles/Events.css"
 const Events = () => {
   const [events, setEvents] = useState([]);
  const token = sessionStorage.getItem("token");
@@ -11,7 +11,7 @@ const Events = () => {
       const res = await axios.get("http://localhost:5000/api/calendar", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Fetched Events:", res.data); // 👈 Check this
+      console.log("Fetched Events:", res.data); 
       setEvents(
         res.data.map((event) => ({
           id: event.id,
@@ -28,18 +28,29 @@ const Events = () => {
 }, []);
 
   return (
-    <div className="p-5">
-      <h2>Upcoming Events</h2>
+    <div className="events-container">
+      <h2>Agenda</h2>
       {events.length === 0 ? (
         <p>No events listed.</p>
       ) : (
-        <ul>
+
+            <table className="events-table">
+        <thead>
+          <tr>
+            <th>Event Title</th>
+            <th>Date</th>
+        
+          </tr>
+        </thead>
+        <tbody>
           {events.map(event => (
-            <li key={event.id}>
-              <strong>{event.title}</strong> - {new Date(event.start).toLocaleDateString()}
-            </li>
+            <tr key={event.id}>
+              <td>{event.title} </td> <td>{new Date(event.start).toLocaleDateString()}</td>
+            </tr>
           ))}
-        </ul>
+            </tbody>
+            </table>
+
       )}
     </div>
   );

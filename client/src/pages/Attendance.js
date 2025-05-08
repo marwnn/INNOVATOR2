@@ -19,7 +19,9 @@ const Attendance = () => {
 
   const fetchAttendance = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/attendance');
+      const res = await axios.get('http://localhost:5000/api/attendance', {
+        params: user.role !== 'admin' ? { student_id: user.id } : {},
+      });
       setAttendance(res.data);
     } catch (err) {
       console.error('Error fetching attendance:', err);
@@ -62,7 +64,9 @@ const Attendance = () => {
 
   const handleUpdate = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/attendance/${id}`, { status: editStatus });
+      const student_id = user.id;
+  
+      await axios.put(`http://localhost:5000/api/attendance/${id}`, { status: editStatus, student_id });
       setEditRecordId(null);
       setEditStatus('');
       fetchAttendance();
@@ -73,7 +77,7 @@ const Attendance = () => {
 
   return (
     <div className="attendance-container">
-      <h2>Attendance</h2>
+      <h2 className="attendance-title">Attendance</h2>
 
       {user.role === 'admin' && (
         <div className="add-form">
@@ -88,7 +92,7 @@ const Attendance = () => {
             value={newRecord.date}
             onChange={(e) => setNewRecord({ ...newRecord, date: e.target.value })}
           />
-          <select
+          <select 
             value={newRecord.status}
             onChange={(e) => setNewRecord({ ...newRecord, status: e.target.value })}
           >
@@ -97,7 +101,7 @@ const Attendance = () => {
             <option value="Absent">Absent</option>
             <option value="Excused">Excused</option>
           </select>
-          <button onClick={handleAdd}>Add Record</button>
+          <button className="btn btn-primary" onClick={handleAdd}>Add Record</button>
         </div>
       )}
 
@@ -121,7 +125,7 @@ const Attendance = () => {
               <td>{record.day_of_week}</td>
               <td>
                 {editRecordId === record.id ? (
-                  <select
+                  <select className='action-select'
                     value={editStatus}
                     onChange={(e) => setEditStatus(e.target.value)}
                   >
@@ -137,16 +141,16 @@ const Attendance = () => {
                 <td>
                   {editRecordId === record.id ? (
                     <>
-                      <div style={{display:"flex"}}>
-                      <button onClick={() => handleUpdate(record.id)} style={{ marginRight: '5px', color: 'green' }}>Save</button>
-                        <button onClick={() => setEditRecordId(null)} style={{ color: 'gray' }}>Cancel</button>
+                      <div className="action-btns">
+                      <button className="btn btn-save" onClick={() => handleUpdate(record.id)} style={{ marginRight: '5px', color: 'rgba(17, 81, 191, 0.872)' }}>Save</button>
+                        <button className="btn btn-cancel" onClick={() => setEditRecordId(null)} style={{ color: 'gray' }}>Cancel</button>
                         </div>
                     </>
                   ) : (
                       <>
-                        <div style={{display:"flex"}}>
-                      <button onClick={() => handleEdit(record)} style={{ marginRight: '5px' }}>Edit</button>
-                          <button onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>Delete</button>
+                        <div className="action-btns">
+                      <button className="btn btn-edit" onClick={() => handleEdit(record)} style={{ marginRight: '5px' }}>Edit</button>
+                          <button  className="btn btn-delete" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>Delete</button>
                           </div>
                     </>
                   )}

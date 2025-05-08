@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import "../styles/Subjects.css"
 const Subjects = () => {
    const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const [subjects, setSubjects] = useState([]);
@@ -42,51 +42,51 @@ const Subjects = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Subjects List</h2>
+    <div className="subject-container">
+      <h2 className="subject-title">Subjects List</h2>
 
       {user.role === 'admin' && (
-        <form onSubmit={handleAddSubject} className="mb-4 space-x-2">
+        <form onSubmit={handleAddSubject} className="subject-form">
           <input
             type="text"
             placeholder="Subject Code"
             value={newSubject.subject_code}
             onChange={(e) => setNewSubject({ ...newSubject, subject_code: e.target.value })}
-            className="border p-1"
+            className="input-field"
           />
           <input
             type="text"
             placeholder="Subject Title"
             value={newSubject.subject_title}
             onChange={(e) => setNewSubject({ ...newSubject, subject_title: e.target.value })}
-            className="border p-1"
+            className="input-field"
           />
-          <button type="submit" className="bg-blue-500 text-white px-2 py-1 rounded">
+          <button type="submit" className="addsubj-button">
             Add Subject
           </button>
         </form>
       )}
 
-      <table className="w-full border-collapse border">
+      <table className="subject-table">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Code</th>
-            <th className="border p-2">Title</th>
-            {user.role === 'admin' && <th className="border p-2">Action</th>}
+          <tr>
+            <th>Subject Code</th>
+            <th>Subject Title</th>
+            {user.role === 'admin' && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
           {subjects.map((subj) => (
             <tr key={subj.id}>
-              <td className="border p-2">{subj.subject_code}</td>
-              <td className="border p-2">{subj.subject_title}</td>
+              <td>{subj.subject_code}</td>
+              <td>{subj.subject_title}</td>
               {user.role === 'admin' && (
-                <td className="border p-2 text-center">
+                <td>
                   <button
                     onClick={() => handleDelete(subj.id)}
-                    className="text-red-500 hover:underline"
+                    className="deletesubj-button"
                   >
-                    🗑 Delete
+                    Delete
                   </button>
                 </td>
               )}

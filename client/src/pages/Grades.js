@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-
+import "../styles/Grades.css"
 const Grades = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [grades, setGrades] = useState([]);
@@ -117,12 +117,13 @@ const Grades = () => {
     <div className="grades-container">
       <h2>Grades</h2>
 
-      <button onClick={exportToPDF} style={{ marginBottom: '15px' }}>
+      <button onClick={exportToPDF} className="export-btn">
         Export to PDF
       </button>
 
       {user.role === 'admin' && (
-        <div className="grade-form" style={{ marginBottom: '20px' }}>
+        <div className="grade-form">
+            <div className="grades-form-grid">
           {["student_id", "school_year", "term", "subject_code", "subject_title", "grade", "units"].map(field => (
             <div key={field}>
               <input
@@ -131,7 +132,9 @@ const Grades = () => {
                 onChange={(e) => setNewGrade({ ...newGrade, [field]: e.target.value })}
               />
             </div>
+            
           ))}
+            </div>
           {editGrade ? (
             <button onClick={handleUpdate}>Update Grade</button>
           ) : (
@@ -140,7 +143,7 @@ const Grades = () => {
         </div>
       )}
 
-      <table border="1" cellPadding="5" cellSpacing="0">
+      <table>
         <thead>
           <tr>
             <th>Student ID</th>
@@ -167,7 +170,7 @@ const Grades = () => {
               <td>{g.units}</td>
               {user.role === 'admin' && (
                 <td>
-                  <div style={{display:"flex"}}>
+                  <div className='action-buttons'>
                   <button onClick={() => handleEdit(g)}>Edit</button>
                   <button onClick={() => handleDelete(g.id)}>Delete</button>
                </div>

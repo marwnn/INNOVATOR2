@@ -4,7 +4,7 @@ const db = require('../db');
 
 // Get all grades
 router.get('/', (req, res) => {
-  const studentId = req.query.student_id; // Optional query parameter
+  const studentId = req.query.student_id; 
 
   const query = studentId
     ? `SELECT grades.*, students.name AS student_name 
@@ -37,7 +37,8 @@ router.post('/', (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin added a new grade: ${subject_title}`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+   db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
+
 
     res.json({ message: "Grade added successfully", id: result.insertId });
   });
@@ -45,7 +46,7 @@ router.post('/', (req, res) => {
 
 // Update an existing grade
 router.put('/:id', (req, res) => {
-  const { school_year, term, subject_code, subject_title, grade, units } = req.body;
+  const { student_id, school_year, term, subject_code, subject_title, grade, units } = req.body;
   const gradeId = req.params.id;
 
   if (!school_year || !term || !subject_code || !subject_title || !grade || !units) {
@@ -61,7 +62,8 @@ router.put('/:id', (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin updated a grade: ${subject_title}`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
+
 
     res.json({ message: "Grade updated successfully" });
   });

@@ -14,6 +14,9 @@
 
 /* Search Bar */
 .search-bar {
+    position:absolute;
+    top:-17px;
+    right: 0;
     height: 25px;
     display: flex;
     align-items: center;
@@ -23,14 +26,10 @@
     border-radius: 20px;
     width: 200px;
     border: 1px solid rgb(193, 190, 190);
-    margin-left:250px;
-    
-   
-  
-   
+
 }
 .search-icon{
-    color: rgb(63, 62, 62);
+    color:rgb(145, 145, 145);
     cursor: pointer;
 }
 .search-bar input {
@@ -39,6 +38,8 @@
     outline: none;
     margin-left: 1px;
     flex: 1;
+    font-size: 13px;
+    font-weight:500 ;
 }
 .search-dropdown{
     padding: 10px;
@@ -46,15 +47,13 @@
     flex-direction: column;
     position: absolute;
     top: 100%;
-    margin-left: 200px;
-    left: 45px;
+    width: 200px;
     cursor: pointer;
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     overflow: hidden;
     z-index: 100;
-    transition: transform 0.3s ease-in-out;
     color: rgb(47, 47, 47);
     
 }
@@ -90,23 +89,37 @@ color: black;
 .notification-btn {
     background: transparent;
     border: none;
-    font-size: 18px;
     cursor: pointer;
     margin-right: 20px;
     color:rgb(57, 57, 57);
+    transition: transform 0.3s ease-in-out;
     
 }
 .notification-btn:hover{
     color: rgba(6, 65, 167, 0.872);
     background-color: transparent;
-    transition: transform 0.3s ease-in-out;
+  
     transform: scale(1.3);
     
 }
-.notification-btn:active {
+
+.messageNotif-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 20px;
+    color: rgb(57, 57, 57);
+transition: transform 0.3s ease-in-out;
+}
+
+.messageNotif-btn:hover {
     color: rgba(6, 65, 167, 0.872);
+    background-color: transparent;
+    
+    transform: scale(1.3);
 
 }
+
 /* Profile Section */
 .profile-section {
     display: flex;
@@ -159,7 +172,7 @@ color: black;
 /* Dropdown */
 .dropdown {
     position: absolute;
-    top: 60px;
+    top: 70px;
     cursor: pointer;
     right: 40px;
     background: white;
@@ -167,7 +180,6 @@ color: black;
     border-radius: 5px;
     overflow: hidden;
     z-index: 100;
-    transition: transform 0.3s ease-in-out;
     color: rgb(47, 47, 47);
 }
 .dropdown ul{
@@ -191,21 +203,37 @@ padding: 0px 10px 0 10px;
    
 }
 
+.dropdown,
+.notif-dropdown,
+.messagenotif-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+}
 
+.dropdown.open,
+.notif-dropdown.open,
+.messagenotif-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
 .notif-dropdown {
+    display: flex;
+    flex-direction: column;
     position: absolute;
-    top: 70px;
+    top: 50px;
+    right: 0;
+    width: 200px;
     cursor: pointer;
-    right: 150px;
     background: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     overflow: hidden;
     z-index: 100;
-    transition: transform 0.3s ease-in-out;
-    transform: translateY(-10px);
-    font-size: 13px;
     color: rgb(47, 47, 47);
+    font-size: 13px;
 }
 .notif-dropdown ul {
     list-style: none;
@@ -216,15 +244,40 @@ padding: 0px 10px 0 10px;
     padding: 5px;
 }
 
+.messagenotif-dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 200px;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 100;
+    color: rgb(47, 47, 47);
+    font-size: 13px;
+}
+.messagenotif-dropdown.open {
+    transform: translateY(0);
+}
+.messagenotif-dropdown ul {
+    list-style: none;
+    padding: 10px 10px 0 10px;
+
+}
+
+.messagenotif-dropdown ul li {
+    padding: 5px;
+}
+
 @media screen and (max-width: 768px) {
     .profile-section {
         display: none;
-    }
-        .notif-dropdown {
-            
-                top: 70px;
-             
-                right: 10px;
-        }
-                
+    }  
+    .search-bar{
+        right: -100px;
+    }        
 }

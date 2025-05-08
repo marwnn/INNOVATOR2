@@ -4,7 +4,7 @@ const db = require('../db');
 
 // Get all attendance records
 router.get('/', (req, res) => {
-  const studentId = req.query.student_id; // Optional query parameter
+  const studentId = req.query.student_id; 
   const query = studentId
     ? `
       SELECT attendance.*, students.name AS student_name 
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     const formattedDate = new Date(date).toDateString();
 
     const message = `Admin added an attendance on ${formattedDate}`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+    db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)",[student_id, message]);
 
     res.json({ message: "Attendance record added successfully", id: result.insertId });
   });
@@ -59,13 +59,13 @@ router.put('/:id', (req, res) => {
     return res.status(400).json({ error: "Status is required" });
   }
 
-  const fetchDateSql = "SELECT date FROM attendance WHERE id = ?";
+  const fetchDateSql = "SELECT date, student_id FROM attendance WHERE id = ?";
   db.query(fetchDateSql, [attendanceId], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
     if (results.length === 0) return res.status(404).json({ error: "Attendance record not found" });
 
     const rawDate = results[0].date;
-
+    const studentId = results[0].student_id;
   
     const formattedDate = new Date(rawDate).toDateString();
 
@@ -78,7 +78,8 @@ router.put('/:id', (req, res) => {
       if (err) return res.status(500).json({ error: "Database error" });
 
       const message = `Admin updated an attendance on ${formattedDate}`;
-      db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+     db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [studentId, message]);
+
 
       res.json({ message: "Attendance record updated successfully" });
     });

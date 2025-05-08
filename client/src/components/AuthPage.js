@@ -8,7 +8,7 @@ import Logo from "../assets/logo.png";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", contactNumber:"" }); // Removed role
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", contactNumber:"" }); 
   const navigate = useNavigate(); 
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const AuthPage = () => {
     const updatedFormData = isLogin ? formData : { ...formData, role: "parent"};
 
     const response = await axios.post(url, updatedFormData);
-    console.log("Received Data from Backend:", response.data); // ✅ Debugging
+    console.log("Received Data from Backend:", response.data); 
 
     if (!isLogin) {
       //  Show success message on registration
@@ -43,7 +43,7 @@ const AuthPage = () => {
       alert("Error: User data missing in response! Check your backend.");
       return;
     }
-    // Store token and user info in sessionStorage for the current session (per tab)
+    // Store token and user info in sessionStorage
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("user", JSON.stringify({id, name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
 

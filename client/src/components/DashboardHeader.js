@@ -5,11 +5,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import "../styles/DashboardHeader.css";
+import axios from "axios"
 import Logo from "../assets/logo.png"; 
-//import "../App.css"
-//import Darkmode from "./Darkmode";
 const DashboardHeader = () => {
+  const [openMessageNotif, setOpenMessageNotif] = useState(false);
+  const [messageNotifs, setMessageNotifs] = useState([]);
   const [open, setOpen] = useState(false);
   const [openNotif, setOpenNotif]= useState(false)
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const DashboardHeader = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
   
      // Get user data from session storage
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
@@ -46,11 +49,14 @@ const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/paren
     return JSON.parse(sessionStorage.getItem("notifications")) || [];
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
     const readNotifs = notifications.map((n) => ({ ...n, read: true }));
     sessionStorage.setItem("notifications", JSON.stringify(readNotifs));
     setNotifications(readNotifs);
     setUnreadCount(0);
+     await axios.put(`http://localhost:5000/api/notifications/mark-all-read`, {
+      studentId: user.id,
+    });
   };
 
   const loadNotifications = () => {
@@ -69,18 +75,80 @@ const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/paren
 useEffect(() => {
   const fetchNotifications = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/notifications");
-      const data = await res.json();
+      const res = await axios.get("http://localhost:5000/api/notifications" , {
+        params: user.role !== 'admin' ? { student_id: user.id } : {},
+      });
+      const data = await res.data;
       setNotifications(data);
-      setUnreadCount(data.filter((n) => !n.read_status).length);
-    } catch (err) {
+      const unreadNotifications = data.filter((n) => !n.read_status);
+        setUnreadCount(unreadNotifications.length);
+        // Save unread notifications count to sessionStorage
+        sessionStorage.setItem("unreadCount", unreadNotifications.length);
+      } catch (err) {
       console.error("Failed to load notifications", err);
     }
   };
 
   fetchNotifications();
+  const interval = setInterval(fetchNotifications, 1000); 
+  return () => clearInterval(interval); // Clean up
 }, []);
 
+  //Message notification
+const toggleMessageNotifDropdown = () => {
+  const newState = !openMessageNotif;
+  setOpenMessageNotif(newState);
+  if (!openMessageNotif) {
+    markAllMessagesAsRead(); // mark as read when opening
+  }
+};
+
+  useEffect(() => {
+
+  const fetchMessageNotifs = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/messagenotif?userId=${user.id}`);
+      const data = await res.data;
+      setMessageNotifs(data);
+      const unreadMessages = data.filter((msg) => !msg.read_status);
+      const newUnreadCount = unreadMessages.length;
+
+  
+      if (newUnreadCount !== unreadMsgCount) {
+  setUnreadMsgCount(newUnreadCount);
+}
+
+    } catch (err) {
+      console.error("Failed to load message notifications", err);
+    }
+  };
+
+  fetchMessageNotifs();
+
+  const interval = setInterval(fetchMessageNotifs, 1000); 
+  return () => clearInterval(interval);
+}, [user.id]);
+
+const markAllMessagesAsRead = async () => {
+  try {
+    // Send request to mark all messages as read in the database
+    await axios.put(`http://localhost:5000/api/messagenotif/mark-all-read`, {
+      userId: user.id,
+    });
+
+    // Update local state
+    const updatedMessages = messageNotifs.map((msg) => ({
+      ...msg,
+      read_status: true,
+    }));
+
+    setMessageNotifs(updatedMessages);
+    setUnreadMsgCount(0);
+    sessionStorage.setItem("unreadMsgCount", 0);
+  } catch (err) {
+    console.error("Failed to mark messages as read", err);
+  }
+};
 
 
   
@@ -89,8 +157,6 @@ useEffect(() => {
 const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       sessionStorage.clear();
-      sessionStorage.removeItem("user");
-      sessionStorage.removeItem("token");
       navigate("/");
     }
   };
@@ -99,7 +165,7 @@ const handleLogout = () => {
 
   return (
     <div className="dashboard-header">
-       <div className="sidebar-logo" style={{margin:"0 0 20px 0"}}>
+       <div className="sidebar-logo" style={{margin:"0 10px 20px 0"}}>
                 <Link to={homePath} >
                   <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
                   </Link>
@@ -111,7 +177,7 @@ const handleLogout = () => {
         <FaSearch className="search-icon" />
         <input
           type="text"
-          placeholder="Search..."
+          placeholder="Search"
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -142,11 +208,50 @@ const handleLogout = () => {
           )}
           </div>
       </div>
-      
+
  
       {/* Notifications & Profile */}
       <div className="header-right">
         {/* Notification Button */}
+       <div className="message-notif-section" onClick={toggleMessageNotifDropdown} style={{ position: "relative" }}>
+  <button className="messageNotif-btn">
+    <ChatBubbleOutlineOutlinedIcon />
+          </button>
+                 {unreadMsgCount > 0 && (
+              <span
+                style={{
+          position: "absolute",
+          top: "22px",
+          right: "20px",
+          backgroundColor: "red",
+          borderRadius: "50%",
+          width: "7px",
+          height: "7px",
+          
+                }}
+              />
+          )}
+                 {/* Message Notification Dropdown */}
+    
+  <div className={`messagenotif-dropdown ${openMessageNotif ? "open" : ""}`}>
+    <ul>
+      {messageNotifs.length === 0 ? (
+        <li>No new messages</li>
+      ) : (
+        messageNotifs
+          .slice()
+          .reverse()
+          .slice(0, 10)
+          .map((msg, index) => (
+            <li key={index} style={{ padding: "5px 10px", borderBottom: "1px solid #eee" }}>
+              {msg.message}
+            </li>
+          ))
+      )}
+    </ul>
+  </div>
+</div>
+
         <div className="notif-section" onClick={toggleNotifDropdown} style={{ position: "relative" }}>
           <button className="notification-btn">
             <NotificationsNoneIcon />
@@ -155,50 +260,19 @@ const handleLogout = () => {
               <span
                 style={{
           position: "absolute",
-          top: "27px",
-          right: "35px",
+          top: "29px",
+          right: "38px",
           backgroundColor: "red",
           borderRadius: "50%",
-          width: "10px",
-          height: "10px",
+          width: "7px",
+          height: "7px",
           
                 }}
               />
             )}
-          
-        </div>
-
-        {/* Profile Section */}
-        <div className="profile-section" onClick={() => setOpen(!open)}>
-          <img src={profilePic || "/default-profile.png"} alt="Profile" className="profile-pic" />
-          <div className="user-info">
-            <span className="user-name">{name || "User"}</span>
-            <small className="user-role">{role || "Unknown Role"}</small>
-          </div>
-        </div>
-      </div>
-
-      {/* Dropdown Menu */}
-      {open && (
-        <div className="dropdown">
-          <ul>
-            <li className="pfp"onClick={() => navigate("/profile")}>
-              <AccountCircleIcon style={{fontSize:"20px"}} className="headerIcon" /> Profile
-            </li>
-           
-            <li className="settings"onClick={() => navigate("/settings")}>
-              <SettingsOutlinedIcon style={{fontSize:"20px"}} className="headerIcon" /> Settings
-            </li>
-             <li className="logoutBtn" onClick={handleLogout}>
-              <LogoutIcon style={{fontSize:"20px"}} className="headerIcon" /> Logout
-            </li>
-          </ul>
-        </div>
-      )}
-
-        {/* Notification Dropdown */}
-      {openNotif && (
-        <div className="notif-dropdown">
+            {/* Notification Dropdown */}
+     
+        <div className={`notif-dropdown ${openNotif ? "open" : ""}`}>
           <ul>
             {notifications.length === 0 ? (
               <li>No notifications yet</li>
@@ -215,7 +289,43 @@ const handleLogout = () => {
             )}
           </ul>
         </div>
-      )}
+        </div>
+
+        {/* Profile Section */}
+        <div className="profile-section" onClick={() => setOpen(!open)} style={{position:"relative"}}>
+          <img src={profilePic || "/default-profile.png"} alt="Profile" className="profile-pic" />
+          <div className="user-info">
+            <span className="user-name">{name || "User"}</span>
+            <small className="user-role">{role || "Unknown Role"}</small>
+          </div>
+        </div>
+
+
+      {/* Dropdown Menu */}
+     
+        <div className={`dropdown ${open ? "open" : ""}`}>
+          <ul>
+            <li className="pfp"onClick={() => navigate("/profile")}>
+              <AccountCircleIcon style={{fontSize:"20px"}} className="headerIcon" /> Profile
+            </li>
+           
+            <li className="settings"onClick={() => navigate("/settings")}>
+              <SettingsOutlinedIcon style={{fontSize:"20px"}} className="headerIcon" /> Settings
+            </li>
+             <li className="logoutBtn" onClick={handleLogout}>
+              <LogoutIcon style={{fontSize:"20px"}} className="headerIcon" /> Logout
+            </li>
+          </ul>
+        </div>
+     
+
+      </div>
+
+      
+
+
+
+
     </div>
   );
 };

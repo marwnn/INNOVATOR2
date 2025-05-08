@@ -7,7 +7,7 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -18,7 +18,7 @@ import {
    FaXmark, FaBars} from "react-icons/fa6";
 
 const Sidebar = () => {
-   const [isOpen, setIsOpen] = useState(false); // ✅ Open by default on large screens
+   const [isOpen, setIsOpen] = useState(true); //  Open by default on large screens
  
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -83,7 +83,7 @@ const Sidebar = () => {
           <CalendarTodayOutlinedIcon className="icon" />Events
         </Link>
         <Link to= "/dashboard/messages"  className="sidebar-item">
-          <ChatBubbleOutlineOutlinedIcon  className="icon" /> Messages
+          <SmsOutlinedIcon  className="icon" /> Messages
         </Link>
       </div>
 

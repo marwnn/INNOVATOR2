@@ -18,7 +18,10 @@
    font-size: 14px;
    padding: 7px;
    border-radius: 5px;
-   border: 1px solid #ddd;
+   border: 1px solid #ccc;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    resize:none;
+    outline: none;
 }
 .submit-form button{
     padding:10px;

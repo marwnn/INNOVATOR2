@@ -32,9 +32,10 @@ router.post('/', (req, res) => {
     ],
     (err, result) => {
       if (err) return res.status(500).json({ error: "Database error" });
-        // Add notification
+      // Add notification
+       const type = 'general'
     const message = ` Admin added a new schedule`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+    db.query("INSERT INTO notifications (message, type) VALUES (?,?)", [message, type]);
 
       res.json({ message: "Schedule added successfully", id: result.insertId });
     }

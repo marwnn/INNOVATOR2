@@ -35,7 +35,7 @@ router.get("/", authenticate, (req, res) => {
   });
 });
 
-// POST new event (admin only)
+// POST new event (admin only)`
 router.post("/", authenticate, (req, res) => {
   const { title, start } = req.body;
   if (req.user.role !== "admin") return res.status(403).json({ error: "Only admins can add events" });
@@ -47,8 +47,9 @@ router.post("/", authenticate, (req, res) => {
     if (err) return res.status(500).json({ error: "Failed to create event" });
 
     res.json({ id: result.insertId, title, date });
+     const type = 'general'
      const message = ` Admin posted an event`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+    db.query("INSERT INTO notifications (message, type) VALUES (?,?)", [message, type]);
 
   });
 });

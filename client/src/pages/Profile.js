@@ -11,7 +11,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Load user from sessionStorage when component mounts
+  //  Load user from sessionStorage when component mounts
   useEffect(() => {
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
     if (storedUser) {
@@ -21,7 +21,7 @@ const Profile = () => {
     }
   }, []);
 
-  // ✅ Profile Upload Handler
+  // Profile Upload Handler
   const handleUploadSuccess = async (newProfilePic) => {
     if (!user) return;
 
@@ -78,13 +78,13 @@ const Profile = () => {
         
         <p style={{fontSize: "16px" }}>Account information </p>
         <br></br>
-      <PersonOutlineOutlinedIcon style={{fontSize:"15px"}}/>
+      <PersonOutlineOutlinedIcon style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
         <p style={{ paddingBottom:"5px",fontFamily: "Arial", fontSize: "14px", borderBottom:"1px solid rgb(208, 208, 208)" }}>Role: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.role || "Unknown Role"}</span></p>
         <br></br>
-        < EmailOutlinedIcon style={{fontSize:"15px"}}/>
+        < EmailOutlinedIcon style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
         <p style={{ paddingBottom:"5px", fontFamily: "Arial", fontSize: "14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Email address: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.email || "N/A"}</span></p>
         <br></br>
-       <CallEndRoundedIcon  style={{fontSize:"15px"}}/>
+       <CallEndRoundedIcon  style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
         <p style={{ paddingBottom:"5px", fontFamily:"Arial",fontSize:"14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Contact number: <span style={{opacity:"80%", fontWeight:'normal'}}>{user?.contactNumber || "N/A"}</span></p>
           </div>
       <ProfileUpload onUploadSuccess={handleUploadSuccess} />

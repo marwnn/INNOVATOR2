@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import "../styles/Announcements.css"
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [title, setTitle] = useState('');
@@ -44,26 +44,26 @@ const handleDelete = async (id) => {
 
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Announcements</h1>
+    <div className="announcements-container">
+      <h1 className="page-title">Announcements</h1>
 
       {isAdmin && (
-        <div className="mb-6 space-y-2">
+        <div className="announcement-form">
           <input
             type="text"
             placeholder="Title"
-            className="w-full border p-2"
+        
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             placeholder="Write your announcement..."
-            className="w-full border p-2 h-24"
+           
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            
             onClick={handlePost}
           >
             Post Announcement
@@ -71,15 +71,15 @@ const handleDelete = async (id) => {
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="announcement-list">
         {announcements.map((a) => (
-          <div key={a.id} className="border p-4 rounded bg-white shadow">
-            <div className="text-sm text-gray-500">{new Date(a.date_posted).toLocaleString()}</div>
-            <h2 className="text-lg font-semibold">{a.title}</h2>
-            <p>{a.content}</p>
+          <div key={a.id} className="announcement-card">
+            <div className="announcement-date">{new Date(a.date_posted).toLocaleString()}</div>
+            <h2 className="announcement-title">{a.title}</h2>
+            <p className="announcement-content">{a.content}</p>
             {isAdmin && (
               <button
-                className="text-red-500 mt-2 text-sm"
+               className="delete-btn"
                 onClick={() => handleDelete(a.id)}
               >
                 Delete

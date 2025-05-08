@@ -17,10 +17,10 @@ router.post('/', (req, res) => {
   db.query(sql, [subject_code, subject_title], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
     res.json({ message: "Subject added successfully", id: result.insertId });
-
+   const type = 'general'
   // Add notification
     const message = ` Admin added a new subject: ${subject_title} (${subject_code})`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+    db.query("INSERT INTO notifications (message, type) VALUES (?,?)", [message, type]);
 
   });
   

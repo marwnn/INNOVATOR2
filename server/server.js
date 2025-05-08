@@ -14,6 +14,7 @@ const gradesRoute = require('./routes/grades')
 const calendarRoutes = require('./routes/calendar');
 const attendanceRoutes = require('./routes/attendance');
 const notificationRoutes = require('./routes/notifications');
+const messagenotifRoutes = require('./routes/messagenotif');
 
 
 const app = express();
@@ -43,7 +44,6 @@ app.use('/api/attendance', attendanceRoutes)
 app.use('/api/grades', gradesRoute)
 
 //events route
-
 app.use('/api/calendar', calendarRoutes);
 
 //announcements route 
@@ -58,8 +58,12 @@ app.use('/api/subjects', subjectRoutes);
 
 //schedule route
 app.use('/api/schedule', scheduleRoutes);
+
 //notif route
 app.use('/api/notifications', notificationRoutes);
+
+//message notif route
+app.use('/api/messagenotif', messagenotifRoutes);
 
 // Configure Multer for Profile Picture Uploads
 const storage = multer.diskStorage({

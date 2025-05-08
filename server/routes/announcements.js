@@ -13,13 +13,18 @@ router.get('/', (req, res) => {
 // Create new announcement (admin only)
 router.post('/', (req, res) => {
   const { title, content } = req.body;
+    if (!title || !content ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
   db.query(
     'INSERT INTO announcements (title, content) VALUES (?, ?)',
     [title, content],
     (err, result) => {
       if (err) return res.status(500).json({ error: 'Error creating announcement' });
+       const type = 'general'
        const message = ` Admin posted an announcement`;
-    db.query("INSERT INTO notifications (message) VALUES (?)", [message]);
+       db.query("INSERT INTO notifications (message, type) VALUES (?,?)", [message, type]);
 
       res.json({ message: 'Announcement created successfully' });
     }

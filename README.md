@@ -10,6 +10,11 @@ Before setting up the project, make sure you have the following installed on you
 - **Node.js** and **npm** (Node Package Manager)
 - **MySQL Server** or access to **phpMyAdmin** for managing MySQL databases
 
+At the root(parents-portal folder)on terminal, run this command:
+
+    ```bash
+    npm install
+    ```
 ---
 
 ### 2. Backend Setup (Server)

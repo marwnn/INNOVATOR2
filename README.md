@@ -12,7 +12,7 @@ Before setting up the project, make sure you have the following installed on you
 
 At the root(parents-portal folder)on terminal, run this command:
 
-    ```bash
+    
     npm install
     
 ---

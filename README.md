@@ -15,7 +15,10 @@ At the root(parents-portal folder)on terminal, run this command:
     ```bash
     npm install
     ```
+
+.
 ---
+
 
 ### 2. Backend Setup (Server)
 

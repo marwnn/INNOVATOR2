@@ -92,6 +92,13 @@ To set up the frontend, follow these steps:
     CREATE DATABASE parents_portal;
     ```
 
+3. **Import the database structure and sample data** from the provided `parents_portal.sql` file. This can be done using the **Import** tab in phpMyAdmin or by running the following command in MySQL CLI:
+
+    ```bash
+    mysql -u root -p parents_portal < parents_portal.sql
+    ```
+
+    Replace `root` with your MySQL username if it's different.
 
 ---
 

@@ -1,17 +1,17 @@
 .message-page {
     display: flex;
     height: 85vh;
-    background-color: #f9f9fb;
-    border: 1px solid #e0e0e0;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid #b5d1b0; /* Light green border */
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .contacts-list {
     width: 30%;
-    background-color: #fff;
-    border-right: 1px solid #ddd;
+   background: rgba(255, 255, 255, 0.45); /* Almost white with green tint */
+    border-right: 1px solid #c7d9c2;
     overflow-y: auto;
     padding: 20px;
 }
@@ -19,7 +19,7 @@
 .contacts-list h3 {
     margin-bottom: 20px;
     font-size: 18px;
-    color: #333;
+    color: #2e5d38; /* Dark green text */
 }
 
 .contact-item {
@@ -27,17 +27,16 @@
     border-radius: 8px;
     cursor: pointer;
     margin-bottom: 10px;
-    background-color: #f1f1f1;
+    background: rgba(255, 255, 255, 0.45);
     transition: background-color 0.2s ease;
-    
 }
 
 .contact-item:hover {
-    background-color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.45);
 }
 
 .contact-item.active {
-    background-color:rgba(49, 103, 196, 0.872);
+   background: rgba(21, 251, 0, 0.85);
     color: white;
 }
 
@@ -45,10 +44,12 @@
     display: block;
     font-weight: 600;
     font-size: 15px;
+    color: #1f4d1f; /* Dark green */
 }
 
 .contact-info small {
     font-size: 12px;
+    color: #4a7f4a;
 }
 
 .chat-box {
@@ -56,13 +57,13 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #fafafa;
+    background: rgba(255, 255, 255, 0.45);
 }
 
 .chat-box h3 {
     margin-bottom: 10px;
     font-size: 18px;
-    color: #333;
+    color: #2e5d38; /* Dark green */
 }
 
 .chat-messages {
@@ -86,71 +87,76 @@
 
 .chat-message.sent {
     align-self: flex-end;
-    color: #111;
-  
+    color: #1f3b1f;
 }
+
 .chat-message.sent .message-content {
-   
-    background-color: rgba(161, 196, 255, 0.872);
+    background-color: #9fd89f; /* Medium green */
     border-radius: 10px 10px 0 10px;
     padding: 10px;
+    color: #124412;
 }
+
 .chat-message.received {
     align-self: flex-start;
-
-    color: #111;
-   
+    color: #1f3b1f;
 }
-.chat-message.received .message-content {
 
-    background-color: #e5e5e5;
+.chat-message.received .message-content {
+    background-color: #d3e9d3; /* Light green */
     border-radius: 10px 10px 10px 0;
     padding: 10px;
 }
 
 .message-time {
     font-size: 11px;
-    color: #777;
+    color: #567856;
     margin-top: 4px;
 }
 
 .chat-input {
     display: flex;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #b5d1b0;
     padding-top: 12px;
     gap: 10px;
 }
 
 .chat-input input {
     flex: 1;
-    padding:  10px;
+    padding: 10px;
     border-radius: 50px;
-    border: 1px solid #ccc;
+    border: 1px solid #a3c1a3;
     font-size: 14px;
     outline: none;
     width: 100px;
     background-color: white;
+    color: #2e5d38;
+}
+
+.chat-input input::placeholder {
+    color: #7ca77c;
 }
 
 .chat-input button {
-    padding: 5px ;
+    padding: 5px;
     border-radius: 50px;
     border: none;
     background-color: transparent;
-    color: rgba(17, 81, 191, 0.872);
+    color: #2f7a2f;
     font-weight: 500;
     cursor: pointer;
     width: 50px;
     height: 50px;
+    transition: color 0.3s ease;
 }
 
 .chat-input button:hover {
-    color: rgba(11, 70, 172, 0.872);
+    color: #1f4d1f;
 }
 
 .no-contact {
     margin-top: 20%;
     text-align: center;
     font-size: 16px;
-    color: #666;
+    color: #567856;
 }

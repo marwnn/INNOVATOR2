@@ -5,14 +5,14 @@ import Dashboard from "./components/Dashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import ParentDashboard from "./components/ParentDashboard";
 import Profile from "./pages/Profile"; 
-import Subjects from "./pages/Subjects"; 
 import Schedule from "./pages/Schedule"; 
 import Grades from "./pages/Grades"; 
 import Attendance from "./pages/Attendance"; 
 import Announcements from "./pages/Announcements"; 
 import Events from "./pages/Events"; 
-import Settings from "./pages/Settings"; 
-import Help from "./pages/Help"; 
+import StudentList from './pages/StudentList';
+
+
 import Messages from './pages/Messages';
 
 
@@ -60,7 +60,8 @@ function App() {
           <Route path="admin" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />} />
           <Route path="parent" element={<ProtectedRoute element={<ParentDashboard />} allowedRoles={["parent"]} />} />
          
-          <Route path="subjects" element={<ProtectedRoute element={<Subjects />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="students" element={<ProtectedRoute element={<StudentList />} allowedRoles={["admin", "parent"]} />} />
+
           <Route path="schedule" element={<ProtectedRoute element={<Schedule />} allowedRoles={["admin", "parent"]} />} />
           <Route path="grades" element={<ProtectedRoute element={<Grades />} allowedRoles={["admin", "parent"]} />} />
 
@@ -74,8 +75,8 @@ function App() {
           </Route>
         
           <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={["admin", "parent"]} />} />
-        <Route path="/settings" element={<ProtectedRoute element={<Settings />} allowedRoles={["admin", "parent"]} />} />
-         <Route path="/help" element={<ProtectedRoute element={<Help />} allowedRoles={["admin", "parent"]} />} />
+       
+       
       </Routes>
     </Router>
   );

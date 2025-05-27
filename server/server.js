@@ -6,17 +6,17 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
-const messageRoutes = require('./routes/messages')
-const announcementRoutes = require('./routes/announcements')
+const messageRoutes = require('./routes/messages');
+const announcementRoutes = require('./routes/announcements');
 const subjectRoutes = require('./routes/subjects');
 const scheduleRoutes = require('./routes/schedule');
-const gradesRoute = require('./routes/grades')
+const gradesRoute = require('./routes/grades');
 const calendarRoutes = require('./routes/calendar');
 const attendanceRoutes = require('./routes/attendance');
 const notificationRoutes = require('./routes/notifications');
 const messagenotifRoutes = require('./routes/messagenotif');
-const studentlist = require("./routes/studentlist")
-const subjectlist = require("./routes/subjectlist")
+// const studentlist = require("./routes/studentlist");  // no longer needed since routes are here
+const subjectlist = require("./routes/subjectlist");
 
 const app = express();
 app.use(express.json());
@@ -38,21 +38,69 @@ db.connect((err) => {
     }
 });
 
+// === STUDENTLIST CRUD ROUTES ===
+
+// CREATE student
+app.post('/api/studentlist', (req, res) => {
+  const { name, student_id, course } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name is required' });
+
+  const query = 'INSERT INTO students (name, student_id, course) VALUES (?, ?, ?)';
+  db.query(query, [name, student_id || null, course || null], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(201).json({ message: 'Student added', id: result.insertId });
+  });
+});
+
+// READ all students
+app.get('/api/studentlist', (req, res) => {
+  const query = 'SELECT * FROM students';
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+// UPDATE student by id
+app.put('/api/studentlist/:id', (req, res) => {
+  const { name, student_id, course } = req.body;
+  const { id } = req.params;
+
+  if (!name) return res.status(400).json({ error: 'Name is required' });
+
+  const query = 'UPDATE students SET name = ?, student_id = ?, course = ? WHERE id = ?';
+  db.query(query, [name, student_id, course, id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.affectedRows === 0) return res.status(404).json({ error: 'Student not found' });
+    res.json({ message: 'Student updated' });
+  });
+});
+
+// DELETE student by id
+app.delete('/api/studentlist/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM students WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.affectedRows === 0) return res.status(404).json({ error: 'Student not found' });
+    res.json({ message: 'Student deleted' });
+  });
+});
+
 //attendance route
-app.use('/api/attendance', attendanceRoutes)
+app.use('/api/attendance', attendanceRoutes);
 
 //grades route
-app.use('/api/grades', gradesRoute)
+app.use('/api/grades', gradesRoute);
 
 //events route
 app.use('/api/calendar', calendarRoutes);
 
 //announcements route 
-app.use('/api/announcements', announcementRoutes)
+app.use('/api/announcements', announcementRoutes);
 
 //connect message route
-app.use('/api/messages', messageRoutes)
-
+app.use('/api/messages', messageRoutes);
 
 //subjects route
 app.use('/api/subjects', subjectRoutes);
@@ -66,10 +114,10 @@ app.use('/api/notifications', notificationRoutes);
 //message notif route
 app.use('/api/messagenotif', messagenotifRoutes);
 
-//list route
-app.use('/api/studentlist', studentlist)
+//studentlist route removed because routes are inline here
+// app.use('/api/studentlist', studentlist);
 
-app.use('/api/subjectlist', subjectlist)
+app.use('/api/subjectlist', subjectlist);
 
 // Configure Multer for Profile Picture Uploads
 const storage = multer.diskStorage({
@@ -104,7 +152,6 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
         return res.status(401).json({ error: "Invalid Token" });
     }
 });
-
 
 //  Serve Uploaded Images
 app.use("/uploads", express.static("uploads"));
@@ -155,7 +202,6 @@ app.post("/help", (req, res) => {
         res.json({ success: true, message: "Issue submitted successfully." });
     });
 });
-
 
 //  User Registration (Only "Parent" Can Register)
 app.post("/register", (req, res) => {
@@ -239,10 +285,8 @@ app.post("/login", (req, res) => {
     });
 });
 
-
 //  Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(` Server running on port ${PORT}`);
 });
-

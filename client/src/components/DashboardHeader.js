@@ -8,7 +8,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import "../styles/DashboardHeader.css";
 import axios from "axios"
-import Logo from "../assets/logo.png"; 
+
 const DashboardHeader = () => {
   const [openMessageNotif, setOpenMessageNotif] = useState(false);
   const [messageNotifs, setMessageNotifs] = useState([]);
@@ -25,10 +25,10 @@ const DashboardHeader = () => {
   const user = JSON.parse(sessionStorage.getItem("user")) || {};
   const { name, role, profilePic } = user;
 
-const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/parent";
+const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/student";
   const menuItems = [
     { name: "Home", path: homePath},
-    { name: "Subjects", path: "/dashboard/subjects"},
+    { name: "StudentList", path: "/dashboard/studentlist"},
     { name: "Schedule", path: "/dashboard/schedule"},
     { name: "Grades", path: "/dashboard/grades" },
     { name: "Attendance Record", path: "/dashboard/attendance" },
@@ -36,8 +36,7 @@ const homePath = user?.role === "admin" ? "/dashboard/admin" : "/dashboard/paren
     { name: "Events", path: "/dashboard/events"},
     { name: "Messages", path: "/dashboard/messages" },
     { name: "Profile", path: "/dashboard/profile"},
-    { name: "Help", path: "/dashboard/help"},
-    { name: "Settings", path: "/dashboard/settings" },
+   
   ];
 
   const filteredItems = menuItems.filter((item) =>
@@ -165,11 +164,9 @@ const handleLogout = () => {
 
   return (
     <div className="dashboard-header">
-       <div className="sidebar-logo" style={{margin:"0 10px 20px 0"}}>
-                <Link to={homePath} >
-                  <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
-                  </Link>
-              <span className="school-name">Don Bosco College</span>
+      <div className="school-container">
+              <span className="school-name">Pateros Technological College</span>
+               <span className="school-abbr">PTC</span>
               </div>
       {/* Search Bar */}
       <div className="search-container">
@@ -296,7 +293,10 @@ const handleLogout = () => {
           <img src={profilePic || "/default-profile.png"} alt="Profile" className="profile-pic" />
           <div className="user-info">
             <span className="user-name">{name || "User"}</span>
-            <small className="user-role">{role || "Unknown Role"}</small>
+           <small className="user-role">
+  {role === "admin" ? "Admin" : role === "parent" ? "Student" : "Unknown Role"}
+</small>
+
           </div>
         </div>
 
@@ -309,9 +309,7 @@ const handleLogout = () => {
               <AccountCircleIcon style={{fontSize:"20px"}} className="headerIcon" /> Profile
             </li>
            
-            <li className="settings"onClick={() => navigate("/settings")}>
-              <SettingsOutlinedIcon style={{fontSize:"20px"}} className="headerIcon" /> Settings
-            </li>
+           
              <li className="logoutBtn" onClick={handleLogout}>
               <LogoutIcon style={{fontSize:"20px"}} className="headerIcon" /> Logout
             </li>

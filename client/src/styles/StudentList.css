@@ -1,0 +1,44 @@
+.student-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.student-form input {
+  padding: 8px;
+  font-size: 14px;
+  flex: 1;
+}
+
+.student-form button {
+  padding: 8px 14px;
+  font-size: 14px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.student-form .cancel-btn {
+  background-color: #6c757d;
+}
+
+table button {
+  margin-right: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+table .delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+table button:hover,
+.student-form button:hover {
+  opacity: 0.9;
+}

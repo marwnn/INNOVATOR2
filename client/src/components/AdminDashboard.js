@@ -1,13 +1,13 @@
+import React from 'react';
+import Calendar from './Calendar'; // Adjust path if in a different folder
 
-import React from 'react'
-import Calendar from './Calendar'
 const AdminDashboard = () => {
   return (
     <div>
-      <Calendar/>
+      <h1>Admin Dashboard</h1>
+      <Calendar />
     </div>
-  )
-}
+  );
+};
 
-export default AdminDashboard
-
+export default AdminDashboard;

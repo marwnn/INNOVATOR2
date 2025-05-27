@@ -54,7 +54,7 @@ const Sidebar = () => {
           <Link to={homePath} >
             <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
             </Link>
-        <span className="school-name">Don Bosco College</span>
+        <span className="school-name">Pateros Technological College</span>
         </div>
         
       
@@ -64,8 +64,8 @@ const Sidebar = () => {
          <Link to={homePath} className="sidebar-item">
           <MapsHomeWorkOutlinedIcon className="icon" /> Home
         </Link>
-        <Link to="/dashboard/subjects" className="sidebar-item">
-          <LibraryBooksOutlinedIcon className="icon" /> Subjects 
+        <Link to="/dashboard/students" className="sidebar-item">
+          <LibraryBooksOutlinedIcon className="icon" /> StudentList 
         </Link>
          <Link to="/dashboard/schedule" className="sidebar-item">
           <EventNoteOutlinedIcon className="icon" />Schedule
@@ -94,19 +94,15 @@ const Sidebar = () => {
   <AccountCircleOutlinedIcon className="icon" /> Profile
 </Link>
 
-        <Link to="/help" className="sidebar-item">
-          <HelpOutlineOutlinedIcon className="icon" /> Help
-          </Link>
-          <Link to="/settings" className="sidebar-item">
-          <SettingsOutlinedIcon className="icon" /> Settings
-          </Link>
-          <button style={{ margin: "0 0 20px 1px" }} className="sidebar-item logout-btn" onClick={handleLogout}>
-        <LogoutIcon/> Log out 
-        </button>
-      </div>
-    </div>
-  </>);
+<button style={{ margin: "0 0 20px 1px" }} className="sidebar-item logout-btn" onClick={handleLogout}>
+  <LogoutIcon /> Log out
+</button>
+</div>
+</div>
+</>
+);
 };
+
 
 export default Sidebar;
 

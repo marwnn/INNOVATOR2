@@ -2,20 +2,21 @@
     max-width: 1200px;
     margin: auto;
     padding: 2rem;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.45);
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 128, 0, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .grades-container h2 {
-        margin-bottom: 30px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2e7d32; /* dark green */
 }
 
 .export-btn {
-    background-color: #e62c2c;
+    background-color: #2e7d32;
     color: white;
     padding: 6px 12px;
     border: none;
@@ -28,7 +29,7 @@
 }
 
 .export-btn:hover {
-    background-color: #c61111;
+    background-color: #1b5e20;
 }
 
 .grade-form {
@@ -44,14 +45,15 @@
 
 .grades-form-grid input {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #a5d6a7; /* light green */
     border-radius: 6px;
     font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .grade-form button {
     padding: 10px 18px;
-    background-color: rgba(17, 81, 191, 0.872);
+    background-color: #388e3c;
     color: white;
     border: none;
     border-radius: 8px;
@@ -61,7 +63,7 @@
 }
 
 .grade-form button:hover {
-    background-color:rgba(28, 79, 167, 0.872);
+    background-color: #2e7d32;
 }
 
 .grades-container table {
@@ -70,23 +72,22 @@
     margin-top: 1rem;
 }
 
- .grades-container table thead {
-    background-color: #34495e;
+.grades-container table thead {
+    background-color: #2e7d32;
     color: white;
 }
 
-.grades-container table th{
-    background-color: #f5f5f5;
-        color: #444;
-    }
+.grades-container table th {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #2e7d32;
+}
 
 .grades-container table th,
 .grades-container table td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #c8e6c9; /* very light green */
 }
-
 
 .action-buttons {
     display: flex;
@@ -99,38 +100,30 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    background: none;
+    font-weight: bold;
 }
 
 .action-buttons button:first-child {
-        color: #1e8449;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
+    color: #2e7d32;
 }
 
 .action-buttons button:first-child:hover {
     text-decoration: underline;
-        color: #15753d;
+    color: #1b5e20;
 }
 
 .action-buttons button:last-child {
-    color: #c0392b;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
+    color: #c62828;
 }
 
 .action-buttons button:last-child:hover {
-text-decoration: underline;
+    text-decoration: underline;
     color: #a00;
 }
 
 @media screen and (max-width: 768px) {
-.grades-form-grid {
-       
-        grid-template-columns: repeat(1, 500px);
-        
+    .grades-form-grid {
+        grid-template-columns: repeat(1, 100%);
     }
 }

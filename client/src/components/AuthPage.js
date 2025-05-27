@@ -64,11 +64,11 @@ const AuthPage = () => {
   return (
     <div className="auth-container">
       <div className="left-section">
-        <h2 className="title">Welcome to DBC Parents<span className="portal"> Portal</span></h2>
+        <h2 className="title">Welcome to PTC Students<span className="portal"> Portal</span></h2>
         <img style={ { width: "120px"}} src={Logo} alt="School Logo" className="logo" />
         <div className="db">
-          <h1>Don Bosco College</h1>
-          <p>Copyright © 2025 All rights reserved.</p>
+          <h1>PATEROS TECHNOLOGICAL COLLEGE</h1>
+          <p>PTCIANS</p>
         </div>
       </div>
 

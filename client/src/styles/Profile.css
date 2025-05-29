@@ -3,10 +3,11 @@
     background-color: white;
     text-align: center;
     width: 50%;
-    margin: 100px;
+    margin: 100px auto;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
+
 .profile-header {
     position: absolute;
     top: 1px;
@@ -17,10 +18,11 @@
     width: 100%;
     border-bottom: 2px solid #ddd;
 }
-.info{
+
+.info {
     font-size: 14px;
- 
 }
+
 .profile-pic-large {
     width: 120px;
     height: 120px;
@@ -28,29 +30,31 @@
     object-fit: cover;
     margin-bottom: 10px;
 }
-.back-btn{
-    width: 10px;
-    height: 10px;
+
+.back-btn {
+    width: 30px;
+    height: 30px;
     margin: 10px;
     display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: transparent;
     border-radius: 15px;
     color: rgb(47, 47, 47);
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
+
 .back-btn:hover {
-  
     background-color: rgb(229, 228, 228);
-    
 }
+
 .back-btn:active {
-
     color: black;
-
 }
-.clearIcon{
+
+.clearIcon {
     position: relative;
     top: -11px;
     right: 12px;
-    
-   
 }

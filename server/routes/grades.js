@@ -4,16 +4,16 @@ const db = require('../db');
 
 // Get all grades
 router.get('/', (req, res) => {
-  const studentId = req.query.student_id; 
+  const studentId = req.query.student_id;
 
   const query = studentId
     ? `SELECT grades.*, students.name AS student_name 
        FROM grades 
-       JOIN students ON grades.student_id = students.id 
+       JOIN students ON grades.student_id = students.student_id 
        WHERE grades.student_id = ?`
     : `SELECT grades.*, students.name AS student_name 
        FROM grades 
-       JOIN students ON grades.student_id = students.id`;
+       JOIN students ON grades.student_id = students.student_id`;
 
   db.query(query, studentId ? [studentId] : [], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error" });
@@ -37,14 +37,13 @@ router.post('/', (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin added a new grade: ${subject_title}`;
-   db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
-
+    db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
 
     res.json({ message: "Grade added successfully", id: result.insertId });
   });
 });
 
-// Update an existing grade
+// Update a grade
 router.put('/:id', (req, res) => {
   const { student_id, school_year, term, subject_code, subject_title, grade, units } = req.body;
   const gradeId = req.params.id;
@@ -62,8 +61,7 @@ router.put('/:id', (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin updated a grade: ${subject_title}`;
-db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
-
+    db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [student_id, message]);
 
     res.json({ message: "Grade updated successfully" });
   });

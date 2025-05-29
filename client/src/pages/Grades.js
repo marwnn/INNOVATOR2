@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import "../styles/Grades.css"
+import "../styles/Grades.css";
+
 const Grades = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [grades, setGrades] = useState([]);
@@ -15,7 +16,7 @@ const Grades = () => {
     grade: '',
     units: ''
   });
-  const [editGrade, setEditGrade] = useState(null); // To store grade for editing
+  const [editGrade, setEditGrade] = useState(null);
 
   const fetchGrades = () => {
     axios
@@ -123,18 +124,17 @@ const Grades = () => {
 
       {user.role === 'admin' && (
         <div className="grade-form">
-            <div className="grades-form-grid">
-          {["student_id", "school_year", "term", "subject_code", "subject_title", "grade", "units"].map(field => (
-            <div key={field}>
-              <input
-                placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                value={newGrade[field]}
-                onChange={(e) => setNewGrade({ ...newGrade, [field]: e.target.value })}
-              />
-            </div>
-            
-          ))}
-            </div>
+          <div className="grades-form-grid">
+            {["student_id", "school_year", "term", "subject_code", "subject_title", "grade", "units"].map(field => (
+              <div key={field}>
+                <input
+                  placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  value={newGrade[field]}
+                  onChange={(e) => setNewGrade({ ...newGrade, [field]: e.target.value })}
+                />
+              </div>
+            ))}
+          </div>
           {editGrade ? (
             <button onClick={handleUpdate}>Update Grade</button>
           ) : (
@@ -147,7 +147,7 @@ const Grades = () => {
         <thead>
           <tr>
             <th>Student ID</th>
-            <th>Student name</th>
+            <th>Student Name</th>
             <th>School Year</th>
             <th>Term</th>
             <th>Subject Code</th>
@@ -171,9 +171,9 @@ const Grades = () => {
               {user.role === 'admin' && (
                 <td>
                   <div className='action-buttons'>
-                  <button onClick={() => handleEdit(g)}>Edit</button>
-                  <button onClick={() => handleDelete(g.id)}>Delete</button>
-               </div>
+                    <button onClick={() => handleEdit(g)}>Edit</button>
+                    <button onClick={() => handleDelete(g.id)}>Delete</button>
+                  </div>
                 </td>
               )}
             </tr>

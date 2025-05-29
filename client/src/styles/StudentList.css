@@ -1,5 +1,24 @@
+.student-list-container {
+  background-color: rgba(0, 128, 0, 0.08); /* Transparent green tint */
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 1200px; /* Wider container */
+  width: 100%;
+  margin: 30px auto;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2e7d32;
+}
+
+.student-list-container h2 {
+  text-align: center;
+  color: #1b5e20;
+  margin-bottom: 20px;
+}
+
 .student-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -8,6 +27,8 @@
   padding: 8px;
   font-size: 14px;
   flex: 1;
+  border: 1px solid #81c784;
+  border-radius: 4px;
 }
 
 .student-form button {
@@ -18,19 +39,49 @@
   color: white;
   cursor: pointer;
   border-radius: 4px;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
 .student-form .cancel-btn {
   background-color: #6c757d;
 }
 
+.student-form .save-btn {
+  background-color: #28a745;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table th,
+table td {
+  border: 1px solid #c8e6c9;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background-color: #a5d6a7;
+}
+
 table button {
-  margin-right: 8px;
+  margin-right: 6px;
   padding: 6px 10px;
   font-size: 13px;
   cursor: pointer;
   border: none;
   border-radius: 4px;
+  transition: opacity 0.3s ease;
+}
+
+table .edit-btn {
+  background-color: #ffc107;
+  color: black;
 }
 
 table .delete-btn {
@@ -38,7 +89,34 @@ table .delete-btn {
   color: white;
 }
 
+table .save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+table .cancel-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
 table button:hover,
 .student-form button:hover {
   opacity: 0.9;
+}
+
+/* Optional: Responsive tweak for smaller screens */
+@media (max-width: 768px) {
+  .student-list-container {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .student-form {
+    flex-direction: column;
+  }
+
+  .student-form input,
+  .student-form button {
+    width: 100%;
+  }
 }

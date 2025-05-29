@@ -5,7 +5,7 @@
   width: 100vw;
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
-  background-color: rgba(255, 255, 255, 0.1); /* subtle transparency */
+  background-color: rgba(255, 255, 255, 0.01); /* subtle transparency */
   backdrop-filter: blur(5px); /* glass-like effect */
 }
 
@@ -18,18 +18,18 @@
   background-size: cover;
   padding: 20px;
   box-sizing: border-box;
-  color: #2c3e50;
+  color: #00060c;
   overflow-y: auto;
 }
 
 /* Transparent white glass-like card for all direct children */
 .dashboard-main > * {
-  background-color: rgba(255, 255, 255, 0.3); /* more transparency */
+  background-color: rgba(245, 245, 245, 0.1); /* more transparency */
   border-radius: 16px;
   margin-bottom: 20px;
   padding: 20px 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px); /* frosted-glass effect */
+  backdrop-filter: (10px); /* frosted-glass effect */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

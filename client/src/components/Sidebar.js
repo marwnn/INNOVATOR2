@@ -9,8 +9,6 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import SmsOutlinedIcon from '@mui/icons-material/SmsOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Logo from "../assets/logo.png"; // Ensure your logo is in `src/assets/`
 import "../styles/Sidebar.css";
@@ -50,12 +48,7 @@ const Sidebar = () => {
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* Logo & School Name Section */}
        
-        <div className="sidebar-logo">
-          <Link to={homePath} >
-            <img style={{ width: "40px" }} src={Logo} alt="School Logo" className="logo" />
-            </Link>
-        <span className="school-name">Pateros Technological College</span>
-        </div>
+       
         
       
       {/* Sidebar Menu */}

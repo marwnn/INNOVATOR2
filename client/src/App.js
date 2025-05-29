@@ -10,7 +10,7 @@ import Grades from "./pages/Grades";
 import Attendance from "./pages/Attendance"; 
 import Announcements from "./pages/Announcements"; 
 import Events from "./pages/Events"; 
-import StudentList from './pages/StudentList';
+import StudentList from "./pages/StudentList"
 
 
 import Messages from './pages/Messages';

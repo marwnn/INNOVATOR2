@@ -1,188 +1,186 @@
 .list-container {
-    flex: 1;
-    gap: 20px;
-    padding: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent; /* Changed to transparent */
+  flex: 1;
+  gap: 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: transparent;
 }
 
 .list-card {
-    background: linear-gradient(145deg, rgba(232, 245, 233, 0.6), rgba(200, 230, 201, 0.6));
-    padding: 20px;
-    border-radius: 12px;
-    width: 250px;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(129, 199, 132, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(145deg, rgba(232, 245, 233, 0.6), rgba(200, 230, 201, 0.6));
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(129, 199, 132, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .list-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
 }
 
 .list-card h2 {
-    color: #2e7d32;
-    font-weight: 600;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #a5d6a7;
-    padding-bottom: 8px;
-}
-
-.studentlist-card {
-    border-left: 4px solid #4caf50;
-}
-
-.subjectlist-card {
-    border-left: 4px solid #66bb6a;
+  color: #2e7d32;
+  font-weight: 700;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #a5d6a7;
+  padding-bottom: 8px;
+  letter-spacing: 0.05em;
 }
 
 .calendar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent; /* Changed to transparent */
-    padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  padding: 20px;
+  flex-wrap: wrap;
 }
 
 .calendar-header {
-    margin-bottom: 20px;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .calendar-header h2 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #1b5e20;
-    text-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+  font-size: 28px;
+  font-weight: 800;
+  color: #1b5e20;
+  text-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
 }
 
 .calendar-card {
-    width: 600px;
-    height: 600px;
-    margin: 10px;
-    background: linear-gradient(145deg, rgba(232, 245, 233, 0.7), rgba(200, 230, 201, 0.6));
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 6px 25px rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(129, 199, 132, 0.25);
+  width: 100%;
+  max-width: 1000px;
+  height: 600px;
+  margin: 10px;
+  background: linear-gradient(145deg, rgba(232, 245, 233, 0.7), rgba(200, 230, 201, 0.6));
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 25px rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(129, 199, 132, 0.25);
+  overflow: hidden;
 }
 
-/* FullCalendar button styling */
 .fc .fc-button {
-    background: linear-gradient(145deg, #4caf50, #45a049);
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    padding: 8px 16px;
-    text-transform: capitalize;
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+  background: linear-gradient(145deg, #4caf50, #45a049);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 10px 20px;
+  text-transform: capitalize;
+  color: white;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35);
+  user-select: none;
 }
 
 .fc .fc-button:hover {
-    background: linear-gradient(145deg, #45a049, #388e3c);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+  background: linear-gradient(145deg, #45a049, #388e3c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.5);
 }
 
 .fc .fc-button:active {
-    background: linear-gradient(145deg, #388e3c, #2e7d32);
-    transform: translateY(0);
+  background: linear-gradient(145deg, #388e3c, #2e7d32);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
 }
 
 .fc .fc-toolbar-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #1b5e20;
-    text-shadow: 0 1px 3px rgba(76, 175, 80, 0.2);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1b5e20;
+  text-shadow: 0 1px 3px rgba(76, 175, 80, 0.2);
+  user-select: none;
 }
 
 .fc .fc-daygrid-day-number {
-    color: #2e7d32;
-    font-weight: 500;
+  color: #2e7d32;
+  font-weight: 600;
 }
 
 .fc .fc-daygrid-day:hover {
-    background-color: rgba(200, 230, 201, 0.3);
-    transition: background-color 0.2s ease;
+  background-color: rgba(200, 230, 201, 0.35);
+  transition: background-color 0.25s ease;
+  cursor: pointer;
 }
 
 .fc-event {
-    background: linear-gradient(135deg, #66bb6a, #4caf50);
-    border: none;
-    font-size: 14px;
-    padding: 3px 6px;
-    border-radius: 6px;
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
-    transition: all 0.2s ease;
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
+  border: none;
+  font-size: 14px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(76, 175, 80, 0.4);
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .fc-event:hover {
-    background: linear-gradient(135deg, #5cb85c, #388e3c);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.4);
+  background: linear-gradient(135deg, #5cb85c, #388e3c);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(76, 175, 80, 0.55);
 }
 
 .calendar-card th {
-    background: linear-gradient(135deg, #c8e6c9, #dcedc8);
-    color: #2e7d32;
-    font-weight: 600;
-    border-bottom: 2px solid #a5d6a7;
+  background: linear-gradient(135deg, #c8e6c9, #dcedc8);
+  color: #2e7d32;
+  font-weight: 700;
+  border-bottom: 2px solid #a5d6a7;
 }
 
 .fc .fc-col-header-cell {
-    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
-    border-color: #c8e6c9;
+  background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+  border-color: #c8e6c9;
 }
 
 .fc .fc-daygrid-day {
-    border-color: rgba(200, 230, 201, 0.5);
+  border-color: rgba(200, 230, 201, 0.5);
 }
 
 .fc .fc-scrollgrid {
-    border-color: rgba(200, 230, 201, 0.3);
+  border-color: rgba(200, 230, 201, 0.3);
 }
 
 .fc .fc-day-today {
-    background-color: rgba(129, 199, 132, 0.2) !important;
-    border: 2px solid #81c784;
+  background-color: rgba(129, 199, 132, 0.25) !important;
+  border: 2px solid #81c784;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .fc .fc-day-sat,
 .fc .fc-day-sun {
-    background-color: rgba(165, 214, 167, 0.15);
+  background-color: rgba(165, 214, 167, 0.15);
 }
 
-@media screen and (max-width: 768px) {
-    .calendar-container {
-        flex-direction: column;
-        padding: 10px;
-    }
+@media (max-width: 768px) {
+  .calendar-container,
+  .list-container {
+    flex-direction: column;
+    padding: 10px;
+  }
 
-    .list-container {
-        flex-direction: column;
-        padding: 10px;
-    }
+  .calendar-card {
+    width: 95%;
+    height: 500px;
+  }
 
-    .calendar-card {
-        width: 95%;
-        height: 500px;
-    }
-
-    .list-card {
-        width: 90%;
-    }
+  .list-card {
+    width: 90%;
+  }
 }

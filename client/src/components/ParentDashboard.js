@@ -1,12 +1,12 @@
-import React from 'react'
-import Calendar from './Calendar'
+import React from 'react';
+import MissionVision from './MissionVision';
+
 const ParentDashboard = () => {
   return (
     <div>
-       <Calendar/>
+      <MissionVision />
     </div>
-  )
-}
+  );
+};
 
-export default ParentDashboard
-
+export default ParentDashboard;

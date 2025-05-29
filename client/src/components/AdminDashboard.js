@@ -4,7 +4,7 @@ import Calendar from './Calendar'; // Adjust path if in a different folder
 const AdminDashboard = () => {
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <h1>DUCKLINGS</h1>
       <Calendar />
     </div>
   );

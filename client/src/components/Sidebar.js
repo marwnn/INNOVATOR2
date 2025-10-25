@@ -12,8 +12,9 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutIcon from '@mui/icons-material/Logout';
 import Logo from "../assets/logo.png"; // Ensure your logo is in `src/assets/`
 import "../styles/Sidebar.css";
-import { 
-   FaXmark, FaBars} from "react-icons/fa6";
+import { FaXmark, FaBars} from "react-icons/fa6";
+import { FaIconName } from "react-icons/fa6";
+
 
 const Sidebar = () => {
    const [isOpen, setIsOpen] = useState(true); //  Open by default on large screens

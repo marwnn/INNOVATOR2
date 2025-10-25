@@ -31,9 +31,9 @@ const AuthPage = () => {
     console.log("Received Data from Backend:", response.data); 
 
     if (!isLogin) {
-      //  Show success message on registration
+  
       alert(response.data.message);
-      setIsLogin(true); // Switch to login form after registration
+      setIsLogin(true); 
       return;
     }
 
@@ -43,13 +43,13 @@ const AuthPage = () => {
       alert("Error: User data missing in response! Check your backend.");
       return;
     }
-    // Store token and user info in sessionStorage
+   
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("user", JSON.stringify({id, name, role, email, contactNumber, profilePic: profilePic || "/default-profile.png" }));
 
     console.log(" Stored User in sessionStorage:", sessionStorage.getItem("user"));
 
-    //  Redirect based on role
+    
     if (role === "admin") {
       navigate("/dashboard/admin");
     } else {
@@ -64,11 +64,11 @@ const AuthPage = () => {
   return (
     <div className="auth-container">
       <div className="left-section">
-        <h2 className="title">Welcome to PTC Students<span className="portal"> Portal</span></h2>
+        <h2 className="title">CLASSROOM CONNECT SYSTEM</h2>
         <img style={ { width: "120px"}} src={Logo} alt="School Logo" className="logo" />
         <div className="db">
           <h1>PATEROS TECHNOLOGICAL COLLEGE</h1>
-          <p>PTCIANS</p>
+          <p>BSIT_3I</p>
         </div>
       </div>
 

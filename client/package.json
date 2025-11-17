@@ -24,7 +24,10 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+<<<<<<< HEAD
     "react-qr-code": "^2.0.18",
+=======
+>>>>>>> b387d8a32641705409d4da6e9d0056948342ad66
     "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

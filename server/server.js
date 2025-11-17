@@ -46,6 +46,7 @@ db.connect((err) => {
 // STUDENTLIST CRUD ROUTES
 // =======================
 
+<<<<<<< HEAD
 // Helper function to verify admin role
 const verifyAdmin = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -68,6 +69,10 @@ const verifyAdmin = (req, res, next) => {
 
 // CREATE student (Admin only)
 app.post("/api/studentlist", verifyAdmin, (req, res) => {
+=======
+// CREATE student
+app.post("/api/studentlist", (req, res) => {
+>>>>>>> b387d8a32641705409d4da6e9d0056948342ad66
   const { name, student_id, course } = req.body;
   if (!name) return res.status(400).json({ error: "Name is required" });
 
@@ -88,8 +93,13 @@ app.get("/api/studentlist", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 // UPDATE student (Admin only)
 app.put("/api/studentlist/:id", verifyAdmin, (req, res) => {
+=======
+// UPDATE student
+app.put("/api/studentlist/:id", (req, res) => {
+>>>>>>> b387d8a32641705409d4da6e9d0056948342ad66
   const { name, student_id, course } = req.body;
   const { id } = req.params;
 
@@ -105,8 +115,13 @@ app.put("/api/studentlist/:id", verifyAdmin, (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 // DELETE student (Admin only)
 app.delete("/api/studentlist/:id", verifyAdmin, (req, res) => {
+=======
+// DELETE student
+app.delete("/api/studentlist/:id", (req, res) => {
+>>>>>>> b387d8a32641705409d4da6e9d0056948342ad66
   const { id } = req.params;
   const query = "DELETE FROM students WHERE id = ?";
   db.query(query, [id], (err, result) => {
@@ -188,6 +203,28 @@ app.delete("/delete-account", (req, res) => {
   } catch {
     return res.status(401).json({ error: "Invalid Token" });
   }
+<<<<<<< HEAD
+=======
+});
+
+// =======================
+// HELP REQUEST
+// =======================
+app.post("/help", (req, res) => {
+  const { userName, issue } = req.body;
+
+  if (!userName || !issue)
+    return res.status(400).json({ error: "Missing required fields!" });
+
+  db.query(
+    "INSERT INTO help_requests (user_name, issue) VALUES (?, ?)",
+    [userName, issue],
+    (err) => {
+      if (err) return res.status(500).json({ error: "Failed to save complaint." });
+      res.json({ success: true, message: "Issue submitted successfully." });
+    }
+  );
+>>>>>>> b387d8a32641705409d4da6e9d0056948342ad66
 });
 
 // =======================

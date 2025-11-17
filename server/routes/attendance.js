@@ -1,101 +1,152 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const db = require("../db");
+const crypto = require("crypto");
 
 // Get all attendance records
-router.get('/', (req, res) => {
-  const studentId = req.query.student_id; 
-  const query = studentId
-    ? `
-      SELECT attendance.*, students.name AS student_name 
-      FROM attendance 
-      JOIN students ON attendance.student_id = students.id 
-      WHERE attendance.student_id = ?
-    `
-    : `
-      SELECT attendance.*, students.name AS student_name 
-      FROM attendance 
-      JOIN students ON attendance.student_id = students.id
-    `;
+router.get("/", (req, res) => {
+  const userId = req.query.user_id;
 
-  db.query(query, studentId ? [studentId] : [], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+  let query = `
+    SELECT a.*, s.name AS student_name, sub.subject_code, sub.subject_title
+    FROM attendance a
+    LEFT JOIN students s ON a.student_id = s.id
+    LEFT JOIN subjects sub ON a.subject_id = sub.id
+  `;
+
+  if (userId) {
+    query += ` WHERE a.student_id = (SELECT id FROM students WHERE name = (SELECT name FROM users WHERE id = ?) LIMIT 1)`;
+  }
+  query += " ORDER BY a.date DESC";
+
+  db.query(query, userId ? [userId] : [], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error: " + err.message });
     res.json(results);
   });
 });
 
-// Add a new attendance record
-router.post('/', (req, res) => {
+// Add attendance manually
+router.post("/", (req, res) => {
   const { student_id, date, day_of_week, status } = req.body;
+  if (!student_id || !date || !status)
+    return res.status(400).json({ error: "Missing fields" });
 
-  if (!student_id || !date || !day_of_week || !status) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-
-  const sql = `
-    INSERT INTO attendance (student_id, date, day_of_week, status)
-    VALUES (?, ?, ?, ?)`;
-
+  const sql =
+    "INSERT INTO attendance (student_id, date, day_of_week, status) VALUES (?, ?, ?, ?)";
   db.query(sql, [student_id, date, day_of_week, status], (err, result) => {
-    if (err) return res.status(500).json({ error: "Database error" });
-
-    
-    const formattedDate = new Date(date).toDateString();
-
-    const message = `Admin added an attendance on ${formattedDate}`;
-    db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)",[student_id, message]);
-
-    res.json({ message: "Attendance record added successfully", id: result.insertId });
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ id: result.insertId });
   });
 });
 
+// Update
+router.put("/:id", (req, res) => {
+  db.query(
+    "UPDATE attendance SET status = ? WHERE id = ?",
+    [req.body.status, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Updated" });
+    }
+  );
+});
 
-// Update an existing attendance record
-router.put('/:id', (req, res) => {
-  const { status } = req.body;
-  const attendanceId = req.params.id;
+// Delete
+router.delete("/:id", (req, res) => {
+  db.query("DELETE FROM attendance WHERE id = ?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Deleted" });
+  });
+});
 
-  if (!status) {
-    return res.status(400).json({ error: "Status is required" });
-  }
-
-  const fetchDateSql = "SELECT date, student_id FROM attendance WHERE id = ?";
-  db.query(fetchDateSql, [attendanceId], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
-    if (results.length === 0) return res.status(404).json({ error: "Attendance record not found" });
-
-    const rawDate = results[0].date;
-    const studentId = results[0].student_id;
-  
-    const formattedDate = new Date(rawDate).toDateString();
-
-    const updateSql = `
-      UPDATE attendance 
-      SET status = ?
-      WHERE id = ?`;
-
-    db.query(updateSql, [status, attendanceId], (err) => {
-      if (err) return res.status(500).json({ error: "Database error" });
-
-      const message = `Admin updated an attendance on ${formattedDate}`;
-     db.query("INSERT INTO notifications (user_id, message) VALUES (?, ?)", [studentId, message]);
-
-
-      res.json({ message: "Attendance record updated successfully" });
+// Create QR session
+router.post("/qr-session", (req, res) => {
+  const { subject_id, expiresInMinutes } = req.body;
+  if (!subject_id) return res.status(400).json({ error: "subject_id required" });
+  const token = crypto.randomBytes(16).toString("hex");
+  const sql =
+    "INSERT INTO attendance_sessions (token, subject_id, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))";
+  db.query(sql, [token, subject_id, expiresInMinutes || 15], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({
+      token,
+      subject_id,
+      expiresAt: new Date(Date.now() + (expiresInMinutes || 15) * 60000),
     });
   });
 });
 
+// Deactivate session
+router.post("/qr-session/:token/deactivate", (req, res) => {
+  db.query(
+    "UPDATE attendance_sessions SET active = 0 WHERE token = ?",
+    [req.params.token],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Deactivated" });
+    }
+  );
+});
 
-// Delete an attendance record
-router.delete('/:id', (req, res) => {
-  const attendanceId = req.params.id;
+// QR check-in
+router.post("/qr-checkin", (req, res) => {
+  const { token, user_id } = req.body;
 
-  db.query("DELETE FROM attendance WHERE id = ?", [attendanceId], (err) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+  db.query(
+    `SELECT * FROM attendance_sessions WHERE token = ? AND active = 1 AND NOW() < expires_at`,
+    [token],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!rows.length)
+        return res.status(400).json({ error: "Invalid or expired session" });
 
-    res.json({ message: "Attendance record deleted successfully" });
-  });
+      const subject_id = rows[0].subject_id;
+      const findStudent = `SELECT id FROM students WHERE name = (SELECT name FROM users WHERE id = ?) LIMIT 1`;
+
+      db.query(findStudent, [user_id], (e2, studentRows) => {
+        if (e2) return res.status(500).json({ error: e2.message });
+        if (!studentRows.length)
+          return res.status(400).json({ error: "Student not found" });
+
+        const student_id = studentRows[0].id;
+        const insertSql = `
+          INSERT INTO attendance (student_id, subject_id, date, day_of_week, status)
+          VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Present')
+        `;
+        db.query(insertSql, [student_id, subject_id], (e3) => {
+          if (e3) return res.status(500).json({ error: e3.message });
+          res.json({ message: "Attendance recorded" });
+        });
+      });
+    }
+  );
+});
+
+// Mark absentees
+router.post("/qr-session/:token/mark-absent", (req, res) => {
+  const { token } = req.params;
+  db.query(
+    "SELECT subject_id FROM attendance_sessions WHERE token = ? AND active = 1",
+    [token],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!rows.length) return res.status(400).json({ error: "Session not found" });
+      const subject_id = rows[0].subject_id;
+
+      db.query("SELECT id FROM students", [], (e2, students) => {
+        if (e2) return res.status(500).json({ error: e2.message });
+
+        students.forEach((s) => {
+          db.query(
+            `INSERT IGNORE INTO attendance (student_id, subject_id, date, day_of_week, status)
+             VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Absent')`,
+            [s.id, subject_id]
+          );
+        });
+        res.json({ message: "Absentees marked" });
+      });
+    }
+  );
 });
 
 module.exports = router;

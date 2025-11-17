@@ -11,7 +11,7 @@ import Attendance from "./pages/Attendance";
 import Announcements from "./pages/Announcements"; 
 import Events from "./pages/Events"; 
 import StudentList from "./pages/StudentList"
-
+import Subjects from "./pages/Subjects";
 
 import Messages from './pages/Messages';
 
@@ -61,6 +61,7 @@ function App() {
           <Route path="parent" element={<ProtectedRoute element={<ParentDashboard />} allowedRoles={["parent"]} />} />
          
           <Route path="students" element={<ProtectedRoute element={<StudentList />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="subjects" element={<ProtectedRoute element={<Subjects />} allowedRoles={["admin", "parent"]} />} />
 
           <Route path="schedule" element={<ProtectedRoute element={<Schedule />} allowedRoles={["admin", "parent"]} />} />
           <Route path="grades" element={<ProtectedRoute element={<Grades />} allowedRoles={["admin", "parent"]} />} />

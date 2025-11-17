@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
@@ -60,6 +61,9 @@ const Sidebar = () => {
         </Link>
         <Link to="/dashboard/students" className="sidebar-item">
           <LibraryBooksOutlinedIcon className="icon" /> StudentList 
+        </Link>
+        <Link to="/dashboard/subjects" className="sidebar-item">
+          <MenuBookOutlinedIcon className="icon" /> Subjects 
         </Link>
          <Link to="/dashboard/schedule" className="sidebar-item">
           <EventNoteOutlinedIcon className="icon" />Schedule

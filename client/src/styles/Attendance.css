@@ -2,10 +2,10 @@
   max-width: 1000px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.75);
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+  border: 1px solid #c8e6c9;
 }
 
 .attendance-title {
@@ -31,7 +31,7 @@
   border-radius: 10px;
   flex: 1;
   min-width: 180px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #ffffff;
   transition: 0.3s ease;
 }
 
@@ -56,9 +56,10 @@
 .attendance-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #ffffff;
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid #c8e6c9;
 }
 
 .attendance-table th,
@@ -85,7 +86,7 @@
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #b5e2c0;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: #ffffff;
 }
 
 .btn-primary {

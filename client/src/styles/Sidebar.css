@@ -10,15 +10,14 @@
 .sidebar {
     width: 250px;
     height: 100vh;
-   background: linear-gradient(
-  180deg,
-  rgba(201, 245, 5, 0.7) 0%,   /* #c9f505 */
-  rgba(105, 241, 11, 0.7) 40%, /* #69f10b */
-  rgba(0, 225, 12, 0.7) 70%,   /* #00e10c */
-  rgba(0, 196, 18, 0.7) 100%   /* #00c412 */
-);
-
-    color: #000000;
+    background: linear-gradient(
+        180deg,
+        #4caf50 0%,
+        #43a047 40%,
+        #388e3c 70%,
+        #2e7d32 100%
+    );
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     padding: 16px;
@@ -29,7 +28,8 @@
     transition: transform 0.4s ease-in-out;
     z-index: 101;
     overflow-y: auto;
-    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    border-right: 2px solid #1b5e20;
 }
 
 /* Open state */
@@ -43,10 +43,11 @@
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    color: #222;
+    color: #ffffff;
     margin-bottom: 10px;
     padding-left: 10px;
-    opacity: 0.8;
+    opacity: 0.9;
+    letter-spacing: 1px;
 }
 
 /* Sidebar items */
@@ -60,33 +61,37 @@
 .sidebar-item {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    color: #2f2f2f;
+    padding: 12px 14px;
+    color: #ffffff;
     text-decoration: none;
-    transition: background 0.3s, font-weight 0.3s;
-    border-radius: 6px;
+    transition: all 0.3s;
+    border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 4px;
 }
 
 .sidebar-item .icon {
-    margin-right: 10px;
-    color: #585757;
+    margin-right: 12px;
+    color: #ffffff;
     transition: color 0.3s;
+    font-size: 20px;
 }
 
 .sidebar-item:hover {
-    background-color: rgba(11, 138, 54, 0.07);
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
 }
 
 .sidebar-item:active,
 .sidebar-item.active {
-    color: #0b8a36;
+    background-color: rgba(255, 255, 255, 0.25);
     font-weight: 600;
+    color: #ffffff;
 }
 
 .sidebar-item:active .icon,
 .sidebar-item.active .icon {
-    color: #0b8a36;
+    color: #ffffff;
 }
 
 /* Bottom items */

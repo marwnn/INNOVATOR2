@@ -1,60 +1,148 @@
+/* ===== Profile Page Green Theme (Refined) ===== */
 .profile-page {
-    padding: 50px;
-    background-color: white;
-    text-align: center;
-    width: 50%;
-    margin: 100px auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f4f9f4;
+  color: #2f4f2f;
+  min-height: 100vh;
+  padding: 20px 15px;
+  font-family: "Poppins", Arial, sans-serif;
+  overflow-y: auto; /* enables vertical scroll */
 }
 
+/* Custom Scrollbar Styling */
+.profile-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.profile-page::-webkit-scrollbar-thumb {
+  background-color: #81c784; /* soft green */
+  border-radius: 10px;
+}
+
+.profile-page::-webkit-scrollbar-thumb:hover {
+  background-color: #66bb6a;
+}
+
+/* Header */
 .profile-header {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    width: 100%;
-    border-bottom: 2px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 460px; /* slightly wider */
+  margin-bottom: 10px;
 }
 
-.info {
-    font-size: 14px;
+.profile-header p {
+  font-weight: 600;
+  color: #2e7d32;
+  font-size: 20px; /* smaller font */
 }
 
-.profile-pic-large {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
+/* Back Button */
 .back-btn {
-    width: 30px;
-    height: 30px;
-    margin: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    border-radius: 15px;
-    color: rgb(47, 47, 47);
-    cursor: pointer;
-    transition: background-color 0.2s;
+  background-color: #e8f5e9;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 .back-btn:hover {
-    background-color: rgb(229, 228, 228);
-}
-
-.back-btn:active {
-    color: black;
+  background-color: #c8e6c9;
+  transform: scale(1.05);
 }
 
 .clearIcon {
-    position: relative;
-    top: -11px;
-    right: 12px;
+  color: #2e7d32;
+}
+
+/* Profile Picture */
+.profile-pic-large {
+  width: 110px;  /* slightly smaller */
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #66bb6a;
+  box-shadow: 0 4px 10px rgba(0, 128, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.profile-pic-large:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0, 128, 0, 0.2);
+}
+
+/* Name */
+h3 {
+  margin-top: 12px;
+  color: #1b5e20;
+  font-size: 17px; /* smaller */
+}
+
+/* Info Section */
+.info {
+  width: 100%;
+  max-width: 440px; /* slightly wider */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.15);
+  padding: 15px 20px;
+  font-size: 13px; /* smaller font */
+}
+
+.info p {
+  margin: 0;
+  color: #2f4f2f;
+}
+
+.info span {
+  color: #33691e;
+}
+
+.info svg {
+  vertical-align: middle;
+  margin-right: 6px;
+  font-size: 14px; /* smaller icons */
+}
+
+/* Upload Component Wrapper */
+.profile-upload {
+  margin-top: 20px;
+  background-color: #a5d6a7;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1b5e20;
+  font-weight: 500;
+  transition: 0.3s ease;
+  font-size: 13px;
+}
+
+.profile-upload:hover {
+  background-color: #81c784;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .profile-page {
+    padding: 15px 10px;
+  }
+
+  .profile-header {
+    max-width: 100%;
+  }
+
+  .profile-pic-large {
+    width: 95px;
+    height: 95px;
+  }
+
+  .info {
+    padding: 12px 15px;
+  }
 }

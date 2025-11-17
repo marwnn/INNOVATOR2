@@ -9,6 +9,7 @@ import Logo from "../assets/logo.png";
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", password: "", contactNumber:"" }); 
+  const [error, setError] = useState("");
   const navigate = useNavigate(); 
 
   const handleChange = (e) => {
@@ -21,7 +22,17 @@ const AuthPage = () => {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
-  console.log("Sending Data:", formData);
+  setError("");
+  if (!isLogin && (!formData.name?.trim() || !formData.contactNumber?.trim())) {
+    setError("Please fill in name and contact number.");
+    return;
+  }
+  if (!isLogin) {
+    if (!formData.email?.trim() || !formData.password?.trim()) {
+      setError("Email and password are required.");
+      return;
+    }
+  }
 
   try {
     const url = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
@@ -75,6 +86,7 @@ const AuthPage = () => {
       <div className="right-section">
         <h2 className="sign">{isLogin ? "Login" : "Register"}</h2>
         <form onSubmit={handleSubmit}>
+          {error && <div className="auth-error" role="alert">{error}</div>}
           {/* Full Name (Only in Register Form) */}
           {!isLogin && (
             <>
@@ -100,6 +112,7 @@ const AuthPage = () => {
             <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
           </div>
 
+          {/* Remember me & Forgot */}
           {/* Submit Button */}
           <button className="submit" type="submit">
             <i className={isLogin ? "fas fa-sign-in-alt" : "fas fa-user-plus"}></i> {isLogin ? "Login" : "Register"}

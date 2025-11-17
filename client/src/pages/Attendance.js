@@ -1,59 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import '../styles/Attendance.css'; 
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import QRCode from "react-qr-code";
+import { Scanner } from "@yudiel/react-qr-scanner";
+import "../styles/Attendance.css";
 
 const Attendance = () => {
-  const user = JSON.parse(sessionStorage.getItem('user'));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const [attendance, setAttendance] = useState([]);
   const [newRecord, setNewRecord] = useState({
-    student_id: '',
-    date: '',
-    status: '',
+    student_id: "",
+    date: "",
+    status: "",
   });
   const [editRecordId, setEditRecordId] = useState(null);
-  const [editStatus, setEditStatus] = useState('');
+  const [editStatus, setEditStatus] = useState("");
+  const [qrSession, setQrSession] = useState(null);
+  const [scanning, setScanning] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState("");
 
   useEffect(() => {
     fetchAttendance();
+    if (user.role === "admin") {
+      axios
+        .get("http://localhost:5000/api/subjects")
+        .then((res) => setSubjects(res.data))
+        .catch(() => {});
+    }
   }, []);
 
   const fetchAttendance = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/attendance', {
-        params: user.role !== 'admin' ? { student_id: user.id } : {},
+      const res = await axios.get("http://localhost:5000/api/attendance", {
+        params: user.role !== "admin" ? { user_id: user.id } : {},
       });
-      setAttendance(res.data);
+      setAttendance(res.data || []);
     } catch (err) {
-      console.error('Error fetching attendance:', err);
+      // Silently handle fetch errors
     }
   };
 
   const handleAdd = async () => {
     if (!newRecord.student_id || !newRecord.date || !newRecord.status) {
-      alert('All fields are required');
+      alert("All fields are required");
       return;
     }
-
-    const dayOfWeek = new Date(newRecord.date).toLocaleDateString('en-US', { weekday: 'long' });
-
+    const dayOfWeek = new Date(newRecord.date).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
     try {
-      await axios.post('http://localhost:5000/api/attendance', {
+      await axios.post("http://localhost:5000/api/attendance", {
         ...newRecord,
         day_of_week: dayOfWeek,
       });
       fetchAttendance();
-      setNewRecord({ student_id: '', date: '', status: '' });
+      setNewRecord({ student_id: "", date: "", status: "" });
     } catch (err) {
-      console.error('Add Error:', err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/attendance/${id}`);
-      fetchAttendance();
-    } catch (err) {
-      console.error('Delete Error:', err);
+      // Handle add error silently
     }
   };
 
@@ -64,14 +67,77 @@ const Attendance = () => {
 
   const handleUpdate = async (id) => {
     try {
-      const student_id = user.id;
-  
-      await axios.put(`http://localhost:5000/api/attendance/${id}`, { status: editStatus, student_id });
+      await axios.put(`http://localhost:5000/api/attendance/${id}`, {
+        status: editStatus,
+      });
       setEditRecordId(null);
-      setEditStatus('');
       fetchAttendance();
     } catch (err) {
-      console.error('Update Error:', err);
+      // Handle update error silently
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/attendance/${id}`);
+      fetchAttendance();
+    } catch (err) {
+      // Handle delete error silently
+    }
+  };
+
+  const startQrSession = async () => {
+    if (!selectedSubjectId) {
+      alert("Please select a subject first");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/attendance/qr-session",
+        { subject_id: selectedSubjectId, expiresInMinutes: 15 }
+      );
+      setQrSession(res.data);
+    } catch (err) {
+      alert("Failed to start session: " + (err.response?.data?.error || err.message));
+    }
+  };
+
+  const stopQrSession = async () => {
+    if (!qrSession?.token) return;
+    try {
+      await axios.post(
+        `http://localhost:5000/api/attendance/qr-session/${qrSession.token}/mark-absent`
+      );
+      await axios.post(
+        `http://localhost:5000/api/attendance/qr-session/${qrSession.token}/deactivate`
+      );
+      alert("Session ended and absentees marked.");
+      fetchAttendance();
+    } catch (err) {
+      // Handle error silently
+    }
+    setQrSession(null);
+    setSelectedSubjectId("");
+  };
+
+  const onScanResult = async (scanPayload) => {
+    const token =
+      typeof scanPayload === "string"
+        ? scanPayload
+        : scanPayload?.[0]?.rawValue || scanPayload?.rawValue || "";
+    if (!token) return;
+
+    try {
+      await axios.post("http://localhost:5000/api/attendance/qr-checkin", {
+        token,
+        user_id: user.id,
+      });
+      setScanning(false);
+      fetchAttendance();
+      alert("Attendance recorded successfully!");
+    } catch (err) {
+      // Handle QR check-in error silently
+      alert(err.response?.data?.error || "Check-in failed");
     }
   };
 
@@ -79,29 +145,108 @@ const Attendance = () => {
     <div className="attendance-container">
       <h2 className="attendance-title">Attendance</h2>
 
-      {user.role === 'admin' && (
+      {user.role === "admin" && (
         <div className="add-form">
           <input
             type="text"
             placeholder="Student ID"
             value={newRecord.student_id}
-            onChange={(e) => setNewRecord({ ...newRecord, student_id: e.target.value })}
+            onChange={(e) =>
+              setNewRecord({ ...newRecord, student_id: e.target.value })
+            }
           />
           <input
             type="date"
             value={newRecord.date}
-            onChange={(e) => setNewRecord({ ...newRecord, date: e.target.value })}
+            onChange={(e) =>
+              setNewRecord({ ...newRecord, date: e.target.value })
+            }
           />
-          <select 
+          <select
             value={newRecord.status}
-            onChange={(e) => setNewRecord({ ...newRecord, status: e.target.value })}
+            onChange={(e) =>
+              setNewRecord({ ...newRecord, status: e.target.value })
+            }
           >
             <option value="">Select Status</option>
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
             <option value="Excused">Excused</option>
           </select>
-          <button className="btn btn-primary" onClick={handleAdd}>Add Record</button>
+          <button className="btn btn-primary" onClick={handleAdd}>
+            Add Record
+          </button>
+        </div>
+      )}
+
+      {user.role === "admin" && (
+        <div style={{ marginBottom: 16 }}>
+          {!qrSession ? (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <select
+                value={selectedSubjectId}
+                onChange={(e) => setSelectedSubjectId(e.target.value)}
+              >
+                <option value="">Select Subject</option>
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.subject_code} - {s.subject_title}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="btn btn-primary"
+                onClick={startQrSession}
+                disabled={!selectedSubjectId}
+              >
+                Start QR Session
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ background: "#fff", padding: 8 }}>
+                <QRCode value={qrSession.token} size={96} />
+              </div>
+              <div>
+                <p>
+                  <strong>Expires:</strong>{" "}
+                  {new Date(qrSession.expiresAt).toLocaleString()}
+                </p>
+                <button className="btn btn-delete" onClick={stopQrSession}>
+                  End Session & Mark Absent
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {user.role !== "admin" && (
+        <div style={{ marginBottom: 16 }}>
+          {!scanning ? (
+            <button
+              className="btn btn-primary"
+              onClick={() => setScanning(true)}
+            >
+              Scan QR to Check-in
+            </button>
+          ) : (
+            <div>
+              <Scanner
+                onScan={(result) => onScanResult(result)}
+                onError={() => {}}
+                constraints={{ facingMode: "environment" }}
+                style={{ width: 240, height: 240 }}
+              />
+              <button
+                className="btn btn-cancel"
+                onClick={() => setScanning(false)}
+                style={{ marginTop: 8 }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -109,23 +254,27 @@ const Attendance = () => {
         <thead>
           <tr>
             <th>Student ID</th>
-            <th>Student Name</th>
+            <th>Name</th>
+            <th>Subject</th>
             <th>Date</th>
             <th>Day</th>
             <th>Status</th>
-            {user.role === 'admin' && <th>Action</th>}
+            {user.role === "admin" && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
-          {attendance.map((record) => (
-            <tr key={record.id}>
-              <td>{record.student_id}</td>
-              <td>{record.student_name}</td>
-              <td>{record.date}</td>
-              <td>{record.day_of_week}</td>
+          {attendance.map((r) => (
+            <tr key={r.id}>
+              <td>{r.student_id}</td>
+              <td>{r.student_name || "N/A"}</td>
               <td>
-                {editRecordId === record.id ? (
-                  <select className='action-select'
+                {r.subject_code ? `${r.subject_code} - ${r.subject_title}` : "N/A"}
+              </td>
+              <td>{r.date}</td>
+              <td>{r.day_of_week}</td>
+              <td>
+                {editRecordId === r.id ? (
+                  <select
                     value={editStatus}
                     onChange={(e) => setEditStatus(e.target.value)}
                   >
@@ -134,24 +283,22 @@ const Attendance = () => {
                     <option value="Excused">Excused</option>
                   </select>
                 ) : (
-                  record.status
+                  r.status
                 )}
               </td>
-              {user.role === 'admin' && (
+              {user.role === "admin" && (
                 <td>
-                  {editRecordId === record.id ? (
+                  {editRecordId === r.id ? (
                     <>
-                      <div className="action-btns">
-                      <button className="btn btn-save" onClick={() => handleUpdate(record.id)} style={{ marginRight: '5px', color: 'rgba(17, 81, 191, 0.872)' }}>Save</button>
-                        <button className="btn btn-cancel" onClick={() => setEditRecordId(null)} style={{ color: 'gray' }}>Cancel</button>
-                        </div>
+                      <button onClick={() => handleUpdate(r.id)}>Save</button>
+                      <button onClick={() => setEditRecordId(null)}>
+                        Cancel
+                      </button>
                     </>
                   ) : (
-                      <>
-                        <div className="action-btns">
-                      <button className="btn btn-edit" onClick={() => handleEdit(record)} style={{ marginRight: '5px' }}>Edit</button>
-                          <button  className="btn btn-delete" onClick={() => handleDelete(record.id)} style={{ color: 'red' }}>Delete</button>
-                          </div>
+                    <>
+                      <button onClick={() => handleEdit(r)}>Edit</button>
+                      <button onClick={() => handleDelete(r.id)}>Delete</button>
                     </>
                   )}
                 </td>

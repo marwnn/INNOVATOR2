@@ -2,10 +2,11 @@
     max-width: 1200px;
     margin: auto;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.45);
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 128, 0, 0.1);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+    border: 1px solid #c8e6c9;
+    overflow-x: auto;
 }
 
 .grades-container h2 {
@@ -38,17 +39,18 @@
 
 .grades-form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 170px);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
 }
 
-.grades-form-grid input {
+.grades-form-grid input,
+.grades-form-grid select {
     padding: 10px;
     border: 1px solid #a5d6a7; /* light green */
     border-radius: 6px;
     font-size: 14px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #ffffff;
 }
 
 .grade-form button {
@@ -77,16 +79,23 @@
     color: white;
 }
 
-.grades-container table th {
-    background-color: rgba(255, 255, 255, 0.7);
-    color: #2e7d32;
-}
-
 .grades-container table th,
 .grades-container table td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #c8e6c9; /* very light green */
+}
+
+.grades-container table tbody tr:nth-child(even) {
+    background-color: rgba(46, 125, 50, 0.04);
+}
+
+.grades-container table tbody tr:hover {
+    background-color: rgba(46, 125, 50, 0.1);
+}
+
+.grades-container table {
+    font-size: 14px;
 }
 
 .action-buttons {
@@ -125,5 +134,8 @@
 @media screen and (max-width: 768px) {
     .grades-form-grid {
         grid-template-columns: repeat(1, 100%);
+    }
+    .grades-container {
+        padding: 1rem;
     }
 }

@@ -3,8 +3,9 @@ import axios from 'axios';
 import '../styles/StudentList.css';
 
 const StudentList = () => {
-  // Change to 'student' to test non-admin view
-  const [userRole] = useState('admin'); // or 'student'
+  const currentUser = JSON.parse(sessionStorage.getItem("user")) || {};
+  const userRole = currentUser?.role || 'parent';
+  const isAdmin = userRole === 'admin';
 
   const [students, setStudents] = useState([]);
   const [newStudent, setNewStudent] = useState({ name: '', student_id: '', course: '' });
@@ -32,47 +33,73 @@ const StudentList = () => {
     setEditingStudent({ ...editingStudent, [e.target.name]: e.target.value });
   };
 
+  const getAuthToken = () => {
+    const token = sessionStorage.getItem("token");
+    return token ? `Bearer ${token}` : null;
+  };
+
   const addStudent = async () => {
-    if (userRole !== 'admin') return;
+    if (!isAdmin) {
+      alert('Only admin can add students');
+      return;
+    }
 
     if (!newStudent.name.trim() || !newStudent.student_id.trim() || !newStudent.course.trim()) {
       alert('Please fill all fields');
       return;
     }
     try {
-      await axios.post('http://localhost:5000/api/studentlist', newStudent);
+      const token = getAuthToken();
+      await axios.post('http://localhost:5000/api/studentlist', newStudent, {
+        headers: token ? { Authorization: token } : {}
+      });
       setNewStudent({ name: '', student_id: '', course: '' });
       fetchStudents();
     } catch (err) {
       console.error('Error adding student:', err);
+      alert(err.response?.data?.error || 'Failed to add student');
     }
   };
 
   const updateStudent = async () => {
-    if (userRole !== 'admin') return;
+    if (!isAdmin) {
+      alert('Only admin can update students');
+      return;
+    }
 
     if (!editingStudent.name.trim() || !editingStudent.student_id.trim() || !editingStudent.course.trim()) {
       alert('Please fill all fields');
       return;
     }
     try {
-      await axios.put(`http://localhost:5000/api/studentlist/${editingStudent.id}`, editingStudent);
+      const token = getAuthToken();
+      await axios.put(`http://localhost:5000/api/studentlist/${editingStudent.id}`, editingStudent, {
+        headers: token ? { Authorization: token } : {}
+      });
       setEditingStudent(null);
       fetchStudents();
     } catch (err) {
       console.error('Error updating student:', err);
+      alert(err.response?.data?.error || 'Failed to update student');
     }
   };
 
   const deleteStudent = async (id) => {
-    if (userRole !== 'admin') return;
+    if (!isAdmin) {
+      alert('Only admin can delete students');
+      return;
+    }
 
     if (!window.confirm('Are you sure you want to delete this student?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/studentlist/${id}`);
+      const token = getAuthToken();
+      await axios.delete(`http://localhost:5000/api/studentlist/${id}`, {
+        headers: token ? { Authorization: token } : {}
+      });
       fetchStudents();
     } catch (err) {
       console.error('Error deleting student:', err);
+      alert(err.response?.data?.error || 'Failed to delete student');
     }
   };
 
@@ -81,7 +108,7 @@ const StudentList = () => {
       <h2>Student List</h2>
 
       {/* Only admin can add new student */}
-      {userRole === 'admin' && (
+      {isAdmin && (
         <div className="student-form" style={{ marginBottom: '20px' }}>
           <input
             name="name"
@@ -123,7 +150,7 @@ const StudentList = () => {
               <th>Name</th>
               <th>Student ID</th>
               <th>Course</th>
-              {userRole === 'admin' && <th>Actions</th>}
+              {isAdmin && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -132,54 +159,42 @@ const StudentList = () => {
                 <td>{student.id}</td>
 
                 <td>
-                  {editingStudent?.id === student.id ? (
-                    userRole === 'admin' ? (
-                      <input
-                        name="name"
-                        value={editingStudent.name}
-                        onChange={handleEditChange}
-                      />
-                    ) : (
-                      student.name
-                    )
+                  {editingStudent?.id === student.id && isAdmin ? (
+                    <input
+                      name="name"
+                      value={editingStudent.name}
+                      onChange={handleEditChange}
+                    />
                   ) : (
                     student.name
                   )}
                 </td>
 
                 <td>
-                  {editingStudent?.id === student.id ? (
-                    userRole === 'admin' ? (
-                      <input
-                        name="student_id"
-                        value={editingStudent.student_id}
-                        onChange={handleEditChange}
-                      />
-                    ) : (
-                      student.student_id || '-'
-                    )
+                  {editingStudent?.id === student.id && isAdmin ? (
+                    <input
+                      name="student_id"
+                      value={editingStudent.student_id}
+                      onChange={handleEditChange}
+                    />
                   ) : (
                     student.student_id || '-'
                   )}
                 </td>
 
                 <td>
-                  {editingStudent?.id === student.id ? (
-                    userRole === 'admin' ? (
-                      <input
-                        name="course"
-                        value={editingStudent.course}
-                        onChange={handleEditChange}
-                      />
-                    ) : (
-                      student.course || '-'
-                    )
+                  {editingStudent?.id === student.id && isAdmin ? (
+                    <input
+                      name="course"
+                      value={editingStudent.course}
+                      onChange={handleEditChange}
+                    />
                   ) : (
                     student.course || '-'
                   )}
                 </td>
 
-                {userRole === 'admin' && (
+                {isAdmin && (
                   <td>
                     {editingStudent?.id === student.id ? (
                       <>

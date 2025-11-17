@@ -38,6 +38,24 @@ router.post('/', (req, res) => {
   });
 });
 
+// Update a subject
+router.put('/:id', (req, res) => {
+  const id = req.params.id;
+  const { subject_code, subject_title, term, units } = req.body;
+
+  if (!subject_code || !subject_title || !term || !units) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const sql = "UPDATE subjects SET subject_code = ?, subject_title = ?, term = ?, units = ? WHERE id = ?";
+  db.query(sql, [subject_code, subject_title, term, units, id], (err, result) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+    if (result.affectedRows === 0) return res.status(404).json({ error: "Subject not found" });
+    
+    res.json({ message: "Subject updated successfully" });
+  });
+});
+
 // Delete a subject
 router.delete('/:id', (req, res) => {
   const id = req.params.id;

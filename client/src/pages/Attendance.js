@@ -3,6 +3,7 @@ import axios from "axios";
 import QRCode from "react-qr-code";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import "../styles/Attendance.css";
+import { ResponsiveContainer, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 
 const Attendance = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -141,6 +142,47 @@ const Attendance = () => {
     }
   };
 
+  const isAdmin = user.role === "admin";
+  const filteredAttendance = attendance.filter((r) =>
+    isAdmin && selectedSubjectId ? String(r.subject_id) === String(selectedSubjectId) : true
+  );
+  const byDate = {};
+  filteredAttendance.forEach((r) => {
+    const d = r.date;
+    if (!d) return;
+    if (!byDate[d]) byDate[d] = { date: d, Present: 0, Absent: 0, Excused: 0, Total: 0 };
+    byDate[d][r.status] = (byDate[d][r.status] || 0) + 1;
+    byDate[d].Total += 1;
+  });
+  const lineData = Object.values(byDate).sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  function weekKey(dateStr) {
+    const d = new Date(dateStr);
+    const year = d.getFullYear();
+    const oneJan = new Date(year, 0, 1);
+    const week = Math.ceil((((d - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+    return `${year}-W${String(week).padStart(2, "0")}`;
+  }
+  const byWeek = {};
+  filteredAttendance.forEach((r) => {
+    const key = weekKey(r.date);
+    if (!byWeek[key]) byWeek[key] = { week: key, present: 0, total: 0 };
+    if (r.status === "Present") byWeek[key].present += 1;
+    byWeek[key].total += 1;
+  });
+  const barData = Object.values(byWeek)
+    .map((w) => ({ week: w.week, rate: w.total ? Math.round((w.present / w.total) * 100) : 0 }))
+    .sort((a, b) => a.week.localeCompare(b.week));
+
+  const totals = { Present: 0, Absent: 0, Excused: 0 };
+  filteredAttendance.forEach((r) => {
+    if (totals[r.status] !== undefined) totals[r.status] += 1;
+  });
+  const pieData = Object.entries(totals).map(([name, value]) => ({ name, value }));
+  const pieColors = ["#27ae60", "#c0392b", "#f1c40f"];
+
   return (
     <div className="attendance-container">
       <h2 className="attendance-title">Attendance</h2>
@@ -249,6 +291,54 @@ const Attendance = () => {
           )}
         </div>
       )}
+
+      <div className="charts-section">
+        <h3 className="charts-title">Attendance Trends</h3>
+        <div className="chart-grid">
+          <div className="chart-card">
+            <h4>Daily Status Counts</h4>
+            <ResponsiveContainer width="100%" height={240}>
+              <LineChart data={lineData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="Present" stroke="#27ae60" />
+                <Line type="monotone" dataKey="Absent" stroke="#c0392b" />
+                <Line type="monotone" dataKey="Excused" stroke="#f1c40f" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chart-card">
+            <h4>Weekly Attendance Rate (%)</h4>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={barData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis domain={[0, 100]} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="rate" fill="#2ecc71" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chart-card">
+            <h4>Status Distribution</h4>
+            <ResponsiveContainer width="100%" height={240}>
+              <PieChart>
+                <Tooltip />
+                <Legend />
+                <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={80}>
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
 
       <table className="attendance-table">
         <thead>

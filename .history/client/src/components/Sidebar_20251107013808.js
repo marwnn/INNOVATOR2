@@ -65,7 +65,9 @@ const Sidebar = () => {
         <Link to="/dashboard/subjects" className="sidebar-item">
           <MenuBookOutlinedIcon className="icon" /> Subjects 
         </Link>
-         
+         <Link to="/dashboard/schedule" className="sidebar-item">
+          <EventNoteOutlinedIcon className="icon" />Schedule
+        </Link>
         <Link to="/dashboard/grades"className="sidebar-item">
           <SchoolOutlinedIcon className="icon" /> Grades
         </Link>

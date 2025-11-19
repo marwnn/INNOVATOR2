@@ -137,31 +137,3 @@
   opacity: 0.9;
   text-decoration: underline;
 }
-
-.charts-section {
-  margin: 24px 0;
-}
-
-.charts-title {
-  font-size: 20px;
-  color: #2d8659;
-  margin-bottom: 12px;
-}
-
-.chart-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-.chart-card {
-  border: 1px solid #c8e6c9;
-  border-radius: 12px;
-  padding: 12px;
-  background: #ffffff;
-}
-
-.chart-card h4 {
-  margin: 0 0 8px;
-  color: #2d8659;
-}

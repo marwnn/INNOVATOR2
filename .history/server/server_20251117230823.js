@@ -43,22 +43,21 @@ db.connect((err) => {
 });
 
 // =======================
-// VERIFY ADMIN MIDDLEWARE
+// STUDENTLIST CRUD ROUTES
 // =======================
+
+// Helper function to verify admin role
 const verifyAdmin = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     db.query("SELECT role FROM users WHERE id = ?", [decoded.id], (err, results) => {
       if (err) return res.status(500).json({ error: "Database error" });
-
       if (results.length === 0 || results[0].role !== "admin") {
         return res.status(403).json({ error: "Only admin can perform this action" });
       }
-
       req.user = decoded;
       next();
     });
@@ -67,22 +66,17 @@ const verifyAdmin = (req, res, next) => {
   }
 };
 
-// =======================
-// STUDENTLIST CRUD ROUTES (FIXED)
-// =======================
-
-// CREATE student
+// CREATE student (Admin only)
 app.post("/api/studentlist", verifyAdmin, (req, res) => {
+// CREATE student
+app.post("/api/studentlist", (req, res) => {
   const { name, student_id, course } = req.body;
-
   if (!name) return res.status(400).json({ error: "Name is required" });
 
   const query =
     "INSERT INTO students (name, student_id, course) VALUES (?, ?, ?)";
-
   db.query(query, [name, student_id || null, course || null], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-
     res.status(201).json({ message: "Student added", id: result.insertId });
   });
 });
@@ -90,16 +84,16 @@ app.post("/api/studentlist", verifyAdmin, (req, res) => {
 // READ all students
 app.get("/api/studentlist", (req, res) => {
   const query = "SELECT * FROM students";
-
   db.query(query, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-
     res.json(results);
   });
 });
 
-// UPDATE student
+// UPDATE student (Admin only)
 app.put("/api/studentlist/:id", verifyAdmin, (req, res) => {
+// UPDATE student
+app.put("/api/studentlist/:id", (req, res) => {
   const { name, student_id, course } = req.body;
   const { id } = req.params;
 
@@ -107,29 +101,24 @@ app.put("/api/studentlist/:id", verifyAdmin, (req, res) => {
 
   const query =
     "UPDATE students SET name = ?, student_id = ?, course = ? WHERE id = ?";
-
   db.query(query, [name, student_id, course, id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-
     if (result.affectedRows === 0)
       return res.status(404).json({ error: "Student not found" });
-
     res.json({ message: "Student updated" });
   });
 });
 
-// DELETE student
+// DELETE student (Admin only)
 app.delete("/api/studentlist/:id", verifyAdmin, (req, res) => {
+// DELETE student
+app.delete("/api/studentlist/:id", (req, res) => {
   const { id } = req.params;
-
   const query = "DELETE FROM students WHERE id = ?";
-
   db.query(query, [id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-
     if (result.affectedRows === 0)
       return res.status(404).json({ error: "Student not found" });
-
     res.json({ message: "Student deleted" });
   });
 });
@@ -149,7 +138,7 @@ app.use("/api/messagenotif", messagenotifRoutes);
 app.use("/api/subjectlist", subjectlist);
 
 // =======================
-// MULTER SETUP
+// MULTER SETUP (Profile Uploads)
 // =======================
 const storage = multer.diskStorage({
   destination: "./uploads/",
@@ -176,7 +165,6 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
       [imageUrl, userId],
       (err) => {
         if (err) return res.status(500).json({ error: "Database error" });
-
         res.json({ message: "Profile picture updated!", profilePic: imageUrl });
       }
     );
@@ -185,7 +173,7 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
   }
 });
 
-// Serve Uploaded Files
+// Serve Uploaded Images
 app.use("/uploads", express.static("uploads"));
 
 // =======================
@@ -193,15 +181,14 @@ app.use("/uploads", express.static("uploads"));
 // =======================
 app.delete("/delete-account", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
 
-    db.query("DELETE FROM users WHERE id = ?", [decoded.id], (err) => {
+    db.query("DELETE FROM users WHERE id = ?", [userId], (err) => {
       if (err) return res.status(500).json({ error: "Database error" });
-
       res.json({ message: "Account deleted successfully" });
     });
   } catch {
@@ -223,7 +210,6 @@ app.post("/help", (req, res) => {
     [userName, issue],
     (err) => {
       if (err) return res.status(500).json({ error: "Failed to save complaint." });
-
       res.json({ success: true, message: "Issue submitted successfully." });
     }
   );
@@ -248,13 +234,13 @@ app.post("/register", (req, res) => {
       if (err) return res.status(500).json({ error: "Error hashing password" });
 
       const role = "parent";
-
+      const sql =
+        "INSERT INTO users (name, email, password, contact_number, role, profile_pic) VALUES (?, ?, ?, ?, ?, ?)";
       db.query(
-        "INSERT INTO users (name, email, password, contact_number, role, profile_pic) VALUES (?, ?, ?, ?, ?, ?)",
+        sql,
         [name, email, hashedPassword, contactNumber, role, null],
         (err) => {
           if (err) return res.status(500).json({ error: "Internal Server Error" });
-
           res.json({ message: "User registered successfully!", role });
         }
       );
@@ -279,11 +265,9 @@ app.post("/login", (req, res) => {
 
     const user = results[0];
 
-    bcrypt.compare(password, user.password, (err, matched) => {
+    bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) return res.status(500).json({ error: "Error processing login" });
-
-      if (!matched)
-        return res.status(401).json({ error: "Invalid credentials!" });
+      if (!isMatch) return res.status(401).json({ error: "Invalid credentials!" });
 
       const token = jwt.sign(
         { id: user.id, role: user.role },
@@ -306,7 +290,7 @@ app.post("/login", (req, res) => {
 });
 
 // =======================
-// ROOT ROUTE
+// ROOT ROUTE FIX
 // =======================
 app.get("/", (req, res) => {
   res.send("✅ Parents Portal backend is running successfully!");
@@ -318,4 +302,5 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-});
+}
+}

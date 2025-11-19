@@ -75,9 +75,7 @@ const Sidebar = () => {
         <Link to="/dashboard/announcements" className="sidebar-item">
           <CampaignOutlinedIcon className="icon" /> Announcements 
         </Link>
-         <Link to="/dashboard/events" className="sidebar-item">
-          <CalendarTodayOutlinedIcon className="icon" />Events
-        </Link>
+         
         <Link to= "/dashboard/messages"  className="sidebar-item">
           <SmsOutlinedIcon  className="icon" /> Messages
         </Link>

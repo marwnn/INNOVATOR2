@@ -148,7 +148,7 @@ app.use("/api/schedule", scheduleRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/messagenotif", messagenotifRoutes);
 app.use("/api/subjectlist", subjectlist);
-app.use("/api/activity_logs", activityLogsRoutes);
+app.use("/api/activitylogs", activityLogsRoutes);
 
 // =======================
 // MULTER SETUP
@@ -293,35 +293,6 @@ app.post("/login", (req, res) => {
         { expiresIn: "1h" }
       );
 
-      if (user.role !== "admin") {
-        const resolveSql = `
-          SELECT s.id AS sid
-          FROM users u
-          JOIN students s ON TRIM(LOWER(s.name)) = TRIM(LOWER(u.name))
-          WHERE u.id = ?
-          UNION
-          SELECT s2.id AS sid
-          FROM users u2
-          JOIN students s2 ON s2.id = u2.id
-          WHERE u2.id = ?
-          UNION
-          SELECT s3.id AS sid
-          FROM users u3
-          JOIN students s3 ON CAST(s3.student_id AS CHAR) = CAST(u3.id AS CHAR)
-          WHERE u3.id = ?
-          LIMIT 1
-        `;
-        db.query(resolveSql, [user.id, user.id, user.id], (mapErr, rows) => {
-          if (!mapErr && rows && rows.length) {
-            const sid = rows[0].sid;
-            db.query(
-              "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'login', ?)",
-              [sid, user.id, "User logged in"]
-            );
-          }
-        });
-      }
-
       res.json({
         message: "Login successful!",
         token,
@@ -334,54 +305,6 @@ app.post("/login", (req, res) => {
       });
     });
   });
-});
-
-// =======================
-// USER LOGOUT (activity log)
-// =======================
-app.post("/logout", (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    db.query("SELECT * FROM users WHERE id = ?", [decoded.id], (err, results) => {
-      if (err) return res.status(500).json({ error: "Internal Server Error" });
-      if (!results.length) return res.status(404).json({ error: "User not found" });
-      const user = results[0];
-      if (user.role !== "admin") {
-        const resolveSql = `
-          SELECT s.id AS sid
-          FROM users u
-          JOIN students s ON TRIM(LOWER(s.name)) = TRIM(LOWER(u.name))
-          WHERE u.id = ?
-          UNION
-          SELECT s2.id AS sid
-          FROM users u2
-          JOIN students s2 ON s2.id = u2.id
-          WHERE u2.id = ?
-          UNION
-          SELECT s3.id AS sid
-          FROM users u3
-          JOIN students s3 ON CAST(s3.student_id AS CHAR) = CAST(u3.id AS CHAR)
-          WHERE u3.id = ?
-          LIMIT 1
-        `;
-        db.query(resolveSql, [user.id, user.id, user.id], (mapErr, rows) => {
-          if (!mapErr && rows && rows.length) {
-            const sid = rows[0].sid;
-            db.query(
-              "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'logout', ?)",
-              [sid, user.id, "User logged out"]
-            );
-          }
-        });
-      }
-      res.json({ message: "Logged out" });
-    });
-  } catch {
-    return res.status(401).json({ error: "Invalid Token" });
-  }
 });
 
 // =======================

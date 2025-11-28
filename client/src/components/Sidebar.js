@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import MapsHomeWorkOutlinedIcon from '@mui/icons-material/MapsHomeWorkOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
@@ -31,10 +32,14 @@ const Sidebar = () => {
    // ✅ Logout Function
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      sessionStorage.clear();
-      sessionStorage.removeItem("user");
-      sessionStorage.removeItem("token");
-      navigate("/");
+      const token = sessionStorage.getItem("token");
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      axios.post("http://localhost:5000/logout", {}, { headers }).finally(() => {
+        sessionStorage.clear();
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        navigate("/");
+      });
     }
   };
   
@@ -72,6 +77,11 @@ const Sidebar = () => {
         <Link to="/dashboard/attendance" className="sidebar-item">
           <ChecklistOutlinedIcon className="icon" /> Attendance Record
         </Link>
+        {user?.role === "admin" && (
+          <Link to="/dashboard/activity-logs" className="sidebar-item">
+            <EventNoteOutlinedIcon className="icon" /> Activity Logs
+          </Link>
+        )}
         <Link to="/dashboard/announcements" className="sidebar-item">
           <CampaignOutlinedIcon className="icon" /> Announcements 
         </Link>

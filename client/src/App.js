@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Schedule from "./pages/Schedule"; 
 import Grades from "./pages/Grades"; 
 import Attendance from "./pages/Attendance"; 
+import ActivityLogs from "./pages/ActivityLogs";
 import Announcements from "./pages/Announcements"; 
 import Events from "./pages/Events"; 
 import StudentList from "./pages/StudentList"
@@ -67,6 +68,7 @@ function App() {
           <Route path="grades" element={<ProtectedRoute element={<Grades />} allowedRoles={["admin", "parent"]} />} />
 
           <Route path="attendance" element={<ProtectedRoute element={<Attendance />} allowedRoles={["admin", "parent"]} />} />
+          <Route path="activity-logs" element={<ProtectedRoute element={<ActivityLogs />} allowedRoles={["admin"]} />} />
           <Route path="announcements" element={<ProtectedRoute element={<Announcements />} allowedRoles={["admin", "parent"]} />} />
           <Route path="events" element={<ProtectedRoute element={<Events />} allowedRoles={["admin", "parent"]} />} />
            <Route path="messages" element={<ProtectedRoute element={<Messages />} allowedRoles={["admin", "parent"]} />} />

@@ -6,33 +6,13 @@
   gap: 1.5rem;
   min-height: 100vh;
   padding: 4rem 2rem;
-  color: #eaffea;
+  background: 
+    linear-gradient(165deg, rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+    url("R2.jpg") center/cover no-repeat;
+  color: white;
   text-align: center;
   position: relative;
-
-  background: radial-gradient(circle at center, #39ff14 0%, #32ff12 40%, #19cc00 100%);
-  animation: neonGlow 3s infinite alternate ease-in-out;
 }
-
-.landing::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  filter: blur(40px) brightness(2);
-  z-index: -1;
-}
-
-@keyframes neonGlow {
-  0% {
-    filter: brightness(1.1);
-  }
-  100% {
-    filter: brightness(1.5);
-  }
-}
-
-
 
 
 .landing-logo {
@@ -112,7 +92,7 @@
 }
 
 .auth-form {
-  background: rgba(230, 230, 223, 0.7);
+  background: white;
   padding: 3rem 2.5rem;
   border-radius: 24px;
   width: 400px;

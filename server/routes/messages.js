@@ -67,6 +67,30 @@ router.post('/', (req, res) => {
       db.query(messagenotifQuery, [receiver_id, notifMessage], (err) => {
         if (err) return res.status(500).json({ error: "Message sent but failed to notify" });
 
+        // Log activity for sender
+        const resolveSender = "SELECT id FROM students WHERE TRIM(LOWER(name)) = TRIM(LOWER((SELECT name FROM users WHERE id = ?))) LIMIT 1";
+        db.query(resolveSender, [sender_id], (rsErr, rsRows) => {
+          if (!rsErr && rsRows && rsRows.length) {
+            const sid = rsRows[0].id;
+            db.query(
+              "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'message_send', ?)",
+              [sid, sender_id, `Sent a message to user ${receiver_id}`]
+            );
+          }
+        });
+
+        // Log activity for receiver (if receiver is a student)
+        const resolveReceiver = "SELECT id FROM students WHERE TRIM(LOWER(name)) = TRIM(LOWER((SELECT name FROM users WHERE id = ?))) LIMIT 1";
+        db.query(resolveReceiver, [receiver_id], (rrErr, rrRows) => {
+          if (!rrErr && rrRows && rrRows.length) {
+            const sid = rrRows[0].id;
+            db.query(
+              "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'message_receive', ?)",
+              [sid, sender_id, `Received a message from user ${sender_id}`]
+            );
+          }
+        });
+
         res.json({ message: "Message sent", id: result.insertId });
       });
     });

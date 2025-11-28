@@ -26,9 +26,12 @@ const Attendance = () => {
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [fetchError, setFetchError] = useState("");
+  const [activityLogs, setActivityLogs] = useState([]);
+  const [showLogs, setShowLogs] = useState(true);
 
   useEffect(() => {
     fetchAttendance();
+    fetchLogs();
     const stored = sessionStorage.getItem("qrSession");
     if (stored) {
       try { setQrSession(JSON.parse(stored)); } catch {}
@@ -44,7 +47,11 @@ const Attendance = () => {
         .catch(() => {});
     }
     const id = setInterval(fetchAttendance, 2000);
-    return () => clearInterval(id);
+    const lid = setInterval(fetchLogs, 3000);
+    return () => {
+      clearInterval(id);
+      clearInterval(lid);
+    };
   }, []);
 
   const fetchAttendance = async () => {
@@ -58,6 +65,20 @@ const Attendance = () => {
       setFetchError(err.response?.data?.error || err.message || "Failed to load attendance");
     }
   };
+
+  const fetchLogs = async () => {
+    try {
+      const params = user.role !== "admin"
+        ? { user_id: user.id }
+        : (selectedStudentId ? { student_id: selectedStudentId } : {});
+      const res = await axios.get("http://localhost:5000/api/activity-logs", { params });
+      setActivityLogs(Array.isArray(res.data) ? res.data : []);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (user.role === "admin") fetchLogs();
+  }, [selectedStudentId]);
 
   const handleAdd = async () => {
     if (!selectedStudentId || !newRecord.date || !newRecord.status) {
@@ -394,6 +415,41 @@ const Attendance = () => {
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
+
+      <div className="charts-section" style={{ marginTop: 24 }}>
+        <h3 className="charts-title">Activity Logs</h3>
+        <div style={{ marginBottom: 12 }}>
+          <button className="btn btn-primary" onClick={() => setShowLogs(!showLogs)}>
+            {showLogs ? "Hide" : "Show"} Logs
+          </button>
+        </div>
+        {showLogs && (
+          <div style={{ background: "#fff", border: "1px solid #c8e6c9", borderRadius: 12, padding: 12 }}>
+            <table className="attendance-table">
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activityLogs.length === 0 ? (
+                  <tr><td colSpan={3} style={{ textAlign: 'center', color: '#777' }}>No activity yet.</td></tr>
+                ) : (
+                  activityLogs.map((l) => (
+                    <tr key={l.id}>
+                      <td>{new Date(l.created_at).toLocaleString()}</td>
+                      <td>{l.type}</td>
+                      <td>{l.description}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>

@@ -42,6 +42,11 @@ router.post("/", (req, res) => {
       "INSERT INTO attendance (student_id, date, day_of_week, status) VALUES (?, ?, ?, ?)";
     db.query(sql, [sid, date, day_of_week, status], (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
+      const desc = `Manual add: ${status} on ${date}`;
+      db.query(
+        "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, NULL, 'attendance_add', ?)",
+        [sid, desc]
+      );
       res.json({ id: result.insertId });
     });
   };
@@ -71,6 +76,20 @@ router.put("/:id", (req, res) => {
     [req.body.status, req.params.id],
     (err) => {
       if (err) return res.status(500).json({ error: err.message });
+      db.query(
+        "SELECT student_id, date FROM attendance WHERE id = ?",
+        [req.params.id],
+        (e2, rows) => {
+          if (!e2 && rows && rows.length) {
+            const r = rows[0];
+            const desc = `Status updated to ${req.body.status} on ${r.date}`;
+            db.query(
+              "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, NULL, 'attendance_update', ?)",
+              [r.student_id, desc]
+            );
+          }
+        }
+      );
       res.json({ message: "Updated" });
     }
   );
@@ -80,6 +99,10 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   db.query("DELETE FROM attendance WHERE id = ?", [req.params.id], (err) => {
     if (err) return res.status(500).json({ error: err.message });
+    db.query(
+      "INSERT INTO activity_logs (student_id, actor_user_id, type, description) SELECT student_id, NULL, 'attendance_delete', CONCAT('Deleted record on ', date) FROM attendance WHERE id = ?",
+      [req.params.id]
+    );
     res.json({ message: "Deleted" });
   });
 });
@@ -151,6 +174,11 @@ router.post("/qr-checkin", (req, res) => {
             `;
             db.query(insertSql, [student_id, subject_id], (e3) => {
               if (e3) return res.status(500).json({ error: e3.message });
+              const desc = `QR check-in for subject ${subject_id}`;
+              db.query(
+                "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'qr_checkin', ?)",
+                [student_id, user_id, desc]
+              );
               res.json({ message: "Attendance recorded" });
             });
           };
@@ -184,11 +212,19 @@ router.post("/qr-session/:token/mark-absent", (req, res) => {
 
         students.forEach((s) => {
           db.query(
-            `INSERT IGNORE INTO attendance (student_id, subject_id, date, day_of_week, status)
-             VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Absent')`,
+            `
+            INSERT IGNORE INTO attendance 
+            (student_id, subject_id, date, day_of_week, status)
+            VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Absent')
+          `,
             [s.id, subject_id]
           );
+          db.query(
+            "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, NULL, 'qr_mark_absent', ?)",
+            [s.id, `Marked absent via QR session for subject ${subject_id}`]
+          );
         });
+
         res.json({ message: "Absentees marked" });
       });
     }

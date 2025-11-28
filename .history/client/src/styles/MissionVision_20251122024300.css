@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #a8e063 50, #56ab2f 100%);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
+
+.mv-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: 100vh;
+  width: 100vw;
+  padding: 100px 20px 40px; /* increased top padding to push down content */
+  box-sizing: border-box;
+  color: #f7eb05;
+  text-align: center;
+  gap: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mv-container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(223, 237, 32, 0.18) 0%, transparent 70%);
+  animation: pulse 8s ease-in-out infinite;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.1;
+  }
+}
+.mv-title {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  font-weight: 800;
+  font-size: 3rem;
+  letter-spacing: 0.15em;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  color: #1def06;           /* Green text */
+ 
+  display: inline-block;    /* Shrink to fit text */
+  padding: 0 10px;          /* Optional: some spacing around */
+  border-radius: 5px;       /* Optional: rounded background */
+}
+
+.mv-section {
+  position: relative;
+  background: transparent;
+  border-radius: 15px;
+  border: 1px solid #07f10f;
+  box-shadow: 0 4px 16px rgba(46, 125, 50);
+  padding: 40px 30px;
+  width: 400px;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  transition: box-shadow 0.3s ease;
+  z-index: 1;
+}
+
+
+.mv-section:hover {
+  box-shadow: 0 6px 24px rgb(55, 221, 64);
+}
+
+.mv-heading {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #08f342;
+  text-shadow: 0 2px 5px rgba(230, 255, 4);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mv-text {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: #000000;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-align: left; /* Add this */
+}
+
+
+
+/* Responsive: stack vertically on smaller screens */
+@media (max-width: 900px) {
+  .mv-container {
+    flex-direction: column;
+    gap: 30px;
+    padding-top: 100px;
+  }
+  .mv-section {
+    width: 90vw;
+    padding: 30px 20px;
+  }
+  .mv-title {
+    font-size: 2.4rem;
+    top: 20px;
+  }
+}

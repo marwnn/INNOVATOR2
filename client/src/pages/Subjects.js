@@ -5,7 +5,7 @@ import '../styles/StudentList.css';
 const Subjects = () => {
   const user = JSON.parse(sessionStorage.getItem('user'));
   const [subjects, setSubjects] = useState([]);
-  const [newSubject, setNewSubject] = useState({ subject_code: '', subject_title: '', term: '', units: '' });
+  const [newSubject, setNewSubject] = useState({ subject_code: '', subject_title: '', units: '' });
   const [editingSubject, setEditingSubject] = useState(null);
 
   useEffect(() => {
@@ -33,13 +33,13 @@ const Subjects = () => {
   const addSubject = async () => {
     if (user.role !== 'admin') return;
 
-    if (!newSubject.subject_code.trim() || !newSubject.subject_title.trim() || !newSubject.term.trim() || !newSubject.units.trim()) {
+    if (!String(newSubject.subject_code || '').trim() || !String(newSubject.subject_title || '').trim() || !String(newSubject.units ?? '').trim()) {
       alert('Please fill all fields');
       return;
     }
     try {
       await axios.post('http://localhost:5000/api/subjects', newSubject);
-      setNewSubject({ subject_code: '', subject_title: '', term: '', units: '' });
+      setNewSubject({ subject_code: '', subject_title: '', units: '' });
       fetchSubjects();
     } catch (err) {
       console.error('Error adding subject:', err);
@@ -50,7 +50,7 @@ const Subjects = () => {
   const updateSubject = async () => {
     if (user.role !== 'admin') return;
 
-    if (!editingSubject.subject_code.trim() || !editingSubject.subject_title.trim() || !editingSubject.term.trim() || !editingSubject.units.trim()) {
+    if (!String(editingSubject?.subject_code || '').trim() || !String(editingSubject?.subject_title || '').trim() || !String(editingSubject?.units ?? '').trim()) {
       alert('Please fill all fields');
       return;
     }
@@ -98,13 +98,7 @@ const Subjects = () => {
             onChange={handleInputChange}
             style={{ marginRight: '10px' }}
           />
-          <input
-            name="term"
-            placeholder="Term"
-            value={newSubject.term}
-            onChange={handleInputChange}
-            style={{ marginRight: '10px' }}
-          />
+
           <input
             name="units"
             placeholder="Units"
@@ -130,7 +124,7 @@ const Subjects = () => {
               <th>ID</th>
               <th>Subject Code</th>
               <th>Subject Title</th>
-              <th>Term</th>
+
               <th>Units</th>
               {user.role === 'admin' && <th>Actions</th>}
             </tr>
@@ -174,22 +168,7 @@ const Subjects = () => {
                   )}
                 </td>
 
-                <td>
-                  {editingSubject?.id === subject.id ? (
-                    user.role === 'admin' ? (
-                      <input
-                        name="term"
-                        value={editingSubject.term}
-                        onChange={handleEditChange}
-                        style={{ width: '100%' }}
-                      />
-                    ) : (
-                      subject.term || '-'
-                    )
-                  ) : (
-                    subject.term || '-'
-                  )}
-                </td>
+
 
                 <td>
                   {editingSubject?.id === subject.id ? (

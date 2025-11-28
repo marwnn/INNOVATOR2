@@ -4,9 +4,7 @@ import axios from "axios";
 import ProfileUpload from "./ProfileUpload";
 import "../styles/Profile.css";
 import ClearIcon from '@mui/icons-material/Clear';
-import CallEndRoundedIcon from '@mui/icons-material/CallEndRounded';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -61,32 +59,21 @@ const Profile = () => {
   return (
     <div className="profile-page">
     <div className="profile-header">
-
-      <button onClick={goBackToDashboard} className="back-btn"><ClearIcon className="clearIcon"/></button>
-        <p style={{ fontSize:"23px", color: "rgb(49, 49, 49)", margin:"5px 0 10px 0", padding:"0 0 0 10px", display:"flex"}}> My Profile</p>
+        <p className="profile-title">My Profile</p>
+        <button className="exit-btn" onClick={goBackToDashboard}><ClearIcon className="exitIcon" /></button>
       </div>
-      <br></br>
-      <img
-        key={user?.profilePic} // Force re-render when profilePic changes
-        src={user?.profilePic || "/default-profile.png"}
-        alt="Profile"
-        className="profile-pic-large"
-      />
-      <h3>{user?.name || "Unknown"}</h3>
-      <div className="info" style={{textAlign:"left"}}>
-        <br></br>
-        
-        <p style={{fontSize: "16px" }}>Account information </p>
-        <br></br>
-      <PersonOutlineOutlinedIcon style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
-        <p style={{ paddingBottom:"5px",fontFamily: "Arial", fontSize: "14px", borderBottom:"1px solid rgb(208, 208, 208)" }}>Role: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.role || "Unknown Role"}</span></p>
-        <br></br>
-        < EmailOutlinedIcon style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
-        <p style={{ paddingBottom:"5px", fontFamily: "Arial", fontSize: "14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Email address: <span style={{ opacity:"80%", fontWeight: 'normal' }}>{user?.email || "N/A"}</span></p>
-        <br></br>
-       <CallEndRoundedIcon  style={{fontSize:"15px", color:"rgb(128, 128, 128)"}}/>
-        <p style={{ paddingBottom:"5px", fontFamily:"Arial",fontSize:"14px",borderBottom:"1px solid rgb(208, 208, 208)" }} >Contact number: <span style={{opacity:"80%", fontWeight:'normal'}}>{user?.contactNumber || "N/A"}</span></p>
-          </div>
+      <div className="profile-center">
+        <img
+          src={user?.profilePic || "/default-profile.png"}
+          alt="Profile"
+          className="profile-pic-large"
+        />
+      </div>
+      <div className="info">
+        <div className="info-row">Name: <span>{user?.name || "Unknown"}</span></div>
+        <div className="info-row">Email address: <span>{user?.email || "N/A"}</span></div>
+        <div className="info-row">Contact number: <span>{user?.contactNumber || "N/A"}</span></div>
+      </div>
       <ProfileUpload onUploadSuccess={handleUploadSuccess} />
     </div>
   );

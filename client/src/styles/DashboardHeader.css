@@ -89,27 +89,7 @@
   position: relative;
 }
 
-/* Notification Dot */
-.notif-section::after,
-.message-notif-section::after {
-  content: '';
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background: #ff4757;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(255, 71, 87, 0.3);
-  animation: pulse 2s infinite;
-}
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
-}
 
 /* Notification Dropdowns */
 .notif-dropdown,

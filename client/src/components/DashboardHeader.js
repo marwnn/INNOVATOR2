@@ -132,7 +132,6 @@ const DashboardHeader = () => {
         
       </div>
 
-      {/* Notifications & Profile */}
       <div className="header-right">
         {/* Message Notification */}
         <div

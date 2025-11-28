@@ -92,15 +92,15 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const { student_id, school_year, term, subject_code, subject_title, grade, units } = req.body;
 
-  if (!student_id || !school_year || !term || !subject_code || !subject_title || !grade || !units) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!student_id || !school_year || !subject_code || !subject_title || !grade || !units) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   const sql = `
     INSERT INTO grades (student_id, school_year, term, subject_code, subject_title, grade, units)
     VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-  db.query(sql, [student_id, school_year, term, subject_code, subject_title, grade, units], (err, result) => {
+  db.query(sql, [student_id, school_year, term || null, subject_code, subject_title, grade, units], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin added a new grade: ${subject_title}`;
@@ -115,8 +115,8 @@ router.put('/:id', (req, res) => {
   const { student_id, school_year, term, subject_code, subject_title, grade, units } = req.body;
   const gradeId = req.params.id;
 
-  if (!school_year || !term || !subject_code || !subject_title || !grade || !units) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!school_year || !subject_code || !subject_title || !grade || !units) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   const sql = `
@@ -124,7 +124,7 @@ router.put('/:id', (req, res) => {
     SET school_year = ?, term = ?, subject_code = ?, subject_title = ?, grade = ?, units = ?
     WHERE id = ?`;
 
-  db.query(sql, [school_year, term, subject_code, subject_title, grade, units, gradeId], (err) => {
+  db.query(sql, [school_year, term || null, subject_code, subject_title, grade, units, gradeId], (err) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const message = `Admin updated a grade: ${subject_title}`;

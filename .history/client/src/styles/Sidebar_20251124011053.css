@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #4caf50 0%,
+        #43a047 40%,
+        #388e3c 70%,
+        #2e7d32 100%
+    );
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 101;
+    overflow-y: auto;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    border-right: 2px solid #1b5e20;
+}
+
+/* Open state */
+.sidebar.open {
+    transform: translateX(0);
+}
+
+
+/* Menu title */
+.menu-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    opacity: 0.9;
+    letter-spacing: 1px;
+}
+
+/* Sidebar items */
+.sidebar-menu {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.sidebar-item .icon {
+    margin-right: 12px;
+    color: #ffffff;
+    transition: color 0.3s;
+    font-size: 20px;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+}
+
+.sidebar-item:active,
+.sidebar-item.active {
+    background-color: rgba(255, 255, 255, 0.25);
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.sidebar-item:active .icon,
+.sidebar-item.active .icon {
+    color: #ebe0e0;
+}
+
+/* Bottom items */
+.sidebar-other {
+    margin-top: auto;
+}
+
+.logout-btn:active {
+    color: #dd0b0b;
+}
+
+/* Toggle Button */
+.sidebar-toggle {
+    display: block;
+    position: fixed;
+    top: 36px;
+    left: 15px;
+    background-color: #0b8a36;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 15px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    z-index: 1000;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.sidebar-toggle:hover {
+    background-color: #0e6b2c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
+
+ 

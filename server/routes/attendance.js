@@ -8,7 +8,13 @@ router.get("/", (req, res) => {
   const userId = req.query.user_id;
 
   let query = `
-    SELECT a.*, s.name AS student_name, sub.subject_code, sub.subject_title
+    SELECT 
+      a.*, 
+      s.id AS student_id,
+      s.name AS student_name,
+      s.student_id AS student_code,
+      sub.subject_code,
+      sub.subject_title
     FROM attendance a
     LEFT JOIN students s ON a.student_id = s.id
     LEFT JOIN subjects sub ON a.subject_id = sub.id
@@ -31,12 +37,31 @@ router.post("/", (req, res) => {
   if (!student_id || !date || !status)
     return res.status(400).json({ error: "Missing fields" });
 
-  const sql =
-    "INSERT INTO attendance (student_id, date, day_of_week, status) VALUES (?, ?, ?, ?)";
-  db.query(sql, [student_id, date, day_of_week, status], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: result.insertId });
-  });
+  const insertRow = (sid) => {
+    const sql =
+      "INSERT INTO attendance (student_id, date, day_of_week, status) VALUES (?, ?, ?, ?)";
+    db.query(sql, [sid, date, day_of_week, status], (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: result.insertId });
+    });
+  };
+
+  const numericId = Number(student_id);
+  if (!Number.isNaN(numericId)) {
+    insertRow(numericId);
+  } else {
+    db.query("SHOW COLUMNS FROM students LIKE 'student_code'", (colErr, cols) => {
+      if (colErr) return res.status(500).json({ error: colErr.message });
+      const sql = cols.length
+        ? "SELECT id FROM students WHERE student_code = ? LIMIT 1"
+        : "SELECT id FROM students WHERE student_id = ? LIMIT 1";
+      db.query(sql, [student_id], (e, rows) => {
+        if (e) return res.status(500).json({ error: e.message });
+        if (!rows.length) return res.status(400).json({ error: "Student not found" });
+        insertRow(rows[0].id);
+      });
+    });
+  }
 });
 
 // Update
@@ -63,17 +88,25 @@ router.delete("/:id", (req, res) => {
 router.post("/qr-session", (req, res) => {
   const { subject_id, expiresInMinutes } = req.body;
   if (!subject_id) return res.status(400).json({ error: "subject_id required" });
-  const token = crypto.randomBytes(16).toString("hex");
-  const sql =
-    "INSERT INTO attendance_sessions (token, subject_id, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))";
-  db.query(sql, [token, subject_id, expiresInMinutes || 15], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({
-      token,
-      subject_id,
-      expiresAt: new Date(Date.now() + (expiresInMinutes || 15) * 60000),
-    });
-  });
+  db.query(
+    "SELECT id FROM attendance_sessions WHERE subject_id = ? AND DATE(expires_at) = CURDATE() LIMIT 1",
+    [subject_id],
+    (checkErr, rows) => {
+      if (checkErr) return res.status(500).json({ error: checkErr.message });
+      if (rows && rows.length) return res.status(400).json({ error: "A QR session has already been generated for this subject today" });
+      const token = crypto.randomBytes(16).toString("hex");
+      const sql =
+        "INSERT INTO attendance_sessions (token, subject_id, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))";
+      db.query(sql, [token, subject_id, expiresInMinutes || 15], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({
+          token,
+          subject_id,
+          expiresAt: new Date(Date.now() + (expiresInMinutes || 15) * 60000),
+        });
+      });
+    }
+  );
 });
 
 // Deactivate session
@@ -109,13 +142,26 @@ router.post("/qr-checkin", (req, res) => {
           return res.status(400).json({ error: "Student not found" });
 
         const student_id = studentRows[0].id;
-        const insertSql = `
-          INSERT INTO attendance (student_id, subject_id, date, day_of_week, status)
-          VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Present')
-        `;
-        db.query(insertSql, [student_id, subject_id], (e3) => {
-          if (e3) return res.status(500).json({ error: e3.message });
-          res.json({ message: "Attendance recorded" });
+        db.query("SHOW COLUMNS FROM attendance LIKE 'checkin_time'", (colErr, cols) => {
+          if (colErr) return res.status(500).json({ error: colErr.message });
+          const proceedInsert = () => {
+            const insertSql = `
+              INSERT INTO attendance (student_id, subject_id, date, day_of_week, status, checkin_time)
+              VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Present', NOW())
+            `;
+            db.query(insertSql, [student_id, subject_id], (e3) => {
+              if (e3) return res.status(500).json({ error: e3.message });
+              res.json({ message: "Attendance recorded" });
+            });
+          };
+          if (!cols.length) {
+            db.query("ALTER TABLE attendance ADD COLUMN checkin_time DATETIME DEFAULT NULL", (alterErr) => {
+              if (alterErr) return res.status(500).json({ error: alterErr.message });
+              proceedInsert();
+            });
+          } else {
+            proceedInsert();
+          }
         });
       });
     }

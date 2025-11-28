@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
   const { subject_code, subject_title, term, units } = req.body;
 
   const sql = "INSERT INTO subjects (subject_code, subject_title, term, units) VALUES (?, ?, ?, ?)";
-  db.query(sql, [subject_code, subject_title, term, units], (err, result) => {
+  db.query(sql, [subject_code, subject_title, term || null, units], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
 
     const type = 'general';
@@ -43,12 +43,12 @@ router.put('/:id', (req, res) => {
   const id = req.params.id;
   const { subject_code, subject_title, term, units } = req.body;
 
-  if (!subject_code || !subject_title || !term || !units) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!subject_code || !subject_title || !units) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   const sql = "UPDATE subjects SET subject_code = ?, subject_title = ?, term = ?, units = ? WHERE id = ?";
-  db.query(sql, [subject_code, subject_title, term, units, id], (err, result) => {
+  db.query(sql, [subject_code, subject_title, term || null, units, id], (err, result) => {
     if (err) return res.status(500).json({ error: "Database error" });
     if (result.affectedRows === 0) return res.status(404).json({ error: "Subject not found" });
     

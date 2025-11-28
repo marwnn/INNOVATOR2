@@ -146,7 +146,6 @@ const StudentList = () => {
         >
           <thead>
             <tr style={{ backgroundColor: '#eee' }}>
-              <th>ID</th>
               <th>Name</th>
               <th>Student ID</th>
               <th>Course</th>
@@ -156,8 +155,6 @@ const StudentList = () => {
           <tbody>
             {students.map((student) => (
               <tr key={student.id}>
-                <td>{student.id}</td>
-
                 <td>
                   {editingStudent?.id === student.id && isAdmin ? (
                     <input

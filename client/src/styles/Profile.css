@@ -31,14 +31,59 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 460px; /* slightly wider */
+  max-width: 720px;
   margin-bottom: 10px;
 }
 
-.profile-header p {
-  font-weight: 600;
+.exit-btn {
+  background-color: #e8f5e9;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.exit-btn:hover {
+  background-color: #c8e6c9;
+}
+
+.exitIcon {
   color: #2e7d32;
-  font-size: 20px; /* smaller font */
+}
+
+.profile-landscape {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.profile-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.profile-title {
+  font-weight: 700;
+  color: #2e7d32;
+  font-size: 22px;
 }
 
 /* Back Button */

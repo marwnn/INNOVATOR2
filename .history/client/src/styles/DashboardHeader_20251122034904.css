@@ -1,0 +1,367 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: linear-gradient(180deg, 
+    #4caf50 0%, 
+    #43a047 40%, 
+    #388e3c 70%, 
+    #2e7d32 100%);
+  border-bottom: 2px solid #1b5e20;
+  box-shadow: 0 2px 16px rgba(46, 125, 50, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 70px;
+}
+
+.school-container {
+  display: inline-block;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+  user-select: none;
+}
+
+.school-name {
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin: 10px;
+  display: block;
+  color: #ffffff;
+}
+
+
+/* Header Right Section */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+/* Notification Buttons */
+.notification-btn,
+.messageNotif-btn {
+  background: #ffffff;
+  border: 2px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.15);
+}
+
+.notification-btn:hover,
+.messageNotif-btn:hover {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.2);
+}
+
+.notification-btn svg,
+.messageNotif-btn svg {
+  color: #2e7d32;
+  font-size: 20px !important;
+  transition: color 0.3s ease;
+}
+
+.notification-btn:hover svg,
+.messageNotif-btn:hover svg {
+  color: rgba(6, 65, 167, 0.8);
+}
+
+/* Notification Sections */
+.notif-section,
+.message-notif-section {
+  position: relative;
+}
+
+
+
+/* Notification Dropdowns */
+.notif-dropdown,
+.messagenotif-dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 320px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1001;
+  backdrop-filter: blur(20px);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notif-dropdown.open,
+.messagenotif-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.notif-dropdown ul,
+.messagenotif-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.notif-dropdown li,
+.messagenotif-dropdown li {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e8f5e9;
+  color: #1a1a1a;
+  font-size: 13px;
+  line-height: 1.4;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.notif-dropdown li:last-child,
+.messagenotif-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.notif-dropdown li:hover,
+.messagenotif-dropdown li:hover {
+  background: #f1f8f4;
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: #ffffff;
+  border: 2px solid #c8e6c9;
+}
+
+.profile-section:hover {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.2);
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #c8e6c9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.profile-section:hover .profile-pic {
+  border-color: #4caf50;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Poppins', sans-serif;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #666666;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+/* Profile Dropdown */
+.dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 200px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1001;
+  backdrop-filter: blur(20px);
+}
+
+.dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.dropdown li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #e8f5e9;
+}
+
+.dropdown li:last-child {
+  border-bottom: none;
+}
+
+.dropdown li:hover {
+  background: #e8f5e9;
+  color: #2e7d32;
+  transform: translateX(4px);
+}
+
+.dropdown li.logoutBtn:hover {
+  background: #ffebee;
+  color: #ff4757;
+}
+
+.headerIcon {
+  font-size: 18px !important;
+  transition: transform 0.2s ease;
+}
+
+.dropdown li:hover .headerIcon {
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-header {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sidebar-logo {
+    flex: 1;
+  }
+
+  .header-right {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 8px 12px;
+  }
+
+  .school-name {
+    font-size: 14px;
+  }
+
+  .logo {
+    width: 36px !important;
+    height: 36px;
+  }
+
+  .notification-btn,
+  .messageNotif-btn {
+    padding: 10px;
+  }
+
+  .profile-pic {
+    width: 36px;
+    height: 36px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+
+  .user-role {
+    font-size: 11px;
+  }
+
+  .notif-dropdown,
+  .messagenotif-dropdown,
+  .dropdown {
+    width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 6px 8px;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+}
+
+/* Loading states */
+.notification-btn.loading,
+.messageNotif-btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Focus states for accessibility */
+.notification-btn:focus,
+.messageNotif-btn:focus,
+.profile-section:focus {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}
+
+/* Animation for notification count */
+@keyframes bounceIn {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.notif-section[data-count]:not([data-count="0"])::after,
+.message-notif-section[data-count]:not([data-count="0"])::after {
+  animation: bounceIn 0.3s ease-out;
+}

@@ -1,0 +1,636 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, 
+    #4caf50 0%, 
+    #43a047 25%,
+    #388e3c 50%,
+    #2e7d32 75%,
+    #1b5e20 100%);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 4px 24px rgba(46, 125, 50, 0.25),
+    0 8px 40px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 80px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background gradient */
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10%, 10%); }
+}
+
+.school-container {
+  display: inline-block;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+}
+
+.school-name {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  margin: 10px;
+  display: block;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #e8f5e9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: subtleGlow 3s ease-in-out infinite;
+}
+
+@keyframes subtleGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)); }
+  50% { filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5)); }
+}
+
+/* Header Right Section */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Notification Buttons */
+.notification-btn,
+.messageNotif-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(200, 230, 201, 0.5);
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 12px rgba(46, 125, 50, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-btn::before,
+.messageNotif-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 175, 80, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.notification-btn:hover::before,
+.messageNotif-btn:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+.notification-btn:hover,
+.messageNotif-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #4caf50;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 8px 24px rgba(46, 125, 50, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification-btn:active,
+.messageNotif-btn:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.notification-btn svg,
+.messageNotif-btn svg {
+  color: #2e7d32;
+  font-size: 22px !important;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.notification-btn:hover svg,
+.messageNotif-btn:hover svg {
+  color: #1b5e20;
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Notification Sections */
+.notif-section,
+.message-notif-section {
+  position: relative;
+}
+
+/* Notification Badge */
+.notif-section[data-count]:not([data-count="0"])::after,
+.message-notif-section[data-count]:not([data-count="0"])::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 12px;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 
+    0 2px 8px rgba(255, 71, 87, 0.4),
+    0 0 0 3px rgba(255, 255, 255, 0.9);
+  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 2;
+}
+
+/* Notification Dropdowns */
+.notif-dropdown,
+.messagenotif-dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 360px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  box-shadow: 
+    0 16px 64px rgba(0, 0, 0, 0.18),
+    0 8px 32px rgba(46, 125, 50, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-16px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1001;
+  backdrop-filter: blur(20px) saturate(180%);
+  max-height: 450px;
+  overflow: hidden;
+}
+
+.notif-dropdown.open,
+.messagenotif-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.notif-dropdown ul,
+.messagenotif-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar */
+.notif-dropdown ul::-webkit-scrollbar,
+.messagenotif-dropdown ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notif-dropdown ul::-webkit-scrollbar-track,
+.messagenotif-dropdown ul::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+}
+
+.notif-dropdown ul::-webkit-scrollbar-thumb,
+.messagenotif-dropdown ul::-webkit-scrollbar-thumb {
+  background: rgba(76, 175, 80, 0.3);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.notif-dropdown ul::-webkit-scrollbar-thumb:hover,
+.messagenotif-dropdown ul::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 175, 80, 0.5);
+}
+
+.notif-dropdown li,
+.messagenotif-dropdown li {
+  padding: 14px 16px;
+  margin: 4px 0;
+  border-radius: 12px;
+  color: #1a1a1a;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+.notif-dropdown li::before,
+.messagenotif-dropdown li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(180deg, #4caf50 0%, #2e7d32 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.notif-dropdown li:hover::before,
+.messagenotif-dropdown li:hover::before {
+  transform: scaleY(1);
+}
+
+.notif-dropdown li:hover,
+.messagenotif-dropdown li:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(46, 125, 50, 0.12) 100%);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(200, 230, 201, 0.5);
+  box-shadow: 
+    0 4px 12px rgba(46, 125, 50, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.profile-section:hover::before {
+  width: 200%;
+  height: 200%;
+}
+
+.profile-section:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #4caf50;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 8px 24px rgba(46, 125, 50, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profile-pic {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 3px solid rgba(200, 230, 201, 0.8);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.profile-section:hover .profile-pic {
+  border-color: #4caf50;
+  box-shadow: 
+    0 6px 20px rgba(46, 125, 50, 0.3),
+    0 0 0 3px rgba(255, 255, 255, 0.9);
+  transform: scale(1.08) rotate(3deg);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+  text-transform: capitalize;
+  opacity: 0.9;
+}
+
+/* Profile Dropdown */
+.dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 220px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  box-shadow: 
+    0 16px 64px rgba(0, 0, 0, 0.18),
+    0 8px 32px rgba(46, 125, 50, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-16px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1001;
+  backdrop-filter: blur(20px) saturate(180%);
+  overflow: hidden;
+}
+
+.dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+}
+
+.dropdown li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin: 4px 0;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(180deg, #4caf50 0%, #2e7d32 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.dropdown li:hover::before {
+  transform: scaleY(1);
+}
+
+.dropdown li:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(46, 125, 50, 0.12) 100%);
+  color: #2e7d32;
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
+}
+
+.dropdown li.logoutBtn::before {
+  background: linear-gradient(180deg, #ff4757 0%, #ff3838 100%);
+}
+
+.dropdown li.logoutBtn:hover {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.08) 0%, rgba(255, 56, 56, 0.12) 100%);
+  color: #ff4757;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.15);
+}
+
+.headerIcon {
+  font-size: 20px !important;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dropdown li:hover .headerIcon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-header {
+    padding: 14px 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+    min-height: 70px;
+  }
+
+  .school-name {
+    font-size: 44px;
+  }
+
+  .header-right {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 12px 16px;
+    min-height: 64px;
+  }
+
+  .school-name {
+    font-size: 36px;
+  }
+
+  .notification-btn,
+  .messageNotif-btn {
+    padding: 12px;
+  }
+
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-name {
+    font-size: 14px;
+  }
+
+  .user-role {
+    font-size: 11px;
+  }
+
+  .notif-dropdown,
+  .messagenotif-dropdown {
+    width: 320px;
+  }
+
+  .dropdown {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 10px 12px;
+    min-height: 60px;
+  }
+
+  .school-name {
+    font-size: 28px;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .header-right {
+    gap: 12px;
+  }
+
+  .notif-dropdown,
+  .messagenotif-dropdown {
+    width: 280px;
+  }
+}
+
+/* Loading states */
+.notification-btn.loading,
+.messageNotif-btn.loading {
+  pointer-events: none;
+  opacity: 0.6;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+/* Focus states for accessibility */
+.notification-btn:focus,
+.messageNotif-btn:focus,
+.profile-section:focus {
+  outline: 3px solid rgba(76, 175, 80, 0.5);
+  outline-offset: 3px;
+}
+
+/* Animation for notification count */
+@keyframes bounceIn {
+  0% { 
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Smooth entrance animation for dropdowns */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown.open ul li,
+.notif-dropdown.open ul li,
+.messagenotif-dropdown.open ul li {
+  animation: slideDown 0.3s ease-out forwards;
+  animation-delay: calc(var(--index, 0) * 0.05s);
+}
+
+/* Ripple effect on click */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.notification-btn:active::after,
+.messageNotif-btn:active::after,
+.profile-section:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: rgba(76, 175, 80, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ripple 0.6s ease-out;
+}

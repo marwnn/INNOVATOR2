@@ -26,16 +26,20 @@ const Attendance = () => {
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [fetchError, setFetchError] = useState("");
-  const [activityLogs, setActivityLogs] = useState([]);
-  const [showLogs, setShowLogs] = useState(true);
+  const [processingScan, setProcessingScan] = useState(false);
+  const [lastToken, setLastToken] = useState("");
+  const [lastTokenTime, setLastTokenTime] = useState(0);
 
   useEffect(() => {
     fetchAttendance();
-    fetchLogs();
+
     const stored = sessionStorage.getItem("qrSession");
     if (stored) {
-      try { setQrSession(JSON.parse(stored)); } catch {}
+      try {
+        setQrSession(JSON.parse(stored));
+      } catch {}
     }
+
     if (user.role === "admin") {
       axios
         .get("http://localhost:5000/api/subjects")
@@ -46,11 +50,11 @@ const Attendance = () => {
         .then((res) => setStudents(res.data))
         .catch(() => {});
     }
+
     const id = setInterval(fetchAttendance, 2000);
-    const lid = setInterval(fetchLogs, 3000);
+
     return () => {
       clearInterval(id);
-      clearInterval(lid);
     };
   }, []);
 
@@ -66,28 +70,16 @@ const Attendance = () => {
     }
   };
 
-  const fetchLogs = async () => {
-    try {
-      const params = user.role !== "admin"
-        ? { user_id: user.id }
-        : (selectedStudentId ? { student_id: selectedStudentId } : {});
-      const res = await axios.get("http://localhost:5000/api/activity-logs", { params });
-      setActivityLogs(Array.isArray(res.data) ? res.data : []);
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    if (user.role === "admin") fetchLogs();
-  }, [selectedStudentId]);
-
   const handleAdd = async () => {
     if (!selectedStudentId || !newRecord.date || !newRecord.status) {
       alert("All fields are required");
       return;
     }
+
     const dayOfWeek = new Date(newRecord.date).toLocaleDateString("en-US", {
       weekday: "long",
     });
+
     try {
       await axios.post("http://localhost:5000/api/attendance", {
         student_id: selectedStudentId,
@@ -98,9 +90,7 @@ const Attendance = () => {
       fetchAttendance();
       setNewRecord({ date: "", status: "" });
       setSelectedStudentId("");
-    } catch (err) {
-      // Handle add error silently
-    }
+    } catch (err) {}
   };
 
   const handleEdit = (record) => {
@@ -115,18 +105,14 @@ const Attendance = () => {
       });
       setEditRecordId(null);
       fetchAttendance();
-    } catch (err) {
-      // Handle update error silently
-    }
+    } catch (err) {}
   };
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/attendance/${id}`);
       fetchAttendance();
-    } catch (err) {
-      // Handle delete error silently
-    }
+    } catch (err) {}
   };
 
   const startQrSession = async () => {
@@ -161,9 +147,7 @@ const Attendance = () => {
       );
       alert("Session ended and absentees marked.");
       fetchAttendance();
-    } catch (err) {
-      // Handle error silently
-    }
+    } catch (err) {}
     sessionStorage.removeItem("qrSession");
     setQrSession(null);
     setSelectedSubjectId("");
@@ -176,24 +160,36 @@ const Attendance = () => {
         : scanPayload?.[0]?.rawValue || scanPayload?.rawValue || "";
     if (!token) return;
 
+    const now = Date.now();
+    if (processingScan) return;
+    if (lastToken === token && now - lastTokenTime < 5000) return;
+    setProcessingScan(true);
+    setLastToken(token);
+    setLastTokenTime(now);
+    setScanning(false);
     try {
       await axios.post("http://localhost:5000/api/attendance/qr-checkin", {
         token,
         user_id: user.id,
       });
-      setScanning(false);
       fetchAttendance();
       alert("Attendance recorded successfully!");
     } catch (err) {
-      // Handle QR check-in error silently
       alert(err.response?.data?.error || "Check-in failed");
+    } finally {
+      setProcessingScan(false);
     }
   };
 
   const isAdmin = user.role === "admin";
+
+  // -----------------------------
+  // CHART DATA (unchanged)
+  // -----------------------------
   const filteredAttendance = attendance.filter((r) =>
     isAdmin && selectedSubjectId ? String(r.subject_id) === String(selectedSubjectId) : true
   );
+
   const byDate = {};
   filteredAttendance.forEach((r) => {
     const raw = r.date;
@@ -203,17 +199,19 @@ const Attendance = () => {
     byDate[d][r.status] = (byDate[d][r.status] || 0) + 1;
     byDate[d].Total += 1;
   });
+
   const lineData = Object.values(byDate).sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
-  function weekKey(dateStr) {
+  const weekKey = (dateStr) => {
     const d = new Date(dateStr);
     const year = d.getFullYear();
     const oneJan = new Date(year, 0, 1);
     const week = Math.ceil((((d - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
     return `${year}-W${String(week).padStart(2, "0")}`;
-  }
+  };
+
   const byWeek = {};
   filteredAttendance.forEach((r) => {
     const key = weekKey(r.date);
@@ -221,6 +219,7 @@ const Attendance = () => {
     if (r.status === "Present") byWeek[key].present += 1;
     byWeek[key].total += 1;
   });
+
   const barData = Object.values(byWeek)
     .map((w) => ({ week: w.week, rate: w.total ? Math.round((w.present / w.total) * 100) : 0 }))
     .sort((a, b) => a.week.localeCompare(b.week));
@@ -229,20 +228,34 @@ const Attendance = () => {
   filteredAttendance.forEach((r) => {
     if (totals[r.status] !== undefined) totals[r.status] += 1;
   });
+
   const pieData = Object.entries(totals).map(([name, value]) => ({ name, value }));
   const pieColors = ["#27ae60", "#c0392b", "#f1c40f"];
-  const subjectOptions = Array.from(new Set(attendance.map((r) => `${r.subject_id}|${r.subject_code} - ${r.subject_title}`)))
+
+  const subjectOptions = Array.from(
+    new Set(attendance.map((r) => `${r.subject_id}|${r.subject_code} - ${r.subject_title}`))
+  )
     .filter(Boolean)
-    .map((s) => { const [id, label] = s.split('|'); return { id, label }; });
+    .map((s) => {
+      const [id, label] = s.split('|');
+      return { id, label };
+    });
+
   const displayRecords = (() => {
     let rows = [...attendance];
+
     if (filterBy === 'subject' && filterSubjectId) {
       rows = rows.filter((r) => String(r.subject_id) === String(filterSubjectId));
     } else if (filterBy === 'name') {
       rows.sort((a, b) => String(a.student_name || '').localeCompare(String(b.student_name || '')));
     } else if (filterBy === 'date') {
-      rows.sort((a, b) => (dateOrder === 'asc' ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date)));
+      rows.sort((a, b) =>
+        dateOrder === 'asc'
+          ? new Date(a.date) - new Date(b.date)
+          : new Date(b.date) - new Date(a.date)
+      );
     }
+
     return rows;
   })();
 
@@ -250,12 +263,10 @@ const Attendance = () => {
     <div className="attendance-container">
       <h2 className="attendance-title">Attendance</h2>
 
+      {/* ADMIN ADD RECORD */}
       {user.role === "admin" && (
         <div className="add-form">
-          <select
-            value={selectedStudentId}
-            onChange={(e) => setSelectedStudentId(e.target.value)}
-          >
+          <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)}>
             <option value="">Select Student</option>
             {students.map((s) => (
               <option key={s.id} value={s.id}>
@@ -263,39 +274,33 @@ const Attendance = () => {
               </option>
             ))}
           </select>
+
           <input
             type="date"
             value={newRecord.date}
-            onChange={(e) =>
-              setNewRecord({ ...newRecord, date: e.target.value })
-            }
+            onChange={(e) => setNewRecord({ ...newRecord, date: e.target.value })}
           />
+
           <select
             value={newRecord.status}
-            onChange={(e) =>
-              setNewRecord({ ...newRecord, status: e.target.value })
-            }
+            onChange={(e) => setNewRecord({ ...newRecord, status: e.target.value })}
           >
             <option value="">Select Status</option>
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
             <option value="Excused">Excused</option>
-             
           </select>
-          <button className="btn btn-primary" onClick={handleAdd}>
-            Add Record
-          </button>
+
+          <button className="btn btn-primary" onClick={handleAdd}>Add Record</button>
         </div>
       )}
 
+      {/* QR SESSION (ADMIN) */}
       {user.role === "admin" && (
         <div style={{ marginBottom: 16 }}>
           {!qrSession ? (
             <div style={{ display: "flex", gap: "10px" }}>
-              <select
-                value={selectedSubjectId}
-                onChange={(e) => setSelectedSubjectId(e.target.value)}
-              >
+              <select value={selectedSubjectId} onChange={(e) => setSelectedSubjectId(e.target.value)}>
                 <option value="">Select Subject</option>
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -303,18 +308,12 @@ const Attendance = () => {
                   </option>
                 ))}
               </select>
-              <button
-                className="btn btn-primary"
-                onClick={startQrSession}
-                disabled={!selectedSubjectId}
-              >
+
+              <button className="btn btn-primary" onClick={startQrSession} disabled={!selectedSubjectId}>
                 Start QR Session
               </button>
-              {qrError && (
-                <div style={{ color: "#c0392b", fontWeight: 600 }}>
-                  {qrError}
-                </div>
-              )}
+
+              {qrError && <div style={{ color: "#c0392b", fontWeight: 600 }}>{qrError}</div>}
             </div>
           ) : (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -335,13 +334,11 @@ const Attendance = () => {
         </div>
       )}
 
+      {/* STUDENT QR SCANNER */}
       {user.role !== "admin" && (
         <div style={{ marginBottom: 16 }}>
           {!scanning ? (
-            <button
-              className="btn btn-primary"
-              onClick={() => setScanning(true)}
-            >
+            <button className="btn btn-primary" onClick={() => setScanning(true)}>
               Scan QR to Check-in
             </button>
           ) : (
@@ -364,13 +361,16 @@ const Attendance = () => {
         </div>
       )}
 
+      {/* CHARTS */}
       <div className="charts-section">
         <h3 className="charts-title">Attendance Records</h3>
+
         {fetchError && (
           <div style={{ marginBottom: 12, background: "#fdecea", border: "1px solid #f5c2c7", color: "#842029", padding: 10, borderRadius: 8 }}>
             {fetchError}
           </div>
         )}
+
         <div className="chart-grid">
           <div className="chart-card">
             <h4>Daily Status Counts</h4>
@@ -387,6 +387,7 @@ const Attendance = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+
           <div className="chart-card">
             <h4>Weekly Attendance Rate (%)</h4>
             <ResponsiveContainer width="100%" height={240}>
@@ -400,6 +401,7 @@ const Attendance = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
+
           <div className="chart-card">
             <h4>Status Distribution</h4>
             <ResponsiveContainer width="100%" height={240}>
@@ -417,43 +419,12 @@ const Attendance = () => {
         </div>
       </div>
 
-      <div className="charts-section" style={{ marginTop: 24 }}>
-        <h3 className="charts-title">Activity Logs</h3>
-        <div style={{ marginBottom: 12 }}>
-          <button className="btn btn-primary" onClick={() => setShowLogs(!showLogs)}>
-            {showLogs ? "Hide" : "Show"} Logs
-          </button>
-        </div>
-        {showLogs && (
-          <div style={{ background: "#fff", border: "1px solid #c8e6c9", borderRadius: 12, padding: 12 }}>
-            <table className="attendance-table">
-              <thead>
-                <tr>
-                  <th>Date/Time</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activityLogs.length === 0 ? (
-                  <tr><td colSpan={3} style={{ textAlign: 'center', color: '#777' }}>No activity yet.</td></tr>
-                ) : (
-                  activityLogs.map((l) => (
-                    <tr key={l.id}>
-                      <td>{new Date(l.created_at).toLocaleString()}</td>
-                      <td>{l.type}</td>
-                      <td>{l.description}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
+      {/* FILTERS */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <button className="btn btn-primary" onClick={() => setShowFilter((v) => !v)}>Filter by</button>
+        <button className="btn btn-primary" onClick={() => setShowFilter((v) => !v)}>
+          Filter by
+        </button>
+
         {showFilter && (
           <>
             <select value={filterBy} onChange={(e) => setFilterBy(e.target.value)}>
@@ -462,12 +433,14 @@ const Attendance = () => {
               <option value="date">Date</option>
               <option value="subject">Subject</option>
             </select>
+
             {filterBy === 'date' && (
               <select value={dateOrder} onChange={(e) => setDateOrder(e.target.value)}>
                 <option value="desc">Descending</option>
                 <option value="asc">Ascending</option>
               </select>
             )}
+
             {filterBy === 'subject' && (
               <select value={filterSubjectId} onChange={(e) => setFilterSubjectId(e.target.value)}>
                 <option value="">Select Subject</option>
@@ -480,6 +453,7 @@ const Attendance = () => {
         )}
       </div>
 
+      {/* TABLE */}
       <table className="attendance-table">
         <thead>
           <tr>
@@ -491,21 +465,18 @@ const Attendance = () => {
             {user.role === "admin" && <th>Action</th>}
           </tr>
         </thead>
+
         <tbody>
           {displayRecords.map((r) => (
             <tr key={r.id}>
               <td>{r.student_name || "N/A"}</td>
-              <td>
-                {r.subject_code ? `${r.subject_code} - ${r.subject_title}` : "N/A"}
-              </td>
-              <td>{(r.date && String(r.date).includes('T')) ? String(r.date).split('T')[0] : r.date}</td>
+              <td>{r.subject_code ? `${r.subject_code} - ${r.subject_title}` : "N/A"}</td>
+              <td>{String(r.date).includes('T') ? String(r.date).split('T')[0] : r.date}</td>
               <td>{r.day_of_week}</td>
+
               <td>
                 {editRecordId === r.id ? (
-                  <select
-                    value={editStatus}
-                    onChange={(e) => setEditStatus(e.target.value)}
-                  >
+                  <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)}>
                     <option value="Present">Present</option>
                     <option value="Absent">Absent</option>
                     <option value="Excused">Excused</option>
@@ -514,14 +485,13 @@ const Attendance = () => {
                   r.status
                 )}
               </td>
+
               {user.role === "admin" && (
                 <td>
                   {editRecordId === r.id ? (
                     <>
                       <button onClick={() => handleUpdate(r.id)}>Save</button>
-                      <button onClick={() => setEditRecordId(null)}>
-                        Cancel
-                      </button>
+                      <button onClick={() => setEditRecordId(null)}>Cancel</button>
                     </>
                   ) : (
                     <>

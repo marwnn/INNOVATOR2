@@ -1,0 +1,167 @@
+.attendance-container {
+  max-width: 1500px;
+  margin: 40px auto;
+  padding: 30px;
+ background-color: rgba(245, 245, 245, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+  border: 1px solid #c8e6c9;
+}
+
+.attendance-title {
+  margin-bottom: 30px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #5c862d;
+  text-align: center;
+}
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.add-form input,
+.add-form select {
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #b5e2c0;
+  border-radius: 10px;
+  flex: 1;
+  min-width: 180px;
+  background-color: #ffffff;
+  transition: 0.3s ease;
+}
+
+.add-form input:focus,
+.add-form select:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+  outline: none;
+}
+
+/* Dropdown Icon */
+.add-form select,
+.action-select {
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D'12'%20height%3D'8'%20viewBox%3D'0%200%2012%208'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M1%201l5%205%205-5'%20stroke%3D'%23666'%20stroke-width%3D'2'%20fill%3D'none'%20fill-rule%3D'evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #c8e6c9;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid #e6f4ea;
+}
+
+.attendance-table th {
+  background-color: #e8f8f1;
+  color: #2d8659;
+  font-weight: 600;
+}
+
+.action-btns {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.action-select {
+  width: 110px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #b5e2c0;
+  background-color: #ffffff;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #27ae60;
+}
+
+/* Iconic Buttons */
+.btn-edit {
+  color: #27ae60;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-delete {
+  color: #c0392b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-save,
+.btn-cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-cancel {
+  color: #95a5a6;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+.charts-section {
+  margin: 24px 0;
+}
+
+.charts-title {
+  font-size: 20px;
+  color: #2d8659;
+  margin-bottom: 12px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.chart-card {
+  border: 2px solid #13f31b;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f0f0f0;
+}
+
+.chart-card h4 {
+  margin: 0 0 8px;
+  color: #2d8659;
+}

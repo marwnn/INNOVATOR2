@@ -167,28 +167,48 @@ router.post("/qr-checkin", (req, res) => {
         const student_id = studentRows[0].id;
         db.query("SHOW COLUMNS FROM attendance LIKE 'checkin_time'", (colErr, cols) => {
           if (colErr) return res.status(500).json({ error: colErr.message });
-          const proceedInsert = () => {
-            const insertSql = `
-              INSERT INTO attendance (student_id, subject_id, date, day_of_week, status, checkin_time)
-              VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Present', NOW())
-            `;
-            db.query(insertSql, [student_id, subject_id], (e3) => {
-              if (e3) return res.status(500).json({ error: e3.message });
-              const desc = `QR check-in for subject ${subject_id}`;
-              db.query(
-                "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'qr_checkin', ?)",
-                [student_id, user_id, desc]
-              );
-              res.json({ message: "Attendance recorded" });
+          const ensureUniqueIndexAndUpsert = () => {
+            db.query("SHOW INDEX FROM attendance WHERE Key_name = 'uniq_attendance_day'", (idxErr, idxRows) => {
+              if (idxErr) return res.status(500).json({ error: idxErr.message });
+              const createUpsert = () => {
+                const upsertSql = `
+                  INSERT INTO attendance (student_id, subject_id, date, day_of_week, status, checkin_time)
+                  VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Present', NOW())
+                  ON DUPLICATE KEY UPDATE 
+                    status = 'Present',
+                    checkin_time = NOW(),
+                    day_of_week = VALUES(day_of_week)
+                `;
+                db.query(upsertSql, [student_id, subject_id], (e3) => {
+                  if (e3) return res.status(500).json({ error: e3.message });
+                  const desc = `QR check-in for subject ${subject_id}`;
+                  db.query(
+                    "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, ?, 'qr_checkin', ?)",
+                    [student_id, user_id, desc]
+                  );
+                  res.json({ message: "Attendance recorded" });
+                });
+              };
+              if (!idxRows || !idxRows.length) {
+                db.query(
+                  "ALTER TABLE attendance ADD UNIQUE KEY uniq_attendance_day (student_id, subject_id, date)",
+                  (addIdxErr) => {
+                    if (addIdxErr) return res.status(500).json({ error: addIdxErr.message });
+                    createUpsert();
+                  }
+                );
+              } else {
+                createUpsert();
+              }
             });
           };
           if (!cols.length) {
             db.query("ALTER TABLE attendance ADD COLUMN checkin_time DATETIME DEFAULT NULL", (alterErr) => {
               if (alterErr) return res.status(500).json({ error: alterErr.message });
-              proceedInsert();
+              ensureUniqueIndexAndUpsert();
             });
           } else {
-            proceedInsert();
+            ensureUniqueIndexAndUpsert();
           }
         });
       });
@@ -207,24 +227,15 @@ router.post("/qr-session/:token/mark-absent", (req, res) => {
       if (!rows.length) return res.status(400).json({ error: "Session not found" });
       const subject_id = rows[0].subject_id;
 
-      db.query("SELECT id FROM students", [], (e2, students) => {
+      const insertSql = `
+        INSERT INTO attendance (student_id, subject_id, date, day_of_week, status)
+        SELECT s.id, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Absent' FROM students s
+        ON DUPLICATE KEY UPDATE 
+          status = IF(status='Present','Present', VALUES(status)),
+          day_of_week = VALUES(day_of_week)
+      `;
+      db.query(insertSql, [subject_id], (e2) => {
         if (e2) return res.status(500).json({ error: e2.message });
-
-        students.forEach((s) => {
-          db.query(
-            `
-            INSERT IGNORE INTO attendance 
-            (student_id, subject_id, date, day_of_week, status)
-            VALUES (?, ?, CURDATE(), DATE_FORMAT(CURDATE(), '%W'), 'Absent')
-          `,
-            [s.id, subject_id]
-          );
-          db.query(
-            "INSERT INTO activity_logs (student_id, actor_user_id, type, description) VALUES (?, NULL, 'qr_mark_absent', ?)",
-            [s.id, `Marked absent via QR session for subject ${subject_id}`]
-          );
-        });
-
         res.json({ message: "Absentees marked" });
       });
     }

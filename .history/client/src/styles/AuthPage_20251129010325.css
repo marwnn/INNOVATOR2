@@ -1,0 +1,421 @@
+.landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  color: #eaffea;
+  text-align: center;
+  position: relative;
+
+  background: radial-gradient(circle at top left, #a3ff3d, #2f5a20 55%, #1b3211 100%);
+  animation: neonGlow 3s infinite alternate ease-in-out;
+}
+
+.landing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: blur(40px) brightness(2);
+  z-index: -1;
+}
+
+@keyframes neonGlow {
+  0% {
+    filter: brightness(1.1);
+  }
+  100% {
+    filter: brightness(1.5);
+  }
+}
+
+
+
+
+.landing-logo {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.25);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInUp 0.8s forwards 0.2s;
+}
+
+.landing-title {
+  font-size: 4rem;
+  font-weight: 900;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInUp 0.8s forwards 0.4s;
+}
+
+.landing-school {
+  font-size: 1.8rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInUp 0.8s forwards 0.6s;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Top-right Login/Register buttons --- */
+.top-left-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 1rem;
+  z-index: 5;
+}
+
+.top-left-buttons button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.top-left-buttons button:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+}
+
+/* --- Landing blur when modal active --- */
+.landing.landing-active {
+  filter: blur(2px) brightness(0.7);
+}
+
+/* --- Auth Form Overlay --- */
+.auth-form-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  background: rgba(0,0,0,0.25);
+}
+
+.auth-form {
+  background: rgba(230, 230, 223, 0.7);
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  width: 400px;
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  overflow-y: auto;
+  animation: slideInCenter 0.3s ease forwards;
+}
+
+@keyframes slideInCenter {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* --- Form Inputs --- */
+.auth-form input {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: #2d5016;
+  box-shadow: 0 0 6px rgba(46, 113, 50, 0.3);
+}
+
+/* --- Submit Button --- */
+.auth-form button[type="submit"] {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+  border: none;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease;
+  margin-bottom: 1.5rem; /* space before toggle login text */
+}
+
+.auth-form button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(74,124,89,0.4);
+}
+
+.auth-form button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Toggle Login Link --- */
+.toggle-login span {
+  color: #2d5016;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.toggle-login span:hover {
+  color: #1e3a0e;
+  transform: translateX(2px);
+}
+
+/* --- Error Message --- */
+.auth-error {
+  color: #d32f2f;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  background: #fdecea;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+/* --- Register Extra Section --- */
+.register-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;        /* space between checkbox and read button */
+  margin-bottom: 1.5rem; /* space before Register button */
+}
+
+.agreement-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  line-height: 1.45;
+}
+
+.agreement-check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #2d5016;
+  cursor: pointer;
+}
+
+.agreement-check span {
+  color: #374151;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.agreement-check.highlight {
+  border: 2px solid red;
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.read-agreement {
+  background: none;
+  border: none;
+  color: #2d5016;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+
+.read-agreement:hover {
+  color: #1e3a0e;
+  transform: translateX(2px);
+}
+
+/* --- Agreement Modal --- */
+.agreement-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.agreement-modal {
+  background: white;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+/* Optional scrollbar */
+.agreement-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.agreement-modal::-webkit-scrollbar-thumb {
+  background: #4a7c59;
+  border-radius: 8px;
+}
+
+.agreement-modal::-webkit-scrollbar-track {
+  background: #e0e7e4;
+}
+
+/* --- Responsive for Mobile --- */
+@media (max-width: 480px) {
+  .auth-form {
+    width: 90%;
+    padding: 2rem 1.5rem;
+  }
+  .landing-title {
+    font-size: 2.2rem;
+  }
+  .landing-school {
+    font-size: 1.2rem;
+  }
+  .top-left-buttons button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+/* --- Modern Agreement Modal --- */
+.agreement-modal {
+  background: #f9faf9; /* light neutral background */
+  padding: 2.5rem 3rem;
+  border-radius: 24px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+  border-left: 6px solid #2d5016; /* modern accent */
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  position: relative;
+  animation: fadeInScale 0.25s ease forwards;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Agreement Title */
+.agreement-modal h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #2d5016;
+  text-align: center;
+}
+
+/* Scrollable content */
+.agreement-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #374151;
+  padding: 0.5rem 0;
+}
+
+/* Numbered list modern styling */
+.agreement-content ol {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.agreement-content li {
+  margin-bottom: 0.8rem;
+  position: relative;
+  padding-left: 0.5rem;
+  background: #ffffff;
+  border-left: 4px solid #2d5016;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.agreement-content li::marker {
+  color: #2d5016; /* accent for numbers */
+  font-weight: 700;
+}
+
+/* Close button */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.modal-cancel {
+  padding: 0.7rem 1.8rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  background: #2d5016;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-cancel:hover {
+  background: #1e3a0e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46,113,50,0.4);
+}
+
+/* Optional: modern scrollbar */
+.agreement-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.agreement-modal::-webkit-scrollbar-thumb {
+  background: #2d5016;
+  border-radius: 8px;
+}
+
+.agreement-modal::-webkit-scrollbar-track {
+  background: #e5e7eb;
+}
+/* --- Inline Read Agreement Buttons --- */
+.read-agreement-inline {
+  background: none;
+  border: none;
+  color: #2d5016;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.read-agreement-inline:hover {
+  color: #1e3a0e;
+  transform: translateX(2px);
+}
+
+/* --- Checkbox spacing fix for multiple agreements --- */
+.register-extra .agreement-check {
+  margin-bottom: 0.5rem;
+}

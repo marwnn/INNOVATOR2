@@ -171,7 +171,8 @@ app.post("/upload-profile-pic", upload.single("profilePic"), (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
-    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    const baseUrl = process.env.APP_BASE_URL || `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
     db.query(
       "UPDATE users SET profile_pic = ? WHERE id = ?",

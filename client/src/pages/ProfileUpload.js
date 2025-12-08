@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
 import "../styles/ProfileUpload.css";
 
 const ProfileUpload = ({ onUploadSuccess }) => {
@@ -27,7 +28,7 @@ const ProfileUpload = ({ onUploadSuccess }) => {
       formData.append("profilePic", file);
 
       const response = await axios.post(
-        "http://localhost:5000/upload-profile-pic",
+        `${API_BASE}/upload-profile-pic`,
         formData,
         {
           headers: {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
 import { useNavigate } from "react-router-dom";
 import "../styles/AuthPage.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -44,7 +45,7 @@ const AuthPage = () => {
     }
 
     try {
-      const url = isLogin ? "http://localhost:5000/login" : "http://localhost:5000/register";
+      const url = isLogin ? `${API_BASE}/login` : `${API_BASE}/register`;
       const updatedFormData = isLogin
         ? formData
         : { ...formData, role: "parent", tc_agreed: tcAgree, pp_agreed: ppAgree, admin_agreed: adminAgree };

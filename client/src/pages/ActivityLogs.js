@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_BASE } from '../config';
 
 const LoginHistory = () => {
   const user = JSON.parse(sessionStorage.getItem('user')) || {};
@@ -14,7 +15,7 @@ const LoginHistory = () => {
   useEffect(() => {
     if (isAdmin) {
       axios
-        .get("http://localhost:5000/api/studentlist")
+        .get(`${API_BASE}/api/studentlist`)
         .then((res) => setStudents(res.data))
         .catch(() => {});
     }
@@ -47,7 +48,7 @@ const LoginHistory = () => {
       }
 
       const res = await axios.get(
-        "http://localhost:5000/api/activity_logs",
+        `${API_BASE}/api/activity_logs`,
         { params }
       );
 

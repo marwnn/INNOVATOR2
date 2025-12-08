@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
 import QRCode from "react-qr-code";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import "../styles/Attendance.css";
@@ -42,11 +43,11 @@ const Attendance = () => {
 
     if (user.role === "admin") {
       axios
-        .get("http://localhost:5000/api/subjects")
+        .get(`${API_BASE}/api/subjects`)
         .then((res) => setSubjects(res.data))
         .catch(() => {});
       axios
-        .get("http://localhost:5000/api/studentlist")
+        .get(`${API_BASE}/api/studentlist`)
         .then((res) => setStudents(res.data))
         .catch(() => {});
     }
@@ -60,7 +61,7 @@ const Attendance = () => {
 
   const fetchAttendance = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/attendance", {
+      const res = await axios.get(`${API_BASE}/api/attendance`, {
         params: user.role !== "admin" ? { user_id: user.id } : {},
       });
       setAttendance(res.data || []);
@@ -81,7 +82,7 @@ const Attendance = () => {
     });
 
     try {
-      await axios.post("http://localhost:5000/api/attendance", {
+      await axios.post(`${API_BASE}/api/attendance`, {
         student_id: selectedStudentId,
         date: newRecord.date,
         status: newRecord.status,
@@ -100,7 +101,7 @@ const Attendance = () => {
 
   const handleUpdate = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/attendance/${id}`, {
+      await axios.put(`${API_BASE}/api/attendance/${id}`, {
         status: editStatus,
       });
       setEditRecordId(null);
@@ -110,7 +111,7 @@ const Attendance = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/attendance/${id}`);
+      await axios.delete(`${API_BASE}/api/attendance/${id}`);
       fetchAttendance();
     } catch (err) {}
   };
@@ -122,7 +123,7 @@ const Attendance = () => {
     }
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/attendance/qr-session",
+        `${API_BASE}/api/attendance/qr-session`,
         { subject_id: selectedSubjectId, expiresInMinutes: 15 }
       );
       setQrSession(res.data);
@@ -140,10 +141,10 @@ const Attendance = () => {
     if (!qrSession?.token) return;
     try {
       await axios.post(
-        `http://localhost:5000/api/attendance/qr-session/${qrSession.token}/mark-absent`
+        `${API_BASE}/api/attendance/qr-session/${qrSession.token}/mark-absent`
       );
       await axios.post(
-        `http://localhost:5000/api/attendance/qr-session/${qrSession.token}/deactivate`
+        `${API_BASE}/api/attendance/qr-session/${qrSession.token}/deactivate`
       );
       alert("Session ended and absentees marked.");
       fetchAttendance();
@@ -168,7 +169,7 @@ const Attendance = () => {
     setLastTokenTime(now);
     setScanning(false);
     try {
-      await axios.post("http://localhost:5000/api/attendance/qr-checkin", {
+      await axios.post(`${API_BASE}/api/attendance/qr-checkin`, {
         token,
         user_id: user.id,
       });
